@@ -1,3 +1,4 @@
+using CateringService.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers
