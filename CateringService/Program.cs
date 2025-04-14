@@ -1,31 +1,21 @@
-using Scalar.AspNetCore;
+using CateringService.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddCors();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddPersistence();
 
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
 
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference();
-}
-
-app.UseRouting();
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-app.UseAuthentication();
-
-app.MapControllers();
+app.ConfigurePipeline();
 
 app.Run();

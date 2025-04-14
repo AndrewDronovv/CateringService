@@ -1,4 +1,10 @@
-﻿using CateringService.Persistence;
+﻿using CateringService.Application.Abstractions;
+using CateringService.Application.Services;
+using CateringService.Domain.Entities;
+using CateringService.Domain.Repositories;
+using CateringService.Domain.Repositories.Suppliers;
+using CateringService.Persistence;
+using CateringService.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Extensions;
@@ -20,5 +26,13 @@ public static class ServiceExtensions
     {
         string connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+    }
+
+    public static void AddPersistence(this IServiceCollection services)
+    {
+        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+        services.AddScoped<ISupplierRepository, SupplierRepository>();
+        services.AddScoped<ISupplierService, SupplierService>();
     }
 }
