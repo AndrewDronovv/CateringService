@@ -1,6 +1,7 @@
 ﻿using CateringService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CateringService.Persistence.Configurations;
 
@@ -28,12 +29,12 @@ public class BrokerConfiguration : IEntityTypeConfiguration<Broker>
         builder.HasMany(b => b.Invoices)
             .WithOne(i => i.Broker)
             .HasForeignKey(i => i.BrokerId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(b => b.Reports)
             .WithOne(r => r.Broker)
             .HasForeignKey(r => r.BrokerId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasData
         (

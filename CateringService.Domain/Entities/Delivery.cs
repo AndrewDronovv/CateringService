@@ -9,4 +9,5 @@ public sealed class Delivery : Entity
     public int DeliveryPersonId { get; set; }
     public DeliveryPerson DeliveryPerson { get; set; }
     public ICollection<Incident> Incidents { get; set; } = [];
+    public ICollection<Order> Orders { get; set; }
 }

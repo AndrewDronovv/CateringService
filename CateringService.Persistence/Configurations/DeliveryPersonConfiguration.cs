@@ -1,0 +1,55 @@
+﻿using CateringService.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace CateringService.Persistence.Configurations;
+
+public class DeliveryPersonConfiguration : IEntityTypeConfiguration<DeliveryPerson>
+{
+    public void Configure(EntityTypeBuilder<DeliveryPerson> builder)
+    {
+        builder.ToTable("DeliveryPersons");
+
+        builder.HasKey(dp => dp.Id);
+
+        builder.Property(dp => dp.Id)
+            .HasColumnName("DeliveryPersonId")
+            .ValueGeneratedOnAdd()
+            .IsRequired();
+
+        builder.Property(dp => dp.Name)
+            .IsRequired()
+            .HasMaxLength(100);
+
+        builder.Property(dp => dp.ContactInfo)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.HasMany(dp => dp.Deliveries)
+            .WithOne(d => d.DeliveryPerson)
+            .HasForeignKey(d => d.DeliveryPersonId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasData
+        (
+            new DeliveryPerson
+            {
+                Id = 1,
+                Name = "Alex Johnson",
+                ContactInfo = "alex.johnson@delivery.com"
+            },
+            new DeliveryPerson
+            {
+                Id = 2,
+                Name = "Maria Gonzalez",
+                ContactInfo = "maria.gonzalez@delivery.com"
+            },
+            new DeliveryPerson
+            {
+                Id = 3,
+                Name = "William Smith",
+                ContactInfo = "william.smith@delivery.com"
+            }
+        );
+    }
+}

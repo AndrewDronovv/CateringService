@@ -16,4 +16,5 @@ public sealed class Supplier : Entity
     public ICollection<MenuSection> MenuSections { get; set; } = [];
     public ICollection<Promotion> Promotions { get; set; } = [];
     public ICollection<Invoice> Invoices { get; set; } = [];
+    public ICollection<Order> Orders { get; set; }
 }

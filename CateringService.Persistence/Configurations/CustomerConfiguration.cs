@@ -1,6 +1,8 @@
 ﻿using CateringService.Domain.Entities;
+using CateringService.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CateringService.Persistence.Configurations;
 
@@ -26,14 +28,13 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasMaxLength(200);
 
         builder.Property(c => c.PaymentType)
-            .IsRequired()
-            .HasMaxLength(50)
-            .HasComment("Тип оплаты, например, Кредитная карта, PayPal, Наличные");
+            .HasConversion(new EnumToStringConverter<PaymentType>())
+            .IsRequired();
 
         builder.HasMany(c => c.Orders)
-            .WithOne(o => o.Customer) 
-            .HasForeignKey(o => o.CustomerId) 
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithOne(o => o.Customer)
+            .HasForeignKey(o => o.CustomerId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasData
         (
@@ -42,21 +43,23 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 Id = 1,
                 Name = "John Doe",
                 ContactInfo = "john.doe@example.com",
-                PaymentType = "Credit Card"
+                PaymentType = PaymentType.CreditCard
             },
             new Customer
             {
                 Id = 2,
                 Name = "Jane Smith",
                 ContactInfo = "jane.smith@domain.com",
-                PaymentType = "PayPal"
+                PaymentType = PaymentType.PayPal
+
             },
             new Customer
             {
                 Id = 3,
                 Name = "Corporate Client",
                 ContactInfo = "contact@corporate.com",
-                PaymentType = "Invoice"
+                PaymentType = PaymentType.Cash
+
             }
         );
     }

@@ -11,9 +11,10 @@ public class Repository<T> : IRepository<T> where T : class
         _context = context;
     }
 
-    public Task AddAsync(T entity)
+    public async Task AddAsync(T entity)
     {
-        throw new NotImplementedException();
+        _context.Set<T>().Add(entity);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(T entity)

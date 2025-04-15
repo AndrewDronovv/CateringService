@@ -47,22 +47,22 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
         builder.HasMany(s => s.Dishes)
             .WithOne(d => d.Supplier) 
             .HasForeignKey(d => d.SupplierId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(s => s.MenuSections)
             .WithOne(ms => ms.Supplier)
             .HasForeignKey(ms => ms.SupplierId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(s => s.Promotions)
             .WithOne(p => p.Supplier) 
             .HasForeignKey(p => p.SupplierId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(s => s.Invoices)
             .WithOne(i => i.Supplier)
             .HasForeignKey(i => i.SupplierId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasData
         (

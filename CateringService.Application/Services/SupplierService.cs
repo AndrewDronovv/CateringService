@@ -13,8 +13,8 @@ public class SupplierService : ISupplierService
         _supplierRepository = supplierRepository;
     }
 
-    public async Task<IEnumerable<Supplier>> GetFilteredSuppliersAsync(int workingHours)
+    public Task<IEnumerable<Supplier>> GetFilteredSuppliersAsync(int workingHours)
     {
-        return await _supplierRepository.GetActiveSuppliersWithWorkingHoursAsync(workingHours);
+        return _supplierRepository.GetActiveSuppliersWithWorkingHoursAsync(workingHours);
     }
 }

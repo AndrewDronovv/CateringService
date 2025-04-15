@@ -17,7 +17,7 @@ namespace CateringService.Controllers
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveSuppliers([FromQuery] int workingHours)
         {
-            var suppliers = _supplierService.GetFilteredSuppliersAsync(workingHours);
+            var suppliers = await _supplierService.GetFilteredSuppliersAsync(workingHours);
             return Ok(suppliers);
         }
     }
