@@ -1,15 +1,13 @@
 ﻿using CateringService.Domain.Entities;
-using CateringService.Domain.Repositories.Suppliers;
+using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
-public class SupplierRepository : Repository<Supplier>, ISupplierRepository
+public class SupplierRepository : BaseRepository<Supplier>, ISupplierRepository
 {
-    private readonly AppDbContext _context;
     public SupplierRepository(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public async Task<IEnumerable<Supplier>> GetActiveSuppliersWithWorkingHoursAsync(int workingHours)

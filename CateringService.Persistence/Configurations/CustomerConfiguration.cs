@@ -59,7 +59,6 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                 Name = "Corporate Client",
                 ContactInfo = "contact@corporate.com",
                 PaymentType = PaymentType.Cash
-
             }
         );
     }

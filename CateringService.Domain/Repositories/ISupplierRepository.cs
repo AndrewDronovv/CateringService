@@ -1,8 +1,8 @@
 ﻿using CateringService.Domain.Entities;
 
-namespace CateringService.Domain.Repositories.Suppliers;
+namespace CateringService.Domain.Repositories;
 
-public interface ISupplierRepository : IRepository<Supplier>
+public interface ISupplierRepository : IBaseRepository<Supplier>
 {
     Task<IEnumerable<Supplier>> GetActiveSuppliersWithWorkingHoursAsync(int workingHoures);
 }

@@ -1,6 +1,6 @@
 ﻿using CateringService.Application.Abstractions;
 using CateringService.Domain.Entities;
-using CateringService.Domain.Repositories.Suppliers;
+using CateringService.Domain.Repositories;
 
 namespace CateringService.Application.Services;
 

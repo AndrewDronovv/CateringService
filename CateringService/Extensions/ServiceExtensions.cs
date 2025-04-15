@@ -1,7 +1,7 @@
 ﻿using CateringService.Application.Abstractions;
 using CateringService.Application.Services;
+using CateringService.Domain.Abstractions;
 using CateringService.Domain.Repositories;
-using CateringService.Domain.Repositories.Suppliers;
 using CateringService.Persistence;
 using CateringService.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +29,13 @@ public static class ServiceExtensions
 
     public static void AddPersistence(this IServiceCollection services)
     {
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 
         services.AddScoped<ISupplierRepository, SupplierRepository>();
         services.AddScoped<ISupplierService, SupplierService>();
+
+        services.AddScoped<IDishRepository, DishRepository>();
+        services.AddScoped<IDishService, DishService>();
+        services.AddScoped<IDishAppService, DishAppService>();
     }
 }

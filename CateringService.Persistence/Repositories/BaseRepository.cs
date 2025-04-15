@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class BaseRepository<T> : IBaseRepository<T> where T : class
 {
-    private readonly AppDbContext _context;
-    public Repository(AppDbContext context)
+    protected readonly AppDbContext _context;
+    public BaseRepository(AppDbContext context)
     {
         _context = context;
     }
