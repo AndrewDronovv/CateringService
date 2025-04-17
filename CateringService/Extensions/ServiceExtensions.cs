@@ -1,9 +1,13 @@
 ﻿using CateringService.Application.Abstractions;
+using CateringService.Application.Mapping;
 using CateringService.Application.Services;
+using CateringService.Application.Validators.Dish;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Repositories;
 using CateringService.Persistence;
 using CateringService.Persistence.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Extensions;
@@ -37,5 +41,19 @@ public static class ServiceExtensions
         services.AddScoped<IDishRepository, DishRepository>();
         services.AddScoped<IDishService, DishService>();
         services.AddScoped<IDishAppService, DishAppService>();
+    }
+
+    public static void ApplicationServiceExtensions(this IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(MappingProfile));
+
+        services.AddValidatorsFromAssembly(typeof(DishCreateDtoValidator).Assembly);
+        services.AddFluentValidationAutoValidation();
+    }
+
+    public static void AddPresentationServices(this IServiceCollection services)
+    {
+        services.AddControllers();
+        services.AddSwaggerGen();
     }
 }

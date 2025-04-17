@@ -1,4 +1,4 @@
-﻿namespace CateringService.Application.DataTransferObjects;
+﻿namespace CateringService.Application.DataTransferObjects.Dish;
 
 public class DishUpdateDto
 {
