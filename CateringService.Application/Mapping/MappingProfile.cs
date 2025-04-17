@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CateringService.Application.DataTransferObjects;
+using CateringService.Application.DataTransferObjects.Dish;
 using CateringService.Domain.Entities;
 
 namespace CateringService.Application.Mapping;

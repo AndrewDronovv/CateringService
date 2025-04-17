@@ -1,19 +1,21 @@
-using CateringService.Application.Mapping;
 using CateringService.Extensions;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.ConfigureSqlContext(builder.Configuration);
-builder.Services.AddCors();
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-builder.Services.AddPersistence();
+builder.Host.UseSerilog((context, config) =>
+{
+    config.ReadFrom.Configuration(context.Configuration);   
+});
 
-builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSqlContext(builder.Configuration);
+builder.Services.ConfigureCors();
+builder.Services.ApplicationServiceExtensions();
+builder.Services.AddPersistence();
+builder.Services.AddPresentationServices();
 
 var app = builder.Build();
 
 app.ConfigurePipeline();
-
 app.Run();

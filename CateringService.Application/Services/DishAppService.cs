@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
-using CateringService.Application.DataTransferObjects;
+using CateringService.Application.DataTransferObjects.Dish;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
 
@@ -26,13 +26,14 @@ public class DishAppService : IDishAppService
         return _mapper.Map<IEnumerable<DishDto>>(dishes);
     }
 
-    public async Task CreateDishAsync(DishCreateDto entity)
+    public async Task<DishDto> CreateDishAsync(DishCreateDto dishCreatedDto)
     {
-        if (entity is null)
-            throw new ArgumentNullException(nameof(entity));
+        ArgumentNullException.ThrowIfNull(dishCreatedDto);
 
-        var dish = _mapper.Map<Dish>(entity);
+        var dish = _mapper.Map<Dish>(dishCreatedDto);
         await _dishService.AddAsync(dish);
+
+        return _mapper.Map<DishDto>(dish);
     }
 
     public async Task DeleteDishAsync(int id)

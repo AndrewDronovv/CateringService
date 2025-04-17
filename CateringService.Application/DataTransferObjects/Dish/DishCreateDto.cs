@@ -1,8 +1,7 @@
-﻿namespace CateringService.Application.DataTransferObjects;
+﻿namespace CateringService.Application.DataTransferObjects.Dish;
 
-public  class DishDto
+public sealed class DishCreateDto
 {
-    public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Descritpion { get; set; } = string.Empty;
     public decimal Price { get; set; }
