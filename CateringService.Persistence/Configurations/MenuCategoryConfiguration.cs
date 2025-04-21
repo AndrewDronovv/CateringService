@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CateringService.Persistence.Configurations;
 
-public class MenuCategoryConfiguration : IEntityTypeConfiguration<MenuCategory>
+public sealed class MenuCategoryConfiguration : IEntityTypeConfiguration<MenuCategory>
 {
     public void Configure(EntityTypeBuilder<MenuCategory> builder)
     {

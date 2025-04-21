@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CateringService.Persistence.Configurations;
 
-public class PromotionConfigurtaion : IEntityTypeConfiguration<Promotion>
+public sealed class PromotionConfigurtaion : IEntityTypeConfiguration<Promotion>
 {
     public void Configure(EntityTypeBuilder<Promotion> builder)
     {

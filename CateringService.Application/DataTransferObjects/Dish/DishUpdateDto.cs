@@ -2,7 +2,7 @@
 
 namespace CateringService.Application.DataTransferObjects.Dish;
 
-public class DishUpdateDto
+public sealed class DishUpdateDto
 {
     public string? Name { get; set; } = string.Empty;
     public string? Description { get; set; } = string.Empty;

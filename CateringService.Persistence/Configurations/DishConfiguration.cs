@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CateringService.Persistence.Configurations;
 
-public class DishConfiguration : IEntityTypeConfiguration<Dish>
+public sealed class DishConfiguration : IEntityTypeConfiguration<Dish>
 {
     public void Configure(EntityTypeBuilder<Dish> builder)
     {

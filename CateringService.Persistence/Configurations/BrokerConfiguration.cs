@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CateringService.Persistence.Configurations;
 
-public class BrokerConfiguration : IEntityTypeConfiguration<Broker>
+public sealed class BrokerConfiguration : IEntityTypeConfiguration<Broker>
 {
     public void Configure(EntityTypeBuilder<Broker> builder)
     {

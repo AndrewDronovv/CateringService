@@ -42,7 +42,7 @@ public static class ServiceExtensions
         services.AddScoped<IDishService, DishService>();
         services.AddScoped<IDishAppService, DishAppService>();
 
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
     }
 
     public static void ApplicationServiceExtensions(this IServiceCollection services)
