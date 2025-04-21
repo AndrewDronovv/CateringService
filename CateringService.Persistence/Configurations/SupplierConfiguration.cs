@@ -12,10 +12,14 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
 
         builder.HasKey(s => s.Id);
 
-        builder.Property(s => s.Id)
+        builder.Property(d => d.Id)
             .HasColumnName("SupplierId")
             .IsRequired()
-            .ValueGeneratedOnAdd();
+            .HasMaxLength(26)
+            .HasConversion(
+                id => id.ToString(),
+                id => Ulid.Parse(id)
+            );
 
         builder.Property(s => s.Name)
             .IsRequired()
@@ -45,7 +49,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             .IsRequired();
 
         builder.HasMany(s => s.Dishes)
-            .WithOne(d => d.Supplier) 
+            .WithOne(d => d.Supplier)
             .HasForeignKey(d => d.SupplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
@@ -55,7 +59,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(s => s.Promotions)
-            .WithOne(p => p.Supplier) 
+            .WithOne(p => p.Supplier)
             .HasForeignKey(p => p.SupplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
@@ -68,7 +72,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
         (
             new Supplier
             {
-                Id = 1,
+                Id = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4"),
                 Name = "Fresh Produce Supplier",
                 Description = "Поставщик свежих продуктов для ресторанов",
                 Logo = "https://example.com/logo1.png",
@@ -79,7 +83,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             },
             new Supplier
             {
-                Id = 2,
+                Id = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
                 Name = "Global Catering Supplies",
                 Description = "Глобальный поставщик кейтерингового оборудования",
                 Logo = "https://example.com/logo2.png",
@@ -90,7 +94,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             },
             new Supplier
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96"),
                 Name = "Organic Goods Co.",
                 Description = "Поставщик органических продуктов питания",
                 Logo = "https://example.com/logo3.png",

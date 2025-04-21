@@ -2,14 +2,14 @@
 
 namespace CateringService.Domain.Entities;
 
-public sealed class Invoice : Entity
+public sealed class Invoice : UlidEntity
 {
     public decimal Amount { get; set; }
     public DateTime DateIssued { get; set; }
     public string Status { get; set; } = string.Empty;
 
-    public int SupplierId { get; set; }
+    public Ulid SupplierId { get; set; }
     public Supplier Supplier { get; set; }
-    public int BrokerId { get; set; }
+    public Ulid BrokerId { get; set; }
     public Broker Broker { get; set; }
 }

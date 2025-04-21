@@ -22,7 +22,7 @@ public class BaseService<T, TPrimaryKey> : IBaseService<T, TPrimaryKey> where T 
         return id;
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(TPrimaryKey id)
     {
         var entity = await _repository.GetByIdAsync(id);
         if (entity != null)
@@ -37,7 +37,7 @@ public class BaseService<T, TPrimaryKey> : IBaseService<T, TPrimaryKey> where T 
         return await _repository.GetAllAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(TPrimaryKey id)
     {
         return await _repository.GetByIdAsync(id);
     }

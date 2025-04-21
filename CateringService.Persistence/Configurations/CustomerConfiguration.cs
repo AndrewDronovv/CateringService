@@ -14,10 +14,14 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
 
         builder.HasKey(c => c.Id);
 
-        builder.Property(c => c.Id)
-            .HasColumnName("CustomerId")
-            .IsRequired()
-            .ValueGeneratedOnAdd();
+        builder.Property(d => d.Id)
+           .HasColumnName("CustomerId")
+           .IsRequired()
+           .HasMaxLength(26)
+           .HasConversion(
+               id => id.ToString(),
+               id => Ulid.Parse(id)
+           );
 
         builder.Property(c => c.Name)
             .IsRequired()
@@ -40,14 +44,14 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
         (
             new Customer
             {
-                Id = 1,
+                Id = Ulid.Parse("01H5QJ37V03WH5TXE2N1AW3JF9"),
                 Name = "John Doe",
                 ContactInfo = "john.doe@example.com",
                 PaymentType = PaymentType.CreditCard
             },
             new Customer
             {
-                Id = 2,
+                Id = Ulid.Parse("01H5QJ38KGWM2N56TFH99WQZ03"),
                 Name = "Jane Smith",
                 ContactInfo = "jane.smith@domain.com",
                 PaymentType = PaymentType.PayPal
@@ -55,7 +59,7 @@ public class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             },
             new Customer
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5QJ391M8PVG6ZWPK4GTN0D8"),
                 Name = "Corporate Client",
                 ContactInfo = "contact@corporate.com",
                 PaymentType = PaymentType.Cash

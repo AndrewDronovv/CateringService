@@ -12,10 +12,14 @@ public class ReportConfiguration : IEntityTypeConfiguration<Report>
 
         builder.HasKey(r => r.Id);
 
-        builder.Property(r => r.Id)
+        builder.Property(d => d.Id)
             .HasColumnName("ReportId")
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(26)
+            .HasConversion(
+                id => id.ToString(),
+                id => Ulid.Parse(id)
+            );
 
         builder.Property(r => r.Type)
             .IsRequired()
@@ -36,27 +40,27 @@ public class ReportConfiguration : IEntityTypeConfiguration<Report>
         (
             new Report
             {
-                Id = 1,
+                Id = Ulid.Parse("01H5QJ6PJXP3KN3ZMCXGTFY8P9"),
                 Type = "Performance",
                 Details = "Detailed performance report for Q1.",
                 GeneratedDate = new DateTime(2025, 4, 1),
-                BrokerId = 1
+                BrokerId = Ulid.Parse("01H5QJ35QJ64MC1BTD5NRQ34R7")
             },
             new Report
             {
-                Id = 2,
+                Id = Ulid.Parse("01H5QJ6PMZ48BVTCJMK30RW9J6"),
                 Type = "Compliance",
                 Details = "Compliance report for catering regulations.",
                 GeneratedDate = new DateTime(2025, 4, 5),
-                BrokerId = 2
+                BrokerId = Ulid.Parse("01H5QJ36N1WHX5KDPQQGTVPVHC")
             },
             new Report
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5QJ6PRJAXFV54N82M3TQXJY"),
                 Type = "Financial",
                 Details = "Comprehensive financial analysis for last quarter.",
                 GeneratedDate = new DateTime(2025, 4, 10),
-                BrokerId = 3
+                BrokerId = Ulid.Parse("01H5QJ379P7NZR1X03XW0GM7MA")
             }
         );
     }

@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Entities;
 
-public sealed class DeliveryPerson : Entity
+public sealed class DeliveryPerson : UlidEntity
 {
     public string Name { get; set; } = string.Empty;
     public string ContactInfo { get; set; } = string.Empty;

@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Entities;
 
-public sealed class Supplier : Entity
+public sealed class Supplier : UlidEntity
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -13,8 +13,8 @@ public sealed class Supplier : Entity
     public bool IsActive { get; set; }
 
     public ICollection<Dish> Dishes { get; set; } = [];
-    public ICollection<MenuSection> MenuSections { get; set; } = [];
+    public ICollection<MenuCategory> MenuSections { get; set; } = [];
     public ICollection<Promotion> Promotions { get; set; } = [];
     public ICollection<Invoice> Invoices { get; set; } = [];
-    public ICollection<Order> Orders { get; set; }
+    public ICollection<Order> Orders { get; set; } = [];
 }

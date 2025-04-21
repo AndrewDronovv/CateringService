@@ -12,10 +12,14 @@ public class BrokerConfiguration : IEntityTypeConfiguration<Broker>
 
         builder.HasKey(b => b.Id);
 
-        builder.Property(b => b.Id)
+        builder.Property(d => d.Id)
             .HasColumnName("BrokerId")
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(26)
+            .HasConversion(
+                id => id.ToString(),
+                id => Ulid.Parse(id)
+            );
 
         builder.Property(b => b.Name)
             .IsRequired()
@@ -39,19 +43,19 @@ public class BrokerConfiguration : IEntityTypeConfiguration<Broker>
         (
             new Broker
             {
-                Id = 1,
+                Id = Ulid.Parse("01H5QJ35QJ64MC1BTD5NRQ34R7"),
                 Name = "Gourmet Catering",
                 ContactInfo = "info@gourmetcatering.com",
             },
             new Broker
             {
-                Id = 2,
+                Id = Ulid.Parse("01H5QJ36N1WHX5KDPQQGTVPVHC"),
                 Name = "Healthy Kitchen",
                 ContactInfo = "contact@healthykitchen.com",
             },
             new Broker
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5QJ379P7NZR1X03XW0GM7MA"),
                 Name = "Event Planners Co.",
                 ContactInfo = "support@eventplanners.com",
             }

@@ -2,17 +2,13 @@
 
 public abstract class Entity<TPrimaryKey>
 {
-    public TPrimaryKey Id { get; set; }
+    public required TPrimaryKey Id { get; set; }
 }
 
-public abstract class Entity : Entity<int>
+public abstract class UlidEntity : Entity<Ulid>
 {
-}
-
-public abstract class GuidEntity : Entity<Guid>
-{
-    protected GuidEntity()
+    protected UlidEntity()
     {
-        Id = Guid.NewGuid();
+        Id = Ulid.NewUlid();
     }
 }

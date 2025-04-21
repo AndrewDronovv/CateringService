@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Entities;
 
-public sealed class Promotion : Entity
+public sealed class Promotion : UlidEntity
 {
     public string Type { get; set; } = string.Empty;
     public decimal DiscountValue { get; set; }
@@ -10,6 +10,6 @@ public sealed class Promotion : Entity
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 
-    public int SupplierId { get; set; }
+    public Ulid SupplierId { get; set; }
     public Supplier Supplier { get; set; }
 }

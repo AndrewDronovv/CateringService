@@ -30,24 +30,36 @@ public class DishAppService : IDishAppService
     {
         ArgumentNullException.ThrowIfNull(dishCreatedDto);
 
+        var supplierExists = await _dishService.CheckSupplierExistsAsync(dishCreatedDto.SupplierId);
+        if (!supplierExists)
+        {
+            throw new Exception($"Поставщик с Id {dishCreatedDto.SupplierId} не найден.");
+        }
+
+        var menuCategoryExists = await _dishService.CheckMenuCategoryExistsAsync(dishCreatedDto.MenuCategoryId);
+        if (!menuCategoryExists)
+        {
+            throw new Exception($"Категория с меню Id {dishCreatedDto.MenuCategoryId}");
+        }
+
         var dish = _mapper.Map<Dish>(dishCreatedDto);
         await _dishService.AddAsync(dish);
 
         return _mapper.Map<DishDto>(dish);
     }
 
-    public async Task DeleteDishAsync(int id)
+    public async Task DeleteDishAsync(Ulid id)
     {
         await _dishService.DeleteAsync(id);
     }
-    public async Task<DishDto> GetDishByIdAsync(int id)
+    public async Task<DishDto> GetDishByIdAsync(Ulid id)
     {
         var dish = await _dishService.GetByIdAsync(id);
 
         return _mapper.Map<DishDto>(dish);
     }
 
-    public async Task UpdateDishAsync(int id, DishUpdateDto entity)
+    public async Task UpdateDishAsync(Ulid id, DishUpdateDto entity)
     {
         var dish = await _dishService.GetByIdAsync(id);
         if (dish is null)

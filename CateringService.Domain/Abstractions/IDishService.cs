@@ -2,7 +2,9 @@
 
 namespace CateringService.Domain.Abstractions;
 
-public interface IDishService : IBaseService<Dish, int>
+public interface IDishService : IBaseService<Dish, Ulid>
 {
     Task<IEnumerable<Dish>> GetAvailableDishesAsync();
+    Task<bool> CheckSupplierExistsAsync(Ulid supplierId);
+    Task<bool> CheckMenuCategoryExistsAsync(Ulid menuCategoryId);
 }

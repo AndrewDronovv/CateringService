@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250415132741_ChangedPropertyPaymentType")]
-    partial class ChangedPropertyPaymentType
+    [Migration("20250421131821_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -210,17 +210,15 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Dish", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("DishId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AvailabilityStatus")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Descritpion")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
@@ -263,9 +261,9 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01GRQX9AYRHCA5Y5X3GPKPZ92P",
                             AvailabilityStatus = true,
-                            Descritpion = "Juicy grilled chicken with spices",
+                            Description = "Juicy grilled chicken with spices",
                             Image = "grilled_chicken.jpg",
                             Ingredients = "Chicken, spices, olive oil",
                             MenuSectionId = 1,
@@ -276,9 +274,9 @@ namespace CateringService.Persistence.Migrations
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01GRQX9AYRHCA5Y5X3GPKPZ93Q",
                             AvailabilityStatus = true,
-                            Descritpion = "Fresh seasonal vegetables with olive oil",
+                            Description = "Fresh seasonal vegetables with olive oil",
                             Image = "veggie_salad.jpg",
                             Ingredients = "Lettuce, tomatoes, cucumber, olive oil",
                             MenuSectionId = 2,
@@ -289,9 +287,9 @@ namespace CateringService.Persistence.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5PY6RF4WKFCR9VCMY2QNFGP",
                             AvailabilityStatus = false,
-                            Descritpion = "Rich and creamy chocolate cake",
+                            Description = "Rich and creamy chocolate cake",
                             Image = "chocolate_cake.jpg",
                             Ingredients = "Chocolate, flour, sugar, eggs, butter",
                             MenuSectionId = 3,
@@ -555,9 +553,6 @@ namespace CateringService.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DishId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("OrderId")
                         .HasColumnType("integer");
 
@@ -569,8 +564,6 @@ namespace CateringService.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DishId");
-
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems", (string)null);
@@ -579,7 +572,6 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            DishId = 1,
                             OrderId = 1,
                             Price = 25.00m,
                             Quantity = 2
@@ -587,7 +579,6 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = 2,
-                            DishId = 2,
                             OrderId = 2,
                             Price = 15.50m,
                             Quantity = 1
@@ -595,7 +586,6 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = 3,
-                            DishId = 3,
                             OrderId = 3,
                             Price = 45.75m,
                             Quantity = 3
@@ -914,19 +904,11 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.OrderItem", b =>
                 {
-                    b.HasOne("CateringService.Domain.Entities.Dish", "Dish")
-                        .WithMany()
-                        .HasForeignKey("DishId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
                     b.HasOne("CateringService.Domain.Entities.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
-
-                    b.Navigation("Dish");
 
                     b.Navigation("Order");
                 });

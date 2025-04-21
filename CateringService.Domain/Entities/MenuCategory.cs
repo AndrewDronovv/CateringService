@@ -2,11 +2,11 @@
 
 namespace CateringService.Domain.Entities;
 
-public sealed class MenuSection : Entity
+public sealed class MenuCategory : UlidEntity
 {
     public string Name { get; set; } = string.Empty;
     
-    public int SupplierId { get; set; }
+    public Ulid SupplierId { get; set; }
     public Supplier Supplier { get; set; }
     public ICollection<Dish> Dishes { get; set; }
 }

@@ -14,14 +14,18 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
 
         builder.Property(d => d.Id)
             .HasColumnName("DishId")
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(26)
+            .HasConversion(
+                id => id.ToString(),
+                id => Ulid.Parse(id)
+            );
 
         builder.Property(d => d.Name)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(d => d.Descritpion)
+        builder.Property(d => d.Description)
             .HasMaxLength(500);
 
         builder.Property(d => d.Price)
@@ -29,16 +33,26 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
             .IsRequired();
 
         builder.Property(d => d.Ingredients)
-            .IsRequired()
-            .HasMaxLength(300);
+            .HasMaxLength(500);
 
         builder.Property(d => d.Weight)
             .IsRequired();
 
-        builder.Property(d => d.Image)
+        builder.Property(d => d.ImageUrl)
             .HasMaxLength(200);
 
-        builder.Property(d => d.AvailabilityStatus)
+        builder.Property(d => d.IsAvailable)
+            .IsRequired();
+
+        builder.Property(d => d.Allergens)
+            .HasMaxLength(400);
+
+        builder.Property(d => d.PortionSize)
+            .HasMaxLength(150);
+
+        builder.Property(d => d.CreatedAt)
+            .HasDefaultValueSql("GETUTCDATE()")
+            .ValueGeneratedOnAdd()
             .IsRequired();
 
         builder.HasOne(d => d.Supplier)
@@ -46,51 +60,60 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
             .HasForeignKey(d => d.SupplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(d => d.MenuSection)
+        builder.HasOne(d => d.MenuCategory)
             .WithMany(ms => ms.Dishes)
-            .HasForeignKey(d => d.MenuSectionId)
+            .HasForeignKey(d => d.MenuCategoryId)
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasData
         (
             new Dish
             {
-                Id = 1,
+                Id = Ulid.Parse("01GRQX9AYRHCA5Y5X3GPKPZ92P"),
                 Name = "Grilled Chicken",
-                Descritpion = "Juicy grilled chicken with spices",
+                Description = "Juicy grilled chicken with spices",
                 Price = 12.99m,
                 Ingredients = "Chicken, spices, olive oil",
                 Weight = 250,
-                Image = "grilled_chicken.jpg",
-                AvailabilityStatus = true,
-                SupplierId = 1,
-                MenuSectionId = 1
+                ImageUrl = "grilled_chicken.jpg",
+                IsAvailable = true,
+                Allergens = "None",
+                PortionSize = "Large",
+                CreatedAt = DateTime.UtcNow,
+                SupplierId = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4"),
+                MenuCategoryId = Ulid.Parse("01H5QJ3DHBM8J6AW04FKPJP5VV")
             },
             new Dish
             {
-                Id = 2,
+                Id = Ulid.Parse("01GRQX9AYRHCA5Y5X3GPKPZ93Q"),
                 Name = "Vegetable Salad",
-                Descritpion = "Fresh seasonal vegetables with olive oil",
+                Description = "Fresh seasonal vegetables with olive oil",
                 Price = 8.50m,
                 Ingredients = "Lettuce, tomatoes, cucumber, olive oil",
                 Weight = 150,
-                Image = "veggie_salad.jpg",
-                AvailabilityStatus = true,
-                SupplierId = 2,
-                MenuSectionId = 2
+                ImageUrl = "veggie_salad.jpg",
+                IsAvailable = true,
+                Allergens = "None",
+                PortionSize = "Medium",
+                CreatedAt = DateTime.UtcNow,
+                SupplierId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
+                MenuCategoryId = Ulid.Parse("01H5QJ3DJ22VXVG28Q0RYMNQEY")
             },
             new Dish
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP"),
                 Name = "Chocolate Cake",
-                Descritpion = "Rich and creamy chocolate cake",
+                Description = "Rich and creamy chocolate cake",
                 Price = 5.99m,
                 Ingredients = "Chocolate, flour, sugar, eggs, butter",
                 Weight = 300,
-                Image = "chocolate_cake.jpg",
-                AvailabilityStatus = false,
-                SupplierId = 3,
-                MenuSectionId = 3
+                ImageUrl = "chocolate_cake.jpg",
+                IsAvailable = false,
+                Allergens = "Eggs, Milk",
+                PortionSize = "Small",
+                CreatedAt = DateTime.UtcNow,
+                SupplierId = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96"),
+                MenuCategoryId = Ulid.Parse("01H5QJ3DR6R35WTKTPGFPJ89JC")
             }
         );
     }

@@ -12,10 +12,14 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
 
         builder.HasKey(i => i.Id);
 
-        builder.Property(i => i.Id)
+        builder.Property(d => d.Id)
             .HasColumnName("InvoiceId")
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(26)
+            .HasConversion(
+                id => id.ToString(),
+                id => Ulid.Parse(id)
+            );
 
         builder.Property(i => i.Amount)
             .HasColumnType("decimal(18,2)")
@@ -42,30 +46,30 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         (
             new Invoice
             {
-                Id = 1,
+                Id = Ulid.Parse("01H5QJ3CZ4FBZAMT62XXYY24FZ"),
                 Amount = 500.00m,
                 DateIssued = new DateTime(2025, 4, 10),
                 Status = "Paid",
-                SupplierId = 1,
-                BrokerId = 1
+                SupplierId = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4"),
+                BrokerId = Ulid.Parse("01H5QJ35QJ64MC1BTD5NRQ34R7")
             },
             new Invoice
             {
-                Id = 2,
+                Id = Ulid.Parse("01H5QJ3D5T7JV9B1VQF6BRFV4P"),
                 Amount = 1500.50m,
                 DateIssued = new DateTime(2025, 4, 12),
                 Status = "Unpaid",
-                SupplierId = 2,
-                BrokerId = 2
+                SupplierId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
+                BrokerId = Ulid.Parse("01H5QJ36N1WHX5KDPQQGTVPVHC")
             },
             new Invoice
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5QJ3DF6RQG96Q3VK7JBY58N"),
                 Amount = 800.75m,
                 DateIssued = new DateTime(2025, 4, 14),
                 Status = "Pending",
-                SupplierId = 3,
-                BrokerId = 3
+                SupplierId = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96"),
+                BrokerId = Ulid.Parse("01H5QJ379P7NZR1X03XW0GM7MA")
             }
         );
     }

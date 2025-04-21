@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Repositories;
 
-public interface ISupplierRepository : IBaseRepository<Supplier, int>
+public interface ISupplierRepository : IBaseRepository<Supplier, Ulid>
 {
-    Task<IEnumerable<Supplier>> GetActiveSuppliersWithWorkingHoursAsync(int workingHoures);
+    Task<IEnumerable<Supplier>> GetActiveSuppliersWithWorkingHoursAsync(int workingHours);
 }

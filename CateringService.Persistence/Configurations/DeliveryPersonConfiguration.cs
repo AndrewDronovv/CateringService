@@ -12,10 +12,14 @@ public class DeliveryPersonConfiguration : IEntityTypeConfiguration<DeliveryPers
 
         builder.HasKey(dp => dp.Id);
 
-        builder.Property(dp => dp.Id)
-            .HasColumnName("DeliveryPersonId")
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+        builder.Property(d => d.Id)
+           .HasColumnName("DeliveryPersonId")
+           .IsRequired()
+           .HasMaxLength(26)
+           .HasConversion(
+               id => id.ToString(),
+               id => Ulid.Parse(id)
+           );
 
         builder.Property(dp => dp.Name)
             .IsRequired()
@@ -34,19 +38,19 @@ public class DeliveryPersonConfiguration : IEntityTypeConfiguration<DeliveryPers
         (
             new DeliveryPerson
             {
-                Id = 1,
+                Id = Ulid.Parse("01H5QJ3AFV0T3ZQBGP19HK2K5V"),
                 Name = "Alex Johnson",
                 ContactInfo = "alex.johnson@delivery.com"
             },
             new DeliveryPerson
             {
-                Id = 2,
+                Id = Ulid.Parse("01H5QJ3BBCEKJ7MYNVK302XRYF"),
                 Name = "Maria Gonzalez",
                 ContactInfo = "maria.gonzalez@delivery.com"
             },
             new DeliveryPerson
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5QJ3BHR2FAYVZWNAD0XJJYE"),
                 Name = "William Smith",
                 ContactInfo = "william.smith@delivery.com"
             }

@@ -13,9 +13,13 @@ public class DeliveryConfiguration : IEntityTypeConfiguration<Delivery>
         builder.HasKey(d => d.Id);
 
         builder.Property(d => d.Id)
-            .HasColumnName("DeliveryId")
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+           .HasColumnName("DeliveryId")
+           .IsRequired()
+           .HasMaxLength(26)
+           .HasConversion(
+               id => id.ToString(),
+               id => Ulid.Parse(id)
+           );
 
         builder.Property(d => d.Status)
             .IsRequired()
@@ -35,21 +39,21 @@ public class DeliveryConfiguration : IEntityTypeConfiguration<Delivery>
         (
             new Delivery
             {
-                Id = 1,
+                Id = Ulid.Parse("01H5QJ399WTKN11Z9FMB02WT62"),
                 Status = "In Progress",
-                DeliveryPersonId = 1
+                DeliveryPersonId = Ulid.Parse("01H5QJ3AFV0T3ZQBGP19HK2K5V"),
             },
             new Delivery
             {
-                Id = 2,
+                Id = Ulid.Parse("01H5QJ39VRZ2AN3YC94PM5FMPA"),
                 Status = "Completed",
-                DeliveryPersonId = 2
+                DeliveryPersonId = Ulid.Parse("01H5QJ3BBCEKJ7MYNVK302XRYF")
             },
             new Delivery
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5QJ3A8D7V2GPF2K4K3WH5C4"),
                 Status = "Delayed",
-                DeliveryPersonId = 3
+                DeliveryPersonId = Ulid.Parse("01H5QJ3BHR2FAYVZWNAD0XJJYE")
             }
         );
     }
