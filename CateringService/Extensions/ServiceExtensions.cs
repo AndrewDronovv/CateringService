@@ -33,7 +33,7 @@ public static class ServiceExtensions
 
     public static void AddPersistence(this IServiceCollection services)
     {
-        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+        services.AddScoped(typeof(IBaseRepository<,>), typeof(BaseRepository<,>));
 
         services.AddScoped<ISupplierRepository, SupplierRepository>();
         services.AddScoped<ISupplierService, SupplierService>();
@@ -41,6 +41,8 @@ public static class ServiceExtensions
         services.AddScoped<IDishRepository, DishRepository>();
         services.AddScoped<IDishService, DishService>();
         services.AddScoped<IDishAppService, DishAppService>();
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     public static void ApplicationServiceExtensions(this IServiceCollection services)

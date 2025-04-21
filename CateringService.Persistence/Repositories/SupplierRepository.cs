@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
-public class SupplierRepository : BaseRepository<Supplier>, ISupplierRepository
+public class SupplierRepository : BaseRepository<Supplier, int>, ISupplierRepository
 {
     public SupplierRepository(AppDbContext context) : base(context)
     {

@@ -1,10 +1,12 @@
-﻿namespace CateringService.Domain.Repositories;
+﻿using CateringService.Domain.Common;
 
-public interface IBaseRepository<T> where T : class
+namespace CateringService.Domain.Repositories;
+
+public interface IBaseRepository<T, TPrimaryKey> where T : Entity<TPrimaryKey>
 {
-    Task<T?> GetByIdAsync(int id);
-    Task<IEnumerable<T>> GetAllAsync();
-    Task AddAsync(T entity);
-    Task UpdateAsync(T entity);
-    Task DeleteAsync(T entity);
+    Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+    Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default);
+    TPrimaryKey Add(T entity);
+    TPrimaryKey Update(T entity);
+    void Delete(T entity);
 }

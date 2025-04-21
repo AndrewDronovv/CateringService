@@ -1,27 +1,35 @@
 ﻿using CateringService.Domain.Abstractions;
+using CateringService.Domain.Common;
 using CateringService.Domain.Repositories;
 
 namespace CateringService.Application.Services;
 
-public class BaseService<T> : IBaseService<T> where T : class
+public class BaseService<T, TPrimaryKey> : IBaseService<T, TPrimaryKey> where T : Entity<TPrimaryKey>
 {
-    private readonly IBaseRepository<T> _repository;
+    private readonly IBaseRepository<T, TPrimaryKey> _repository;
+    protected readonly IUnitOfWork _unitOfWork;
 
-    public BaseService(IBaseRepository<T> repository)
+    public BaseService(IBaseRepository<T, TPrimaryKey> repository, IUnitOfWork unitOfWork)
     {
         _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task AddAsync(T entity)
+    public async Task<TPrimaryKey> AddAsync(T entity)
     {
-        await _repository.AddAsync(entity);
+        var id = _repository.Add(entity);
+        await _unitOfWork.SaveChangesAsync();
+        return id;
     }
 
     public async Task DeleteAsync(int id)
     {
         var entity = await _repository.GetByIdAsync(id);
         if (entity != null)
-            await _repository.DeleteAsync(entity);
+        {
+            _repository.Delete(entity);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
@@ -34,8 +42,10 @@ public class BaseService<T> : IBaseService<T> where T : class
         return await _repository.GetByIdAsync(id);
     }
 
-    public async Task UpdateAsync(T entity)
+    public async Task<TPrimaryKey> UpdateAsync(T entity)
     {
-        await _repository.UpdateAsync(entity);
+        var id = _repository.Update(entity);
+        await _unitOfWork.SaveChangesAsync();
+        return id;
     }
 }

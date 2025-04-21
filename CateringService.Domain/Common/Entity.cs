@@ -8,3 +8,11 @@ public abstract class Entity<TPrimaryKey>
 public abstract class Entity : Entity<int>
 {
 }
+
+public abstract class GuidEntity : Entity<Guid>
+{
+    protected GuidEntity()
+    {
+        Id = Guid.NewGuid();
+    }
+}

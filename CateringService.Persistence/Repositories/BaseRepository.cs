@@ -1,9 +1,10 @@
-﻿using CateringService.Domain.Repositories;
+﻿using CateringService.Domain.Common;
+using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
-public class BaseRepository<T> : IBaseRepository<T> where T : class
+public class BaseRepository<T, TPrimaryKey> : IBaseRepository<T, TPrimaryKey> where T : Entity<TPrimaryKey>
 {
     protected readonly AppDbContext _context;
     public BaseRepository(AppDbContext context)
@@ -11,31 +12,30 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         _context = context;
     }
 
-    public async Task AddAsync(T entity)
+    public TPrimaryKey Add(T entity)
     {
         _context.Set<T>().Add(entity);
-        await _context.SaveChangesAsync();
+        return entity.Id;
     }
 
-    public async Task DeleteAsync(T entity)
+    public void Delete(T entity)
     {
         _context.Set<T>().Remove(entity);
-        await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync()
+    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _context.Set<T>().ToListAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public async Task UpdateAsync(T entity)
+    public TPrimaryKey Update(T entity)
     {
         _context.Set<T>().Update(entity);
-        await _context.SaveChangesAsync();
+        return entity.Id;
     }
 }
