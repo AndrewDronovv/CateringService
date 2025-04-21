@@ -2,7 +2,7 @@
 
 namespace CateringService.Persistence.Repositories;
 
-public sealed class UnitOfWork : IUnitOfWork
+public sealed class UnitOfWork : IUnitOfWorkRepository
 {
     private readonly AppDbContext _context;
 

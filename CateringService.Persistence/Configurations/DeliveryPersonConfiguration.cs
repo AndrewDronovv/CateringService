@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CateringService.Persistence.Configurations;
 
-public class DeliveryPersonConfiguration : IEntityTypeConfiguration<DeliveryPerson>
+public sealedclass DeliveryPersonConfiguration : IEntityTypeConfiguration<DeliveryPerson>
 {
     public void Configure(EntityTypeBuilder<DeliveryPerson> builder)
     {

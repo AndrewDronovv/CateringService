@@ -4,7 +4,7 @@ using CateringService.Domain.Entities;
 
 namespace CateringService.Application.Mapping;
 
-public class MappingProfile : Profile
+public sealed class MappingProfile : Profile
 {
     public MappingProfile()
     {

@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.Dish;
 
-public class DishCreateDtoValidator : AbstractValidator<DishCreateDto>
+public sealed class DishCreateDtoValidator : AbstractValidator<DishCreateDto>
 {
     public DishCreateDtoValidator()
     {

@@ -1,6 +1,6 @@
 ﻿namespace CateringService.Application.DataTransferObjects.Dish;
 
-public class DishDto
+public sealed class DishDto
 {
     public Ulid Id { get; set; }
     public string Name { get; set; } = string.Empty;

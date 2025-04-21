@@ -1,6 +1,6 @@
 ﻿namespace CateringService.Domain.Repositories;
 
-public interface IUnitOfWork
+public interface IUnitOfWorkRepository
 {
     int SaveChanges();
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

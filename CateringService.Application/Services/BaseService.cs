@@ -7,9 +7,9 @@ namespace CateringService.Application.Services;
 public class BaseService<T, TPrimaryKey> : IBaseService<T, TPrimaryKey> where T : Entity<TPrimaryKey>
 {
     private readonly IBaseRepository<T, TPrimaryKey> _repository;
-    protected readonly IUnitOfWork _unitOfWork;
+    protected readonly IUnitOfWorkRepository _unitOfWork;
 
-    public BaseService(IBaseRepository<T, TPrimaryKey> repository, IUnitOfWork unitOfWork)
+    public BaseService(IBaseRepository<T, TPrimaryKey> repository, IUnitOfWorkRepository unitOfWork)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
