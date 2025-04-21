@@ -58,4 +58,18 @@ public static class ServiceExtensions
         services.AddControllers();
         services.AddSwaggerGen();
     }
+
+    public static void ApplicationServiceExtensions(this IServiceCollection services)
+    {
+        services.AddAutoMapper(typeof(MappingProfile));
+
+        services.AddValidatorsFromAssembly(typeof(DishCreateDtoValidator).Assembly);
+        services.AddFluentValidationAutoValidation();
+    }
+
+    public static void AddPresentationServices(this IServiceCollection services)
+    {
+        services.AddControllers();
+        services.AddSwaggerGen();
+    }
 }
