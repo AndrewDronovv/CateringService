@@ -53,7 +53,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             .HasForeignKey(d => d.SupplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasMany(s => s.MenuSections)
+        builder.HasMany(s => s.MenuCategories)
             .WithOne(ms => ms.Supplier)
             .HasForeignKey(ms => ms.SupplierId)
             .OnDelete(DeleteBehavior.SetNull);

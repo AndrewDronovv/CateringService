@@ -13,7 +13,7 @@ public sealed class Supplier : UlidEntity
     public bool IsActive { get; set; }
 
     public ICollection<Dish> Dishes { get; set; } = [];
-    public ICollection<MenuCategory> MenuSections { get; set; } = [];
+    public ICollection<MenuCategory> MenuCategories { get; set; } = [];
     public ICollection<Promotion> Promotions { get; set; } = [];
     public ICollection<Invoice> Invoices { get; set; } = [];
     public ICollection<Order> Orders { get; set; } = [];

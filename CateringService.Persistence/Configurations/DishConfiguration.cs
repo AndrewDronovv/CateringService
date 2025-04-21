@@ -45,7 +45,7 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
             .IsRequired();
 
         builder.Property(d => d.Allergens)
-            .HasMaxLength(400);
+            .HasMaxLength(500);
 
         builder.Property(d => d.PortionSize)
             .HasMaxLength(150);
@@ -64,6 +64,8 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
             .WithMany(ms => ms.Dishes)
             .HasForeignKey(d => d.MenuCategoryId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasIndex(d => d.Id);
 
         builder.HasData
         (

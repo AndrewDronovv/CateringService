@@ -89,9 +89,9 @@ public class DishesController : ControllerBase
                 _logger.LogWarning("CreateDishDto равен null");
                 return BadRequest(new { Error = "CreateDishDto равен null" });
             }
-            
-            var createdDish = await _dishAppService.CreateDishAsync(input);
 
+            var createdDish = await _dishAppService.CreateDishAsync(input);
+            _logger.LogInformation($"Блюдо {createdDish.Name} с Id {createdDish.Id} создано в {createdDish.CreatedAt}");
             return CreatedAtRoute("GetDishById",
                 new
                 {
