@@ -51,7 +51,7 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
             .HasMaxLength(150);
 
         builder.Property(d => d.CreatedAt)
-            .HasDefaultValueSql("GETUTCDATE()")
+            .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .ValueGeneratedOnAdd()
             .IsRequired();
 
@@ -79,7 +79,7 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
                 IsAvailable = true,
                 Allergens = "None",
                 PortionSize = "Large",
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = new DateTime(2025, 04, 20, 10, 0, 0),
                 SupplierId = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4"),
                 MenuCategoryId = Ulid.Parse("01H5QJ3DHBM8J6AW04FKPJP5VV")
             },
@@ -95,7 +95,7 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
                 IsAvailable = true,
                 Allergens = "None",
                 PortionSize = "Medium",
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = new DateTime(2025, 04, 20, 12, 0, 0),
                 SupplierId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
                 MenuCategoryId = Ulid.Parse("01H5QJ3DJ22VXVG28Q0RYMNQEY")
             },
@@ -111,7 +111,7 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
                 IsAvailable = false,
                 Allergens = "Eggs, Milk",
                 PortionSize = "Small",
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = new DateTime(2025, 04, 20, 14, 0, 0),
                 SupplierId = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96"),
                 MenuCategoryId = Ulid.Parse("01H5QJ3DR6R35WTKTPGFPJ89JC")
             }

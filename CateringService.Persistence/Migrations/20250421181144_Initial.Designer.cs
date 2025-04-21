@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250421131821_Initial")]
+    [Migration("20250421181144_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -27,12 +27,10 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Broker", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("BrokerId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ContactInfo")
                         .IsRequired()
@@ -51,19 +49,19 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ35QJ64MC1BTD5NRQ34R7",
                             ContactInfo = "info@gourmetcatering.com",
                             Name = "Gourmet Catering"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ36N1WHX5KDPQQGTVPVHC",
                             ContactInfo = "contact@healthykitchen.com",
                             Name = "Healthy Kitchen"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ379P7NZR1X03XW0GM7MA",
                             ContactInfo = "support@eventplanners.com",
                             Name = "Event Planners Co."
                         });
@@ -71,12 +69,10 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Customer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("CustomerId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ContactInfo")
                         .IsRequired()
@@ -99,21 +95,21 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ37V03WH5TXE2N1AW3JF9",
                             ContactInfo = "john.doe@example.com",
                             Name = "John Doe",
                             PaymentType = "CreditCard"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ38KGWM2N56TFH99WQZ03",
                             ContactInfo = "jane.smith@domain.com",
                             Name = "Jane Smith",
                             PaymentType = "PayPal"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ391M8PVG6ZWPK4GTN0D8",
                             ContactInfo = "contact@corporate.com",
                             Name = "Corporate Client",
                             PaymentType = "Cash"
@@ -122,15 +118,14 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Delivery", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("DeliveryId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("DeliveryPersonId")
-                        .HasColumnType("integer");
+                    b.Property<string>("DeliveryPersonId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -146,32 +141,30 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            DeliveryPersonId = 1,
+                            Id = "01H5QJ399WTKN11Z9FMB02WT62",
+                            DeliveryPersonId = "01H5QJ3AFV0T3ZQBGP19HK2K5V",
                             Status = "In Progress"
                         },
                         new
                         {
-                            Id = 2,
-                            DeliveryPersonId = 2,
+                            Id = "01H5QJ39VRZ2AN3YC94PM5FMPA",
+                            DeliveryPersonId = "01H5QJ3BBCEKJ7MYNVK302XRYF",
                             Status = "Completed"
                         },
                         new
                         {
-                            Id = 3,
-                            DeliveryPersonId = 3,
+                            Id = "01H5QJ3A8D7V2GPF2K4K3WH5C4",
+                            DeliveryPersonId = "01H5QJ3BHR2FAYVZWNAD0XJJYE",
                             Status = "Delayed"
                         });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.DeliveryPerson", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("DeliveryPersonId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ContactInfo")
                         .IsRequired()
@@ -190,19 +183,19 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ3AFV0T3ZQBGP19HK2K5V",
                             ContactInfo = "alex.johnson@delivery.com",
                             Name = "Alex Johnson"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ3BBCEKJ7MYNVK302XRYF",
                             ContactInfo = "maria.gonzalez@delivery.com",
                             Name = "Maria Gonzalez"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ3BHR2FAYVZWNAD0XJJYE",
                             ContactInfo = "william.smith@delivery.com",
                             Name = "William Smith"
                         });
@@ -215,44 +208,56 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(26)")
                         .HasColumnName("DishId");
 
-                    b.Property<bool>("AvailabilityStatus")
-                        .HasColumnType("boolean");
+                    b.Property<string>("Allergens")
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<string>("Image")
-                        .IsRequired()
+                    b.Property<string>("ImageUrl")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
                     b.Property<string>("Ingredients")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
-                    b.Property<int>("MenuSectionId")
-                        .HasColumnType("integer");
+                    b.Property<bool>("IsAvailable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("MenuCategoryId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("PortionSize")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("integer");
+                    b.Property<string>("SupplierId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<double>("Weight")
                         .HasColumnType("double precision");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MenuSectionId");
+                    b.HasIndex("MenuCategoryId");
 
                     b.HasIndex("SupplierId");
 
@@ -262,58 +267,66 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = "01GRQX9AYRHCA5Y5X3GPKPZ92P",
-                            AvailabilityStatus = true,
+                            Allergens = "None",
+                            CreatedAt = new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Juicy grilled chicken with spices",
-                            Image = "grilled_chicken.jpg",
+                            ImageUrl = "grilled_chicken.jpg",
                             Ingredients = "Chicken, spices, olive oil",
-                            MenuSectionId = 1,
+                            IsAvailable = true,
+                            MenuCategoryId = "01H5QJ3DHBM8J6AW04FKPJP5VV",
                             Name = "Grilled Chicken",
+                            PortionSize = "Large",
                             Price = 12.99m,
-                            SupplierId = 1,
+                            SupplierId = "01H5QJ6PTMVRFZT58GQX902JC4",
                             Weight = 250.0
                         },
                         new
                         {
                             Id = "01GRQX9AYRHCA5Y5X3GPKPZ93Q",
-                            AvailabilityStatus = true,
+                            Allergens = "None",
+                            CreatedAt = new DateTime(2025, 4, 20, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Fresh seasonal vegetables with olive oil",
-                            Image = "veggie_salad.jpg",
+                            ImageUrl = "veggie_salad.jpg",
                             Ingredients = "Lettuce, tomatoes, cucumber, olive oil",
-                            MenuSectionId = 2,
+                            IsAvailable = true,
+                            MenuCategoryId = "01H5QJ3DJ22VXVG28Q0RYMNQEY",
                             Name = "Vegetable Salad",
+                            PortionSize = "Medium",
                             Price = 8.50m,
-                            SupplierId = 2,
+                            SupplierId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
                             Weight = 150.0
                         },
                         new
                         {
                             Id = "01H5PY6RF4WKFCR9VCMY2QNFGP",
-                            AvailabilityStatus = false,
+                            Allergens = "Eggs, Milk",
+                            CreatedAt = new DateTime(2025, 4, 20, 14, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Rich and creamy chocolate cake",
-                            Image = "chocolate_cake.jpg",
+                            ImageUrl = "chocolate_cake.jpg",
                             Ingredients = "Chocolate, flour, sugar, eggs, butter",
-                            MenuSectionId = 3,
+                            IsAvailable = false,
+                            MenuCategoryId = "01H5QJ3DR6R35WTKTPGFPJ89JC",
                             Name = "Chocolate Cake",
+                            PortionSize = "Small",
                             Price = 5.99m,
-                            SupplierId = 3,
+                            SupplierId = "01H5QJ6PX4FTQY8KZVW9JMBT96",
                             Weight = 300.0
                         });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Incident", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("IncidentId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("DeliveryId")
-                        .HasColumnType("integer");
+                    b.Property<string>("DeliveryId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -334,25 +347,25 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ3BTSX3JJ3F6DTQVFX86P",
                             Date = new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DeliveryId = 1,
+                            DeliveryId = "01H5QJ399WTKN11Z9FMB02WT62",
                             Description = "Late delivery due to traffic jam",
                             Resolution = "Customer notified and accepted delay"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ3CB21J8GEPKGXZ80WRQ9",
                             Date = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DeliveryId = 2,
+                            DeliveryId = "01H5QJ39VRZ2AN3YC94PM5FMPA",
                             Description = "Damaged package during delivery",
                             Resolution = "Replacement item sent to customer"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ3CC0PF6XRTA21DW3QPEK",
                             Date = new DateTime(2025, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DeliveryId = 3,
+                            DeliveryId = "01H5QJ3A8D7V2GPF2K4K3WH5C4",
                             Description = "Wrong address provided by customer",
                             Resolution = "Correct address obtained and delivery rescheduled"
                         });
@@ -360,18 +373,17 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Invoice", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("InvoiceId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("BrokerId")
-                        .HasColumnType("integer");
+                    b.Property<string>("BrokerId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<DateTime>("DateIssued")
                         .HasColumnType("timestamp without time zone");
@@ -381,8 +393,9 @@ namespace CateringService.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("integer");
+                    b.Property<string>("SupplierId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.HasKey("Id");
 
@@ -395,49 +408,48 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ3CZ4FBZAMT62XXYY24FZ",
                             Amount = 500.00m,
-                            BrokerId = 1,
+                            BrokerId = "01H5QJ35QJ64MC1BTD5NRQ34R7",
                             DateIssued = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Paid",
-                            SupplierId = 1
+                            SupplierId = "01H5QJ6PTMVRFZT58GQX902JC4"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ3D5T7JV9B1VQF6BRFV4P",
                             Amount = 1500.50m,
-                            BrokerId = 2,
+                            BrokerId = "01H5QJ36N1WHX5KDPQQGTVPVHC",
                             DateIssued = new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Unpaid",
-                            SupplierId = 2
+                            SupplierId = "01H5QJ6PVB8FYN4QXMR3T7JC9A"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ3DF6RQG96Q3VK7JBY58N",
                             Amount = 800.75m,
-                            BrokerId = 3,
+                            BrokerId = "01H5QJ379P7NZR1X03XW0GM7MA",
                             DateIssued = new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Pending",
-                            SupplierId = 3
+                            SupplierId = "01H5QJ6PX4FTQY8KZVW9JMBT96"
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.MenuSection", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.MenuCategory", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("MenuSectionId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("integer");
+                    b.Property<string>("SupplierId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.HasKey("Id");
 
@@ -448,41 +460,41 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ3DHBM8J6AW04FKPJP5VV",
                             Name = "Appetizers",
-                            SupplierId = 1
+                            SupplierId = "01H5QJ6PTMVRFZT58GQX902JC4"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ3DJ22VXVG28Q0RYMNQEY",
                             Name = "Main Courses",
-                            SupplierId = 2
+                            SupplierId = "01H5QJ6PVB8FYN4QXMR3T7JC9A"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ3DR6R35WTKTPGFPJ89JC",
                             Name = "Desserts",
-                            SupplierId = 3
+                            SupplierId = "01H5QJ6PX4FTQY8KZVW9JMBT96"
                         });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Order", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("OrderId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer");
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<DateTime>("DeliveryDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("DeliveryId")
-                        .HasColumnType("integer");
+                    b.Property<string>("DeliveryId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp without time zone");
@@ -492,8 +504,9 @@ namespace CateringService.Persistence.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("integer");
+                    b.Property<string>("SupplierId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -511,50 +524,53 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CustomerId = 1,
+                            Id = "01H5QJ3DZP8N3A1EQNHQZK7GTT",
+                            CustomerId = "01H5QJ37V03WH5TXE2N1AW3JF9",
                             DeliveryDate = new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DeliveryId = 1,
+                            DeliveryId = "01H5QJ399WTKN11Z9FMB02WT62",
                             OrderDate = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Completed",
-                            SupplierId = 1,
+                            SupplierId = "01H5QJ6PTMVRFZT58GQX902JC4",
                             TotalPrice = 250.00m
                         },
                         new
                         {
-                            Id = 2,
-                            CustomerId = 2,
+                            Id = "01H5QJ3E1TZPGJ82MMZ20WX44Z",
+                            CustomerId = "01H5QJ38KGWM2N56TFH99WQZ03",
                             DeliveryDate = new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DeliveryId = 2,
+                            DeliveryId = "01H5QJ39VRZ2AN3YC94PM5FMPA",
                             OrderDate = new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Pending",
-                            SupplierId = 2,
+                            SupplierId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
                             TotalPrice = 150.75m
                         },
                         new
                         {
-                            Id = 3,
-                            CustomerId = 3,
+                            Id = "01H5QJ3E3P7D4X8KVT4X30PKKQ",
+                            CustomerId = "01H5QJ391M8PVG6ZWPK4GTN0D8",
                             DeliveryDate = new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DeliveryId = 3,
+                            DeliveryId = "01H5QJ3A8D7V2GPF2K4K3WH5C4",
                             OrderDate = new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Status = "Cancelled",
-                            SupplierId = 3,
+                            SupplierId = "01H5QJ6PX4FTQY8KZVW9JMBT96",
                             TotalPrice = 300.50m
                         });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("OrderItemId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("DishId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("integer");
+                    b.Property<string>("OrderId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
@@ -564,6 +580,8 @@ namespace CateringService.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DishId");
+
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems", (string)null);
@@ -571,22 +589,25 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            OrderId = 1,
+                            Id = "01H5QJ3E5929D8TFHK4M4PK0YE",
+                            DishId = "01GRQX9AYRHCA5Y5X3GPKPZ92P",
+                            OrderId = "01H5QJ3DZP8N3A1EQNHQZK7GTT",
                             Price = 25.00m,
                             Quantity = 2
                         },
                         new
                         {
-                            Id = 2,
-                            OrderId = 2,
+                            Id = "01H5QJ3E72PFV0T3XN92K4W59V",
+                            DishId = "01GRQX9AYRHCA5Y5X3GPKPZ93Q",
+                            OrderId = "01H5QJ3E1TZPGJ82MMZ20WX44Z",
                             Price = 15.50m,
                             Quantity = 1
                         },
                         new
                         {
-                            Id = 3,
-                            OrderId = 3,
+                            Id = "01H5QJ6P1YKRV9FX54Z0W3PJAY",
+                            DishId = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            OrderId = "01H5QJ3E3P7D4X8KVT4X30PKKQ",
                             Price = 45.75m,
                             Quantity = 3
                         });
@@ -594,12 +615,10 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Promotion", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("PromotionId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Condition")
                         .IsRequired()
@@ -615,8 +634,9 @@ namespace CateringService.Persistence.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("SupplierId")
-                        .HasColumnType("integer");
+                    b.Property<string>("SupplierId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -632,47 +652,46 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ6P88F6YXPNKJX42VFYB5",
                             Condition = "Minimum order $100",
                             DiscountValue = 15.00m,
                             EndDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SupplierId = 1,
+                            SupplierId = "01H5QJ6PTMVRFZT58GQX902JC4",
                             Type = "Percentage"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ6PCZJ70AW3MMFGXK5TBQ",
                             Condition = "For first-time customers",
                             DiscountValue = 20.00m,
                             EndDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SupplierId = 2,
+                            SupplierId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
                             Type = "Fixed Amount"
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ6PFAWWNG1T52BZ20RQFX",
                             Condition = "For orders over $50",
                             DiscountValue = 0.00m,
                             EndDate = new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             StartDate = new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SupplierId = 3,
+                            SupplierId = "01H5QJ6PX4FTQY8KZVW9JMBT96",
                             Type = "Free Delivery"
                         });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Report", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("ReportId");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BrokerId")
-                        .HasColumnType("integer");
+                    b.Property<string>("BrokerId")
+                        .IsRequired()
+                        .HasColumnType("character varying(26)");
 
                     b.Property<string>("Details")
                         .IsRequired()
@@ -696,24 +715,24 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            BrokerId = 1,
+                            Id = "01H5QJ6PJXP3KN3ZMCXGTFY8P9",
+                            BrokerId = "01H5QJ35QJ64MC1BTD5NRQ34R7",
                             Details = "Detailed performance report for Q1.",
                             GeneratedDate = new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Type = "Performance"
                         },
                         new
                         {
-                            Id = 2,
-                            BrokerId = 2,
+                            Id = "01H5QJ6PMZ48BVTCJMK30RW9J6",
+                            BrokerId = "01H5QJ36N1WHX5KDPQQGTVPVHC",
                             Details = "Compliance report for catering regulations.",
                             GeneratedDate = new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Type = "Compliance"
                         },
                         new
                         {
-                            Id = 3,
-                            BrokerId = 3,
+                            Id = "01H5QJ6PRJAXFV54N82M3TQXJY",
+                            BrokerId = "01H5QJ379P7NZR1X03XW0GM7MA",
                             Details = "Comprehensive financial analysis for last quarter.",
                             GeneratedDate = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Type = "Financial"
@@ -722,12 +741,10 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Supplier", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
                         .HasColumnName("SupplierId");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -771,7 +788,7 @@ namespace CateringService.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = "01H5QJ6PTMVRFZT58GQX902JC4",
                             Description = "Поставщик свежих продуктов для ресторанов",
                             Email = "contact@freshproduce.com",
                             IsActive = true,
@@ -782,7 +799,7 @@ namespace CateringService.Persistence.Migrations
                         },
                         new
                         {
-                            Id = 2,
+                            Id = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
                             Description = "Глобальный поставщик кейтерингового оборудования",
                             Email = "info@globalcatering.com",
                             IsActive = true,
@@ -793,7 +810,7 @@ namespace CateringService.Persistence.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            Id = "01H5QJ6PX4FTQY8KZVW9JMBT96",
                             Description = "Поставщик органических продуктов питания",
                             Email = "sales@organicgoods.com",
                             IsActive = false,
@@ -817,9 +834,9 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Dish", b =>
                 {
-                    b.HasOne("CateringService.Domain.Entities.MenuSection", "MenuSection")
+                    b.HasOne("CateringService.Domain.Entities.MenuCategory", "MenuCategory")
                         .WithMany("Dishes")
-                        .HasForeignKey("MenuSectionId")
+                        .HasForeignKey("MenuCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -829,7 +846,7 @@ namespace CateringService.Persistence.Migrations
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.Navigation("MenuSection");
+                    b.Navigation("MenuCategory");
 
                     b.Navigation("Supplier");
                 });
@@ -864,7 +881,7 @@ namespace CateringService.Persistence.Migrations
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.MenuSection", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.MenuCategory", b =>
                 {
                     b.HasOne("CateringService.Domain.Entities.Supplier", "Supplier")
                         .WithMany("MenuSections")
@@ -904,11 +921,19 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.OrderItem", b =>
                 {
+                    b.HasOne("CateringService.Domain.Entities.Dish", "Dish")
+                        .WithMany()
+                        .HasForeignKey("DishId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
                     b.HasOne("CateringService.Domain.Entities.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
+
+                    b.Navigation("Dish");
 
                     b.Navigation("Order");
                 });
@@ -959,7 +984,7 @@ namespace CateringService.Persistence.Migrations
                     b.Navigation("Deliveries");
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.MenuSection", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.MenuCategory", b =>
                 {
                     b.Navigation("Dishes");
                 });

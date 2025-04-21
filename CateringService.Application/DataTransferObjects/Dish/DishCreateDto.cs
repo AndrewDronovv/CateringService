@@ -1,6 +1,4 @@
-﻿using CateringService.Domain.Entities;
-
-namespace CateringService.Application.DataTransferObjects.Dish;
+﻿namespace CateringService.Application.DataTransferObjects.Dish;
 
 public sealed class DishCreateDto
 {

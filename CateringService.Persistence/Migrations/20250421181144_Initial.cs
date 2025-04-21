@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -18,8 +17,7 @@ namespace CateringService.Persistence.Migrations
                 name: "Brokers",
                 columns: table => new
                 {
-                    BrokerId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    BrokerId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ContactInfo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
                 },
@@ -32,8 +30,7 @@ namespace CateringService.Persistence.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    CustomerId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ContactInfo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     PaymentType = table.Column<string>(type: "text", nullable: false)
@@ -47,8 +44,7 @@ namespace CateringService.Persistence.Migrations
                 name: "DeliveryPersons",
                 columns: table => new
                 {
-                    DeliveryPersonId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DeliveryPersonId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ContactInfo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false)
                 },
@@ -61,8 +57,7 @@ namespace CateringService.Persistence.Migrations
                 name: "Suppliers",
                 columns: table => new
                 {
-                    SupplierId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    SupplierId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false, comment: "Описание поставщика"),
                     Logo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false, comment: "Ссылка на логотип поставщика"),
@@ -80,12 +75,11 @@ namespace CateringService.Persistence.Migrations
                 name: "Reports",
                 columns: table => new
                 {
-                    ReportId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ReportId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Details = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
                     GeneratedDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    BrokerId = table.Column<int>(type: "integer", nullable: false)
+                    BrokerId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -102,10 +96,9 @@ namespace CateringService.Persistence.Migrations
                 name: "Deliveries",
                 columns: table => new
                 {
-                    DeliveryId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DeliveryId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    DeliveryPersonId = table.Column<int>(type: "integer", nullable: false)
+                    DeliveryPersonId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -122,13 +115,12 @@ namespace CateringService.Persistence.Migrations
                 name: "Invoices",
                 columns: table => new
                 {
-                    InvoiceId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    InvoiceId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     DateIssued = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    SupplierId = table.Column<int>(type: "integer", nullable: false),
-                    BrokerId = table.Column<int>(type: "integer", nullable: false)
+                    SupplierId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    BrokerId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -151,10 +143,9 @@ namespace CateringService.Persistence.Migrations
                 name: "MenuSections",
                 columns: table => new
                 {
-                    MenuSectionId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MenuSectionId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    SupplierId = table.Column<int>(type: "integer", nullable: false)
+                    SupplierId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -171,14 +162,13 @@ namespace CateringService.Persistence.Migrations
                 name: "Promotions",
                 columns: table => new
                 {
-                    PromotionId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PromotionId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Type = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     DiscountValue = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     Condition = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     StartDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    SupplierId = table.Column<int>(type: "integer", nullable: false)
+                    SupplierId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -195,12 +185,11 @@ namespace CateringService.Persistence.Migrations
                 name: "Incidents",
                 columns: table => new
                 {
-                    IncidentId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IncidentId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Resolution = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    DeliveryId = table.Column<int>(type: "integer", nullable: false)
+                    DeliveryId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -217,15 +206,14 @@ namespace CateringService.Persistence.Migrations
                 name: "Orders",
                 columns: table => new
                 {
-                    OrderId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OrderId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     OrderDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DeliveryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CustomerId = table.Column<int>(type: "integer", nullable: false),
-                    SupplierId = table.Column<int>(type: "integer", nullable: false),
-                    DeliveryId = table.Column<int>(type: "integer", nullable: false)
+                    CustomerId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    SupplierId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    DeliveryId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -256,21 +244,24 @@ namespace CateringService.Persistence.Migrations
                 {
                     DishId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    Ingredients = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    Ingredients = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Weight = table.Column<double>(type: "double precision", nullable: false),
-                    Image = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    AvailabilityStatus = table.Column<bool>(type: "boolean", nullable: false),
-                    SupplierId = table.Column<int>(type: "integer", nullable: false),
-                    MenuSectionId = table.Column<int>(type: "integer", nullable: false)
+                    ImageUrl = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    IsAvailable = table.Column<bool>(type: "boolean", nullable: false),
+                    Allergens = table.Column<string>(type: "character varying(400)", maxLength: 400, nullable: true),
+                    PortionSize = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    SupplierId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    MenuCategoryId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Dishes", x => x.DishId);
                     table.ForeignKey(
-                        name: "FK_Dishes_MenuSections_MenuSectionId",
-                        column: x => x.MenuSectionId,
+                        name: "FK_Dishes_MenuSections_MenuCategoryId",
+                        column: x => x.MenuCategoryId,
                         principalTable: "MenuSections",
                         principalColumn: "MenuSectionId",
                         onDelete: ReferentialAction.Cascade);
@@ -286,15 +277,21 @@ namespace CateringService.Persistence.Migrations
                 name: "OrderItems",
                 columns: table => new
                 {
-                    OrderItemId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OrderItemId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    OrderId = table.Column<int>(type: "integer", nullable: false)
+                    OrderId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    DishId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderItems", x => x.OrderItemId);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Dishes_DishId",
+                        column: x => x.DishId,
+                        principalTable: "Dishes",
+                        principalColumn: "DishId",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
@@ -308,9 +305,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "BrokerId", "ContactInfo", "Name" },
                 values: new object[,]
                 {
-                    { 1, "info@gourmetcatering.com", "Gourmet Catering" },
-                    { 2, "contact@healthykitchen.com", "Healthy Kitchen" },
-                    { 3, "support@eventplanners.com", "Event Planners Co." }
+                    { "01H5QJ35QJ64MC1BTD5NRQ34R7", "info@gourmetcatering.com", "Gourmet Catering" },
+                    { "01H5QJ36N1WHX5KDPQQGTVPVHC", "contact@healthykitchen.com", "Healthy Kitchen" },
+                    { "01H5QJ379P7NZR1X03XW0GM7MA", "support@eventplanners.com", "Event Planners Co." }
                 });
 
             migrationBuilder.InsertData(
@@ -318,9 +315,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "CustomerId", "ContactInfo", "Name", "PaymentType" },
                 values: new object[,]
                 {
-                    { 1, "john.doe@example.com", "John Doe", "CreditCard" },
-                    { 2, "jane.smith@domain.com", "Jane Smith", "PayPal" },
-                    { 3, "contact@corporate.com", "Corporate Client", "Cash" }
+                    { "01H5QJ37V03WH5TXE2N1AW3JF9", "john.doe@example.com", "John Doe", "CreditCard" },
+                    { "01H5QJ38KGWM2N56TFH99WQZ03", "jane.smith@domain.com", "Jane Smith", "PayPal" },
+                    { "01H5QJ391M8PVG6ZWPK4GTN0D8", "contact@corporate.com", "Corporate Client", "Cash" }
                 });
 
             migrationBuilder.InsertData(
@@ -328,9 +325,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "DeliveryPersonId", "ContactInfo", "Name" },
                 values: new object[,]
                 {
-                    { 1, "alex.johnson@delivery.com", "Alex Johnson" },
-                    { 2, "maria.gonzalez@delivery.com", "Maria Gonzalez" },
-                    { 3, "william.smith@delivery.com", "William Smith" }
+                    { "01H5QJ3AFV0T3ZQBGP19HK2K5V", "alex.johnson@delivery.com", "Alex Johnson" },
+                    { "01H5QJ3BBCEKJ7MYNVK302XRYF", "maria.gonzalez@delivery.com", "Maria Gonzalez" },
+                    { "01H5QJ3BHR2FAYVZWNAD0XJJYE", "william.smith@delivery.com", "William Smith" }
                 });
 
             migrationBuilder.InsertData(
@@ -338,23 +335,23 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "SupplierId", "Description", "Email", "IsActive", "Logo", "Name", "Phone", "WorkingHours" },
                 values: new object[,]
                 {
-                    { 1, "Поставщик свежих продуктов для ресторанов", "contact@freshproduce.com", true, "https://example.com/logo1.png", "Fresh Produce Supplier", "+1234567890", 8 },
-                    { 2, "Глобальный поставщик кейтерингового оборудования", "info@globalcatering.com", true, "https://example.com/logo2.png", "Global Catering Supplies", "+0987654321", 10 }
+                    { "01H5QJ6PTMVRFZT58GQX902JC4", "Поставщик свежих продуктов для ресторанов", "contact@freshproduce.com", true, "https://example.com/logo1.png", "Fresh Produce Supplier", "+1234567890", 8 },
+                    { "01H5QJ6PVB8FYN4QXMR3T7JC9A", "Глобальный поставщик кейтерингового оборудования", "info@globalcatering.com", true, "https://example.com/logo2.png", "Global Catering Supplies", "+0987654321", 10 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Suppliers",
                 columns: new[] { "SupplierId", "Description", "Email", "Logo", "Name", "Phone", "WorkingHours" },
-                values: new object[] { 3, "Поставщик органических продуктов питания", "sales@organicgoods.com", "https://example.com/logo3.png", "Organic Goods Co.", "+1122334455", 6 });
+                values: new object[] { "01H5QJ6PX4FTQY8KZVW9JMBT96", "Поставщик органических продуктов питания", "sales@organicgoods.com", "https://example.com/logo3.png", "Organic Goods Co.", "+1122334455", 6 });
 
             migrationBuilder.InsertData(
                 table: "Deliveries",
                 columns: new[] { "DeliveryId", "DeliveryPersonId", "Status" },
                 values: new object[,]
                 {
-                    { 1, 1, "In Progress" },
-                    { 2, 2, "Completed" },
-                    { 3, 3, "Delayed" }
+                    { "01H5QJ399WTKN11Z9FMB02WT62", "01H5QJ3AFV0T3ZQBGP19HK2K5V", "In Progress" },
+                    { "01H5QJ39VRZ2AN3YC94PM5FMPA", "01H5QJ3BBCEKJ7MYNVK302XRYF", "Completed" },
+                    { "01H5QJ3A8D7V2GPF2K4K3WH5C4", "01H5QJ3BHR2FAYVZWNAD0XJJYE", "Delayed" }
                 });
 
             migrationBuilder.InsertData(
@@ -362,9 +359,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "InvoiceId", "Amount", "BrokerId", "DateIssued", "Status", "SupplierId" },
                 values: new object[,]
                 {
-                    { 1, 500.00m, 1, new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Paid", 1 },
-                    { 2, 1500.50m, 2, new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Unpaid", 2 },
-                    { 3, 800.75m, 3, new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", 3 }
+                    { "01H5QJ3CZ4FBZAMT62XXYY24FZ", 500.00m, "01H5QJ35QJ64MC1BTD5NRQ34R7", new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Paid", "01H5QJ6PTMVRFZT58GQX902JC4" },
+                    { "01H5QJ3D5T7JV9B1VQF6BRFV4P", 1500.50m, "01H5QJ36N1WHX5KDPQQGTVPVHC", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Unpaid", "01H5QJ6PVB8FYN4QXMR3T7JC9A" },
+                    { "01H5QJ3DF6RQG96Q3VK7JBY58N", 800.75m, "01H5QJ379P7NZR1X03XW0GM7MA", new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "01H5QJ6PX4FTQY8KZVW9JMBT96" }
                 });
 
             migrationBuilder.InsertData(
@@ -372,9 +369,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "MenuSectionId", "Name", "SupplierId" },
                 values: new object[,]
                 {
-                    { 1, "Appetizers", 1 },
-                    { 2, "Main Courses", 2 },
-                    { 3, "Desserts", 3 }
+                    { "01H5QJ3DHBM8J6AW04FKPJP5VV", "Appetizers", "01H5QJ6PTMVRFZT58GQX902JC4" },
+                    { "01H5QJ3DJ22VXVG28Q0RYMNQEY", "Main Courses", "01H5QJ6PVB8FYN4QXMR3T7JC9A" },
+                    { "01H5QJ3DR6R35WTKTPGFPJ89JC", "Desserts", "01H5QJ6PX4FTQY8KZVW9JMBT96" }
                 });
 
             migrationBuilder.InsertData(
@@ -382,9 +379,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "PromotionId", "Condition", "DiscountValue", "EndDate", "StartDate", "SupplierId", "Type" },
                 values: new object[,]
                 {
-                    { 1, "Minimum order $100", 15.00m, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Percentage" },
-                    { 2, "For first-time customers", 20.00m, new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Fixed Amount" },
-                    { 3, "For orders over $50", 0.00m, new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "Free Delivery" }
+                    { "01H5QJ6P88F6YXPNKJX42VFYB5", "Minimum order $100", 15.00m, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ6PTMVRFZT58GQX902JC4", "Percentage" },
+                    { "01H5QJ6PCZJ70AW3MMFGXK5TBQ", "For first-time customers", 20.00m, new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ6PVB8FYN4QXMR3T7JC9A", "Fixed Amount" },
+                    { "01H5QJ6PFAWWNG1T52BZ20RQFX", "For orders over $50", 0.00m, new DateTime(2025, 4, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ6PX4FTQY8KZVW9JMBT96", "Free Delivery" }
                 });
 
             migrationBuilder.InsertData(
@@ -392,19 +389,19 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "ReportId", "BrokerId", "Details", "GeneratedDate", "Type" },
                 values: new object[,]
                 {
-                    { 1, 1, "Detailed performance report for Q1.", new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Performance" },
-                    { 2, 2, "Compliance report for catering regulations.", new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Compliance" },
-                    { 3, 3, "Comprehensive financial analysis for last quarter.", new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Financial" }
+                    { "01H5QJ6PJXP3KN3ZMCXGTFY8P9", "01H5QJ35QJ64MC1BTD5NRQ34R7", "Detailed performance report for Q1.", new DateTime(2025, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Performance" },
+                    { "01H5QJ6PMZ48BVTCJMK30RW9J6", "01H5QJ36N1WHX5KDPQQGTVPVHC", "Compliance report for catering regulations.", new DateTime(2025, 4, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Compliance" },
+                    { "01H5QJ6PRJAXFV54N82M3TQXJY", "01H5QJ379P7NZR1X03XW0GM7MA", "Comprehensive financial analysis for last quarter.", new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Financial" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Dishes",
-                columns: new[] { "DishId", "AvailabilityStatus", "Description", "Image", "Ingredients", "MenuSectionId", "Name", "Price", "SupplierId", "Weight" },
+                columns: new[] { "DishId", "Allergens", "CreatedAt", "Description", "ImageUrl", "Ingredients", "IsAvailable", "MenuCategoryId", "Name", "PortionSize", "Price", "SupplierId", "Weight" },
                 values: new object[,]
                 {
-                    { "01GRQX9AYRHCA5Y5X3GPKPZ92P", true, "Juicy grilled chicken with spices", "grilled_chicken.jpg", "Chicken, spices, olive oil", 1, "Grilled Chicken", 12.99m, 1, 250.0 },
-                    { "01GRQX9AYRHCA5Y5X3GPKPZ93Q", true, "Fresh seasonal vegetables with olive oil", "veggie_salad.jpg", "Lettuce, tomatoes, cucumber, olive oil", 2, "Vegetable Salad", 8.50m, 2, 150.0 },
-                    { "01H5PY6RF4WKFCR9VCMY2QNFGP", false, "Rich and creamy chocolate cake", "chocolate_cake.jpg", "Chocolate, flour, sugar, eggs, butter", 3, "Chocolate Cake", 5.99m, 3, 300.0 }
+                    { "01GRQX9AYRHCA5Y5X3GPKPZ92P", "None", new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified), "Juicy grilled chicken with spices", "grilled_chicken.jpg", "Chicken, spices, olive oil", true, "01H5QJ3DHBM8J6AW04FKPJP5VV", "Grilled Chicken", "Large", 12.99m, "01H5QJ6PTMVRFZT58GQX902JC4", 250.0 },
+                    { "01GRQX9AYRHCA5Y5X3GPKPZ93Q", "None", new DateTime(2025, 4, 20, 12, 0, 0, 0, DateTimeKind.Unspecified), "Fresh seasonal vegetables with olive oil", "veggie_salad.jpg", "Lettuce, tomatoes, cucumber, olive oil", true, "01H5QJ3DJ22VXVG28Q0RYMNQEY", "Vegetable Salad", "Medium", 8.50m, "01H5QJ6PVB8FYN4QXMR3T7JC9A", 150.0 },
+                    { "01H5PY6RF4WKFCR9VCMY2QNFGP", "Eggs, Milk", new DateTime(2025, 4, 20, 14, 0, 0, 0, DateTimeKind.Unspecified), "Rich and creamy chocolate cake", "chocolate_cake.jpg", "Chocolate, flour, sugar, eggs, butter", false, "01H5QJ3DR6R35WTKTPGFPJ89JC", "Chocolate Cake", "Small", 5.99m, "01H5QJ6PX4FTQY8KZVW9JMBT96", 300.0 }
                 });
 
             migrationBuilder.InsertData(
@@ -412,9 +409,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "IncidentId", "Date", "DeliveryId", "Description", "Resolution" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Late delivery due to traffic jam", "Customer notified and accepted delay" },
-                    { 2, new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Damaged package during delivery", "Replacement item sent to customer" },
-                    { 3, new DateTime(2025, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "Wrong address provided by customer", "Correct address obtained and delivery rescheduled" }
+                    { "01H5QJ3BTSX3JJ3F6DTQVFX86P", new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ399WTKN11Z9FMB02WT62", "Late delivery due to traffic jam", "Customer notified and accepted delay" },
+                    { "01H5QJ3CB21J8GEPKGXZ80WRQ9", new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ39VRZ2AN3YC94PM5FMPA", "Damaged package during delivery", "Replacement item sent to customer" },
+                    { "01H5QJ3CC0PF6XRTA21DW3QPEK", new DateTime(2025, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ3A8D7V2GPF2K4K3WH5C4", "Wrong address provided by customer", "Correct address obtained and delivery rescheduled" }
                 });
 
             migrationBuilder.InsertData(
@@ -422,19 +419,19 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "OrderId", "CustomerId", "DeliveryDate", "DeliveryId", "OrderDate", "Status", "SupplierId", "TotalPrice" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", 1, 250.00m },
-                    { 2, 2, new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", 2, 150.75m },
-                    { 3, 3, new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cancelled", 3, 300.50m }
+                    { "01H5QJ3DZP8N3A1EQNHQZK7GTT", "01H5QJ37V03WH5TXE2N1AW3JF9", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ399WTKN11Z9FMB02WT62", new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "01H5QJ6PTMVRFZT58GQX902JC4", 250.00m },
+                    { "01H5QJ3E1TZPGJ82MMZ20WX44Z", "01H5QJ38KGWM2N56TFH99WQZ03", new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ39VRZ2AN3YC94PM5FMPA", new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "01H5QJ6PVB8FYN4QXMR3T7JC9A", 150.75m },
+                    { "01H5QJ3E3P7D4X8KVT4X30PKKQ", "01H5QJ391M8PVG6ZWPK4GTN0D8", new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ3A8D7V2GPF2K4K3WH5C4", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cancelled", "01H5QJ6PX4FTQY8KZVW9JMBT96", 300.50m }
                 });
 
             migrationBuilder.InsertData(
                 table: "OrderItems",
-                columns: new[] { "OrderItemId", "OrderId", "Price", "Quantity" },
+                columns: new[] { "OrderItemId", "DishId", "OrderId", "Price", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 1, 25.00m, 2 },
-                    { 2, 2, 15.50m, 1 },
-                    { 3, 3, 45.75m, 3 }
+                    { "01H5QJ3E5929D8TFHK4M4PK0YE", "01GRQX9AYRHCA5Y5X3GPKPZ92P", "01H5QJ3DZP8N3A1EQNHQZK7GTT", 25.00m, 2 },
+                    { "01H5QJ3E72PFV0T3XN92K4W59V", "01GRQX9AYRHCA5Y5X3GPKPZ93Q", "01H5QJ3E1TZPGJ82MMZ20WX44Z", 15.50m, 1 },
+                    { "01H5QJ6P1YKRV9FX54Z0W3PJAY", "01H5PY6RF4WKFCR9VCMY2QNFGP", "01H5QJ3E3P7D4X8KVT4X30PKKQ", 45.75m, 3 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -443,9 +440,9 @@ namespace CateringService.Persistence.Migrations
                 column: "DeliveryPersonId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Dishes_MenuSectionId",
+                name: "IX_Dishes_MenuCategoryId",
                 table: "Dishes",
-                column: "MenuSectionId");
+                column: "MenuCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Dishes_SupplierId",
@@ -471,6 +468,11 @@ namespace CateringService.Persistence.Migrations
                 name: "IX_MenuSections_SupplierId",
                 table: "MenuSections",
                 column: "SupplierId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_DishId",
+                table: "OrderItems",
+                column: "DishId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
@@ -507,9 +509,6 @@ namespace CateringService.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Dishes");
-
-            migrationBuilder.DropTable(
                 name: "Incidents");
 
             migrationBuilder.DropTable(
@@ -525,13 +524,16 @@ namespace CateringService.Persistence.Migrations
                 name: "Reports");
 
             migrationBuilder.DropTable(
-                name: "MenuSections");
+                name: "Dishes");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Brokers");
+
+            migrationBuilder.DropTable(
+                name: "MenuSections");
 
             migrationBuilder.DropTable(
                 name: "Customers");
