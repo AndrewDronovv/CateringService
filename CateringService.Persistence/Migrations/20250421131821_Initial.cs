@@ -36,7 +36,7 @@ namespace CateringService.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     ContactInfo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    PaymentType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false, comment: "Тип оплаты, например, Кредитная карта, PayPal, Наличные")
+                    PaymentType = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -254,10 +254,9 @@ namespace CateringService.Persistence.Migrations
                 name: "Dishes",
                 columns: table => new
                 {
-                    DishId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DishId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Descritpion = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
                     Price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     Ingredients = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
                     Weight = table.Column<double>(type: "double precision", nullable: false),
@@ -291,18 +290,11 @@ namespace CateringService.Persistence.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    OrderId = table.Column<int>(type: "integer", nullable: false),
-                    DishId = table.Column<int>(type: "integer", nullable: false)
+                    OrderId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderItems", x => x.OrderItemId);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Dishes_DishId",
-                        column: x => x.DishId,
-                        principalTable: "Dishes",
-                        principalColumn: "DishId",
-                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_OrderItems_Orders_OrderId",
                         column: x => x.OrderId,
@@ -326,9 +318,9 @@ namespace CateringService.Persistence.Migrations
                 columns: new[] { "CustomerId", "ContactInfo", "Name", "PaymentType" },
                 values: new object[,]
                 {
-                    { 1, "john.doe@example.com", "John Doe", "Credit Card" },
+                    { 1, "john.doe@example.com", "John Doe", "CreditCard" },
                     { 2, "jane.smith@domain.com", "Jane Smith", "PayPal" },
-                    { 3, "contact@corporate.com", "Corporate Client", "Invoice" }
+                    { 3, "contact@corporate.com", "Corporate Client", "Cash" }
                 });
 
             migrationBuilder.InsertData(
@@ -407,12 +399,12 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Dishes",
-                columns: new[] { "DishId", "AvailabilityStatus", "Descritpion", "Image", "Ingredients", "MenuSectionId", "Name", "Price", "SupplierId", "Weight" },
+                columns: new[] { "DishId", "AvailabilityStatus", "Description", "Image", "Ingredients", "MenuSectionId", "Name", "Price", "SupplierId", "Weight" },
                 values: new object[,]
                 {
-                    { 1, true, "Juicy grilled chicken with spices", "grilled_chicken.jpg", "Chicken, spices, olive oil", 1, "Grilled Chicken", 12.99m, 1, 250.0 },
-                    { 2, true, "Fresh seasonal vegetables with olive oil", "veggie_salad.jpg", "Lettuce, tomatoes, cucumber, olive oil", 2, "Vegetable Salad", 8.50m, 2, 150.0 },
-                    { 3, false, "Rich and creamy chocolate cake", "chocolate_cake.jpg", "Chocolate, flour, sugar, eggs, butter", 3, "Chocolate Cake", 5.99m, 3, 300.0 }
+                    { "01GRQX9AYRHCA5Y5X3GPKPZ92P", true, "Juicy grilled chicken with spices", "grilled_chicken.jpg", "Chicken, spices, olive oil", 1, "Grilled Chicken", 12.99m, 1, 250.0 },
+                    { "01GRQX9AYRHCA5Y5X3GPKPZ93Q", true, "Fresh seasonal vegetables with olive oil", "veggie_salad.jpg", "Lettuce, tomatoes, cucumber, olive oil", 2, "Vegetable Salad", 8.50m, 2, 150.0 },
+                    { "01H5PY6RF4WKFCR9VCMY2QNFGP", false, "Rich and creamy chocolate cake", "chocolate_cake.jpg", "Chocolate, flour, sugar, eggs, butter", 3, "Chocolate Cake", 5.99m, 3, 300.0 }
                 });
 
             migrationBuilder.InsertData(
@@ -437,12 +429,12 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrderItems",
-                columns: new[] { "OrderItemId", "DishId", "OrderId", "Price", "Quantity" },
+                columns: new[] { "OrderItemId", "OrderId", "Price", "Quantity" },
                 values: new object[,]
                 {
-                    { 1, 1, 1, 25.00m, 2 },
-                    { 2, 2, 2, 15.50m, 1 },
-                    { 3, 3, 3, 45.75m, 3 }
+                    { 1, 1, 25.00m, 2 },
+                    { 2, 2, 15.50m, 1 },
+                    { 3, 3, 45.75m, 3 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -481,11 +473,6 @@ namespace CateringService.Persistence.Migrations
                 column: "SupplierId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_DishId",
-                table: "OrderItems",
-                column: "DishId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");
@@ -520,6 +507,9 @@ namespace CateringService.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Dishes");
+
+            migrationBuilder.DropTable(
                 name: "Incidents");
 
             migrationBuilder.DropTable(
@@ -535,16 +525,13 @@ namespace CateringService.Persistence.Migrations
                 name: "Reports");
 
             migrationBuilder.DropTable(
-                name: "Dishes");
+                name: "MenuSections");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Brokers");
-
-            migrationBuilder.DropTable(
-                name: "MenuSections");
 
             migrationBuilder.DropTable(
                 name: "Customers");

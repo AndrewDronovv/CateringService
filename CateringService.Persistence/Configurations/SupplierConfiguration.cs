@@ -45,7 +45,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             .IsRequired();
 
         builder.HasMany(s => s.Dishes)
-            .WithOne(d => d.Supplier) 
+            .WithOne(d => d.Supplier)
             .HasForeignKey(d => d.SupplierId)
             .OnDelete(DeleteBehavior.SetNull);
 
@@ -55,7 +55,7 @@ public class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasMany(s => s.Promotions)
-            .WithOne(p => p.Supplier) 
+            .WithOne(p => p.Supplier)
             .HasForeignKey(p => p.SupplierId)
             .OnDelete(DeleteBehavior.SetNull);
 

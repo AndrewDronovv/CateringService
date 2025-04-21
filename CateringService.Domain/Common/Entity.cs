@@ -9,10 +9,10 @@ public abstract class Entity : Entity<int>
 {
 }
 
-public abstract class GuidEntity : Entity<Guid>
+public abstract class UlidEntity : Entity<Ulid>
 {
-    protected GuidEntity()
+    protected UlidEntity()
     {
-        Id = Guid.NewGuid();
+        Id = Ulid.NewUlid();
     }
 }

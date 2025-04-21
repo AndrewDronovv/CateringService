@@ -48,12 +48,12 @@ public class DishesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DishDto>> GetDishAsync(int id)
+    public async Task<ActionResult<DishDto>> GetDishAsync(Ulid id)
     {
         try
         {
             _logger.LogInformation($"Получен запрос блюда с Id = {id}.");
-            if (id <= 0)
+            if (id == Ulid.Empty)
             {
                 _logger.LogWarning($"Id должен быть больше 0.");
                 return BadRequest(new { Error = "Id должен быть больше 0." });
@@ -110,13 +110,13 @@ public class DishesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteDishAsync(int id)
+    public async Task<IActionResult> DeleteDishAsync(Ulid id)
     {
         try
         {
-            if (id <= 0)
+            if (id == Ulid.Empty)
             {
-                _logger.LogWarning($"Id должен быть больше 0.");
+                _logger.LogWarning($"Id не должен быть пустым.");
                 return BadRequest(new { Error = "Id должен быть больше 0." });
             }
 
@@ -132,11 +132,11 @@ public class DishesController : ControllerBase
     }
 
     [HttpPut(ApiEndPoints.Dishes.Update)]
-    public async Task<IActionResult> UpdateDishAsync(int id, DishUpdateDto input)
+    public async Task<IActionResult> UpdateDishAsync(Ulid id, DishUpdateDto input)
     {
-        if (id <= 0)
+        if (id == Ulid.Empty)
         {
-            _logger.LogWarning($"Id должен быть больше 0.");
+            _logger.LogWarning($"Id не должен быть пустым.");
             return BadRequest(new { Error = "Id должен быть больше 0." });
         }
 

@@ -14,14 +14,18 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
 
         builder.Property(d => d.Id)
             .HasColumnName("DishId")
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+            .IsRequired()
+            .HasMaxLength(26)
+            .HasConversion(
+                id => id.ToString(),
+                id => Ulid.Parse(id)
+            );
 
         builder.Property(d => d.Name)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(d => d.Descritpion)
+        builder.Property(d => d.Description)
             .HasMaxLength(500);
 
         builder.Property(d => d.Price)
@@ -55,9 +59,9 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
         (
             new Dish
             {
-                Id = 1,
+                Id = Ulid.Parse("01GRQX9AYRHCA5Y5X3GPKPZ92P"),
                 Name = "Grilled Chicken",
-                Descritpion = "Juicy grilled chicken with spices",
+                Description = "Juicy grilled chicken with spices",
                 Price = 12.99m,
                 Ingredients = "Chicken, spices, olive oil",
                 Weight = 250,
@@ -68,9 +72,9 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
             },
             new Dish
             {
-                Id = 2,
+                Id = Ulid.Parse("01GRQX9AYRHCA5Y5X3GPKPZ93Q"),
                 Name = "Vegetable Salad",
-                Descritpion = "Fresh seasonal vegetables with olive oil",
+                Description = "Fresh seasonal vegetables with olive oil",
                 Price = 8.50m,
                 Ingredients = "Lettuce, tomatoes, cucumber, olive oil",
                 Weight = 150,
@@ -81,9 +85,9 @@ public class DishConfiguration : IEntityTypeConfiguration<Dish>
             },
             new Dish
             {
-                Id = 3,
+                Id = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP"),
                 Name = "Chocolate Cake",
-                Descritpion = "Rich and creamy chocolate cake",
+                Description = "Rich and creamy chocolate cake",
                 Price = 5.99m,
                 Ingredients = "Chocolate, flour, sugar, eggs, butter",
                 Weight = 300,

@@ -29,10 +29,10 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
             .HasForeignKey(oi => oi.OrderId)
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(oi => oi.Dish)
-            .WithMany()
-            .HasForeignKey(oi => oi.DishId)
-            .OnDelete(DeleteBehavior.SetNull);
+        //builder.HasOne(oi => oi.Dish)
+        //    .WithMany()
+        //    .HasForeignKey(oi => oi.DishId)
+        //    .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasData
         (
@@ -42,7 +42,7 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
                 Quantity = 2,
                 Price = 25.00m,
                 OrderId = 1,
-                DishId = 1
+                //DishId = 1
             },
             new OrderItem
             {
@@ -50,7 +50,7 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
                 Quantity = 1,
                 Price = 15.50m,
                 OrderId = 2,
-                DishId = 2
+                //DishId = 2
             },
             new OrderItem
             {
@@ -58,7 +58,7 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
                 Quantity = 3,
                 Price = 45.75m,
                 OrderId = 3,
-                DishId = 3
+                //DishId = 3
             }
         );
     }

@@ -6,7 +6,7 @@ public interface IDishAppService
 {
     Task<IEnumerable<DishDto>> GetDishesAsync();
     Task<DishDto> CreateDishAsync(DishCreateDto entity);
-    Task DeleteDishAsync(int id);
-    Task<DishDto> GetDishByIdAsync(int id);
-    Task UpdateDishAsync(int id, DishUpdateDto entity);
+    Task DeleteDishAsync(Ulid id);
+    Task<DishDto> GetDishByIdAsync(Ulid id);
+    Task UpdateDishAsync(Ulid id, DishUpdateDto entity);
 }

@@ -28,7 +28,7 @@ public class BaseRepository<T, TPrimaryKey> : IBaseRepository<T, TPrimaryKey> wh
         return await _context.Set<T>().ToListAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<T?> GetByIdAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
     {
         return await _context.Set<T>().FindAsync(id);
     }

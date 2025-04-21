@@ -2,10 +2,10 @@
 
 namespace CateringService.Domain.Entities;
 
-public sealed class Dish : Entity
+public sealed class Dish : UlidEntity
 {
     public string Name { get; set; } = string.Empty;
-    public string Descritpion { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public decimal Price { get; set; }
     public string Ingredients { get; set; } = string.Empty;
     public double Weight { get; set; }
