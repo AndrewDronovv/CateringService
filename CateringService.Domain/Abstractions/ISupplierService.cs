@@ -1,8 +1,9 @@
-﻿using CateringService.Domain.Entities;
+﻿using CateringService.Domain.Abstractions;
+using CateringService.Domain.Entities;
 
 namespace CateringService.Application.Abstractions;
 
-public interface ISupplierService
+public interface ISupplierService : IBaseService<Supplier, Ulid>
 {
     Task<IEnumerable<Supplier>> GetFilteredSuppliersAsync(int workingHours);
 }

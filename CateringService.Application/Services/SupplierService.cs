@@ -4,11 +4,10 @@ using CateringService.Domain.Repositories;
 
 namespace CateringService.Application.Services;
 
-public class SupplierService : ISupplierService
+public class SupplierService : BaseService<Supplier, Ulid>, ISupplierService
 {
     private readonly ISupplierRepository _supplierRepository;
-
-    public SupplierService(ISupplierRepository supplierRepository)
+    public SupplierService(ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWork) : base(supplierRepository, unitOfWork)
     {
         _supplierRepository = supplierRepository;
     }

@@ -1,5 +1,6 @@
 ﻿using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
@@ -9,8 +10,12 @@ public class MenuCategoryRepository : BaseRepository<MenuCategory, Ulid>, IMenuC
     {
     }
 
-    public Task<List<MenuCategory>> GetBySupplierIdAsync(Ulid supplierId)
+    public async Task<List<MenuCategory>> GetBySupplierIdAsync(Ulid supplierId)
     {
-        throw new NotImplementedException();
+        return await _context.MenuCategories
+            .Where(mc => mc.SupplierId == supplierId)
+            .Include(mc => mc.Supplier)
+            .Include(mc => mc.Dishes)
+            .ToListAsync();
     }
 }

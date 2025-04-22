@@ -26,7 +26,7 @@ public class DishesController : ControllerBase
         try
         {
             var dishes = await _dishAppService.GetDishesAsync();
-
+           
             if (dishes == null || !dishes.Any())
             {
                 _logger.LogInformation("Список блюд пуст.");
@@ -55,8 +55,8 @@ public class DishesController : ControllerBase
             _logger.LogInformation($"Получен запрос блюда с Id = {id}.");
             if (id == Ulid.Empty)
             {
-                _logger.LogWarning($"Id должен быть больше 0.");
-                return BadRequest(new { Error = "Id должен быть больше 0." });
+                _logger.LogWarning($"Id не должен быть пустым.");
+                return BadRequest(new { Error = "Id не должен быть пустым." });
             }
 
             var dish = await _dishAppService.GetDishByIdAsync(id);

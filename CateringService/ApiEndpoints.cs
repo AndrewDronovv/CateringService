@@ -14,4 +14,11 @@ public static class ApiEndPoints
         public const string Update = $"{Base}/{{id}}";
         public const string Delete = $"{Base}/{{id}}";
     }
+
+    public static class MenuCategories
+    {
+        private const string Base = $"{ApiBase}/suppliers";
+
+        public const string Get = $"{Base}/{{supplierId}}/categories";
+    }
 }

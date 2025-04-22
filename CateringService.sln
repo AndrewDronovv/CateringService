@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringService.Persistence
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringService.Application", "CateringService.Application\CateringService.Application.csproj", "{E13E8517-A5C5-495E-B23A-10E299919F02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CateringService.Tests", "CateringService.Tests\CateringService.Tests.csproj", "{FB2E59D3-0E1D-47EF-8752-8D3A0654D4C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{E13E8517-A5C5-495E-B23A-10E299919F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E13E8517-A5C5-495E-B23A-10E299919F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E13E8517-A5C5-495E-B23A-10E299919F02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB2E59D3-0E1D-47EF-8752-8D3A0654D4C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB2E59D3-0E1D-47EF-8752-8D3A0654D4C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB2E59D3-0E1D-47EF-8752-8D3A0654D4C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB2E59D3-0E1D-47EF-8752-8D3A0654D4C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +52,7 @@ Global
 		{7D3C6F7D-2F63-4702-85B5-17B7433BC927} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{937C0ADE-3390-47C0-9FA2-4D8B10B18DDE} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E13E8517-A5C5-495E-B23A-10E299919F02} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{FB2E59D3-0E1D-47EF-8752-8D3A0654D4C8} = {EEDB5EF4-0BA4-4FEB-9545-FEB114914A45}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8BAFCF1-0BC1-49A2-891D-6D93F7654335}
