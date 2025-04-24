@@ -15,11 +15,11 @@ public class BaseService<T, TPrimaryKey> : IBaseService<T, TPrimaryKey> where T 
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<TPrimaryKey> AddAsync(T entity)
+    public async Task<T?> AddAsync(T entity)
     {
         var id = _repository.Add(entity);
         await _unitOfWork.SaveChangesAsync();
-        return id;
+        return await _repository.GetByIdAsync(id);
     }
 
     public async Task DeleteAsync(TPrimaryKey id)
@@ -42,10 +42,23 @@ public class BaseService<T, TPrimaryKey> : IBaseService<T, TPrimaryKey> where T 
         return await _repository.GetByIdAsync(id);
     }
 
-    public async Task<TPrimaryKey> UpdateAsync(T entity)
+    public async Task<T?> UpdateAsync(TPrimaryKey key, T entity)
     {
+        var oldEntity = await _repository.GetByIdAsync(key);
+
+        if (oldEntity == null)
+        {
+            throw new Exception($"Сущность с ключом {key} не найдена");
+        }
+
+        UpdateEntity(oldEntity, entity);
+
         var id = _repository.Update(entity);
         await _unitOfWork.SaveChangesAsync();
-        return id;
+        return await _repository.GetByIdAsync(id);
+    }
+
+    protected virtual void UpdateEntity(T oldEntity, T newEntity)
+    {
     }
 }

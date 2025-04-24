@@ -10,12 +10,24 @@ public class MenuCategoryRepository : BaseRepository<MenuCategory, Ulid>, IMenuC
     {
     }
 
+    public async Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid supplierId, Ulid menuCategoryId)
+    {
+        var menuCategory = await _context.MenuCategories
+            .Where(mc => mc.SupplierId == menuCategoryId && mc.Id == supplierId)
+            .FirstOrDefaultAsync();
+
+        if (menuCategory == null)
+        {
+            throw new Exception("Категория меню не найдена");
+        }
+
+        return menuCategory;
+    }
+
     public async Task<List<MenuCategory>> GetBySupplierIdAsync(Ulid supplierId)
     {
         return await _context.MenuCategories
             .Where(mc => mc.SupplierId == supplierId)
-            .Include(mc => mc.Supplier)
-            .Include(mc => mc.Dishes)
             .ToListAsync();
     }
 }

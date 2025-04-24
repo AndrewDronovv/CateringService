@@ -40,11 +40,9 @@ public static class ServiceExtensions
 
         services.AddScoped<IDishRepository, DishRepository>();
         services.AddScoped<IDishService, DishService>();
-        services.AddScoped<IDishAppService, DishAppService>();
 
         services.AddScoped<IMenuCategoryRepository, MenuCategoryRepository>();
         services.AddScoped<IMenuCategoryService, MenuCategoryService>();
-        services.AddScoped<IMenuCategoryAppService, MenuCategoryAppService>();
 
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
     }

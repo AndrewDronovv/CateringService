@@ -12,18 +12,26 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
         _dishRepository = dishRepository;
     }
 
-    public async Task<bool> CheckMenuCategoryExistsAsync(Ulid menuCategoryId)
+    public bool CheckMenuCategoryExists(Ulid menuCategoryId)
     {
-        return await _dishRepository.CheckMenuCategoryExistsAsync(menuCategoryId);
+        return _dishRepository.CheckMenuCategoryExists(menuCategoryId);
     }
 
-    public async Task<bool> CheckSupplierExistsAsync(Ulid supplierId)
+    public bool CheckSupplierExists(Ulid supplierId)
     {
-        return await _dishRepository.CheckSupplierExistsAsync(supplierId);
+        return _dishRepository.CheckSupplierExists(supplierId);
     }
 
     public async Task<IEnumerable<Dish>> GetAvailableDishesAsync()
     {
         return await _dishRepository.GetAvailableDishesAsync();
+    }
+
+    protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
+    {
+        if (oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
+        {
+            oldEntity.Name = newEntity.Name;
+        }
     }
 }

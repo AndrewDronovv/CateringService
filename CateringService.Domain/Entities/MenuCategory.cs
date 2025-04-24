@@ -10,5 +10,5 @@ public sealed class MenuCategory : UlidEntity
 
     public Ulid SupplierId { get; set; }
     public Supplier Supplier { get; set; }
-    public ICollection<Dish> Dishes { get; set; }
+    public ICollection<Dish> Dishes { get; set; } = [];
 }

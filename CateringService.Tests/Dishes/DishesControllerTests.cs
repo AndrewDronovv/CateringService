@@ -1,5 +1,5 @@
 ﻿using Castle.Core.Logging;
-using CateringService.Application.Abstractions;
+using CateringService.Domain.Abstractions;
 using NSubstitute;
 
 namespace CateringService.Tests.Dishes;
@@ -10,7 +10,7 @@ public class DishesControllerTests
     public async Task CreateDishAsync_ShouldReturn201Created_WhenDishCreated()
     {
         //Arrange
-        IDishAppService dishAppService = Substitute.For<IDishAppService>();
+        IDishService dishAppService = Substitute.For<IDishService>();
         ILogger logger = Substitute.For<ILogger>();
     }
 }

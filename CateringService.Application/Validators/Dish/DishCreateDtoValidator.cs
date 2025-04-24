@@ -44,10 +44,6 @@ public sealed class DishCreateDtoValidator : AbstractValidator<DishCreateDto>
         RuleFor(x => x.Allergens)
             .MaximumLength(400).WithMessage("Список аллергенов не должен превышать 400 символов.");
 
-        RuleFor(x => x.CreatedAt)
-            .NotEmpty().WithMessage("Дата создания не должна быть пустой.")
-            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Дата создания не может быть в будущем.");
-
         RuleFor(x => x.SupplierId)
             .Must(id => id != Ulid.Empty).WithMessage("Идентификатор поставщика не может быть пустым.")
             .Must(id => Ulid.TryParse(id.ToString(), out _)).WithMessage("Идентификатор поставщица должен быть корректным Ulid.");

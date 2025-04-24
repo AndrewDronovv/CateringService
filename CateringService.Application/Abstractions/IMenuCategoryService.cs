@@ -4,5 +4,6 @@ namespace CateringService.Domain.Abstractions;
 
 public interface IMenuCategoryService : IBaseService<MenuCategory, Ulid>
 {
-    Task<List<MenuCategory>> GetBySupplierIdAsync(Ulid supplilerId);
+    Task<List<MenuCategory>> GetCategoriesAsync(Ulid supplilerId);
+    Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId);
 }

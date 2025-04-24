@@ -12,7 +12,12 @@ public class MenuCategoryService : BaseService<MenuCategory, Ulid>, IMenuCategor
         _menuCategoryRepository = menuCategoryRepository;
     }
 
-    public Task<List<MenuCategory>> GetBySupplierIdAsync(Ulid supplilerId)
+    public Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId)
+    {
+        return _menuCategoryRepository.GetByIdAndSupplierIdAsync(categoryId, supplierId);
+    }
+
+    public Task<List<MenuCategory>> GetCategoriesAsync(Ulid supplilerId)
     {
         return _menuCategoryRepository.GetBySupplierIdAsync(supplilerId);
     }

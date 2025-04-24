@@ -33,9 +33,17 @@ public class BaseRepository<T, TPrimaryKey> : IBaseRepository<T, TPrimaryKey> wh
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public TPrimaryKey Update(T entity)
+    public TPrimaryKey Update(T entity, bool isTracked = false)
     {
-        _context.Set<T>().Update(entity);
+        if (isTracked)
+        {
+            _context.Set<T>().Update(entity);
+        }
+        else
+        {
+            _context.Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+        }
         return entity.Id;
     }
 }

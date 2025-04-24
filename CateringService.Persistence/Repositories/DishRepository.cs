@@ -10,14 +10,16 @@ public class DishRepository : BaseRepository<Dish, Ulid>, IDishRepository
     {
     }
 
-    public async Task<bool> CheckMenuCategoryExistsAsync(Ulid menuCategoryId)
+    public bool CheckMenuCategoryExists(Ulid menuCategoryId)
     {
-        return await _context.MenuCategories.AnyAsync(mc => mc.Id == menuCategoryId);
+        return _context.MenuCategories
+            .Any(mc => mc.Id == menuCategoryId);
     }
 
-    public async Task<bool> CheckSupplierExistsAsync(Ulid supplierId)
+    public bool CheckSupplierExists(Ulid supplierId)
     {
-        return await _context.Suppliers.AnyAsync(s => s.Id == supplierId);
+        return _context.Suppliers
+            .Any(s => s.Id == supplierId);
     }
 
     public async Task<IEnumerable<Dish>> GetAvailableDishesAsync()
