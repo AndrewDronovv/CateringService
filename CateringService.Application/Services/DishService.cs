@@ -9,7 +9,7 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
     private readonly IDishRepository _dishRepository;
     public DishService(IDishRepository dishRepository, IUnitOfWorkRepository unitOfWork) : base(dishRepository, unitOfWork)
     {
-        _dishRepository = dishRepository;
+        _dishRepository = dishRepository ?? throw new ArgumentNullException(nameof(dishRepository));
     }
 
     public bool CheckMenuCategoryExists(Ulid menuCategoryId)
@@ -29,7 +29,7 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
 
     protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
     {
-        if (oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
+        if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
         {
             oldEntity.Name = newEntity.Name;
         }

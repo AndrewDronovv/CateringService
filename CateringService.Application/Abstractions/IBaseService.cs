@@ -2,11 +2,11 @@
 
 namespace CateringService.Domain.Abstractions;
 
-public interface IBaseService<T, TPrimaryKey> where T : Entity<TPrimaryKey>
+public interface IBaseService<TEntity, TPrimaryKey> where TEntity : Entity<TPrimaryKey>
 {
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<T?> GetByIdAsync(TPrimaryKey id);
-    Task<T?> AddAsync(T entity);
+    Task<IEnumerable<TEntity>> GetAllAsync();
+    Task<TEntity?> GetByIdAsync(TPrimaryKey id);
+    Task<TEntity?> AddAsync(TEntity entity);
     Task DeleteAsync(TPrimaryKey id);
-    Task<T?> UpdateAsync(TPrimaryKey key, T entity);
+    Task<TEntity?> UpdateAsync(TPrimaryKey id, TEntity entity);
 }

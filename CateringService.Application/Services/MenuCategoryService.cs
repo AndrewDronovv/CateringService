@@ -9,7 +9,18 @@ public class MenuCategoryService : BaseService<MenuCategory, Ulid>, IMenuCategor
     private readonly IMenuCategoryRepository _menuCategoryRepository;
     public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, IUnitOfWorkRepository unitOfWork) : base(menuCategoryRepository, unitOfWork)
     {
-        _menuCategoryRepository = menuCategoryRepository;
+        _menuCategoryRepository = menuCategoryRepository ?? throw new ArgumentNullException(nameof(menuCategoryRepository));
+    }
+
+    public async Task DeleteCategoryAsync(Ulid categoryId, Ulid supplierId)
+    {
+        if (await _menuCategoryRepository.HasDishesAsync(categoryId))
+        {
+            throw new Exception($"Нельзя удалить категорию меню так как в ней есть блюда");
+        }
+
+        await _menuCategoryRepository.DeleteAsync(categoryId, supplierId);
+        _unitOfWork.SaveChanges();
     }
 
     public Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId)

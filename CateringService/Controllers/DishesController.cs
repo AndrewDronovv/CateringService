@@ -30,7 +30,7 @@ public class DishesController : ControllerBase
         try
         {
             var dishes = await _dishService.GetAllAsync();
-            if (dishes == null || !dishes.Any())
+            if (dishes is null || !dishes.Any())
             {
                 _logger.LogInformation("Список блюд пуст.");
                 return Ok(Enumerable.Empty<DishDto>());
@@ -64,7 +64,7 @@ public class DishesController : ControllerBase
             }
 
             var dish = await _dishService.GetByIdAsync(id);
-            if (dish == null)
+            if (dish is null)
             {
                 _logger.LogWarning($"Блюдо с Id = {id} не найдено.");
                 return NotFound(new { Error = $"Блюдо с Id = {id} не найдено." });
@@ -98,10 +98,11 @@ public class DishesController : ControllerBase
             var dish = _mapper.Map<Dish>(input);
 
             var createdDish = await _dishService.AddAsync(dish);
-            if (createdDish == null)
+            if (createdDish is null)
             {
                 return BadRequest($"Блюдо не было создано");
             }
+
 
             _logger.LogInformation($"Блюдо {createdDish} с Id = {createdDish.Id} создано в {createdDish.CreatedAt}");
             return CreatedAtRoute("GetDishById",
@@ -109,7 +110,7 @@ public class DishesController : ControllerBase
                 {
                     id = createdDish.Id
                 },
-                createdDish);
+                _mapper.Map<DishDto>(createdDish));
 
         }
         catch (Exception ex)
@@ -120,8 +121,8 @@ public class DishesController : ControllerBase
     }
 
     [HttpDelete(ApiEndPoints.Dishes.Delete)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteDishAsync(Ulid id)
     {
@@ -137,18 +138,23 @@ public class DishesController : ControllerBase
 
             await _dishService.DeleteAsync(id);
             _logger.LogInformation($"Блюдо {deletedDish} с Id = {id} успешно удалено.");
-            return NoContent();
+            return Ok(new
+            {
+                Success = true,
+                Message = $"Выбранное блюдо {deletedDish.Name} удалено",
+                Timestamp = DateTime.Now
+            });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при создании блюда.");
+            _logger.LogError(ex, "Ошибка при удалении блюда.");
             return StatusCode(500, new { Error = "Произошла ошибка на сервере" });
         }
     }
 
     [HttpPut(ApiEndPoints.Dishes.Update)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateDishAsync(Ulid id, DishUpdateDto input)
     {
@@ -160,8 +166,8 @@ public class DishesController : ControllerBase
 
         if (input is null)
         {
-            _logger.LogWarning("DishUpdateDto равен null");
-            return BadRequest(new { Error = "DishUpdateDto равен null" });
+            _logger.LogWarning("Входные данные не указаны. Операция обновления блюда не может быть выполнена.");
+            return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания блюда." });
         }
 
         try

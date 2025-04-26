@@ -14,5 +14,6 @@ public sealed class MappingProfile : Profile
         CreateMap<DishUpdateDto, Dish>();
 
         CreateMap<MenuCategory, MenuCategoryDto>();
+        CreateMap<MenuCategoryCreateDto, MenuCategory>();
     }
 }

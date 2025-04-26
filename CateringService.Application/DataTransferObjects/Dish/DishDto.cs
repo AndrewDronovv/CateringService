@@ -13,4 +13,6 @@ public sealed class DishDto
     public string? Allergens { get; set; }
     public string? PortionSize { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public Ulid SupplierId { get; set; }
+    public Ulid MenuCategoryId { get; set; }
 }

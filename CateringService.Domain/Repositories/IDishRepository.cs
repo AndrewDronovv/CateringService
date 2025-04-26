@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Repositories;
 
-public interface IDishRepository : IBaseRepository<Dish, Ulid>
+public interface IDishRepository : IGenericRepository<Dish, Ulid>
 {
     Task<IEnumerable<Dish>> GetAvailableDishesAsync();
     bool CheckSupplierExists(Ulid supplierId);

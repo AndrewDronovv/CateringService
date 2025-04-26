@@ -17,10 +17,11 @@ public static class ApiEndPoints
 
     public static class MenuCategories
     {
-        private const string Base = $"{ApiBase}/suppliers{{supplierId}}";
+        private const string Base = $"{ApiBase}/suppliers/{{supplierId}}/categories";
 
-        public const string GetAll = $"{Base}/categories";
-        public const string Get = $"{Base}/categories/{{categoryId}}";
-        public const string Create = $"{Base}/categories";
+        public const string GetAll = $"{Base}";
+        public const string Get = $"{Base}/{{categoryId}}";
+        public const string Create = $"{Base}";
+        public const string Delete = $"{Base}/{{categoryId}}";
     }
 }

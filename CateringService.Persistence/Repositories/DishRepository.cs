@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
-public class DishRepository : BaseRepository<Dish, Ulid>, IDishRepository
+public class DishRepository : GenericRepository<Dish, Ulid>, IDishRepository
 {
     public DishRepository(AppDbContext context) : base(context)
     {
