@@ -16,9 +16,4 @@ public class SupplierService : BaseService<Supplier, Ulid>, ISupplierService
     {
         return _supplierRepository.CheckSupplierExists(supplierId);
     }
-
-    public Task<IEnumerable<Supplier>> GetFilteredSuppliersAsync(int workingHours)
-    {
-        return _supplierRepository.GetActiveSuppliersWithWorkingHoursAsync(workingHours);
-    }
 }

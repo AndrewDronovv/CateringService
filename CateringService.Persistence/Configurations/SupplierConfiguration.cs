@@ -21,32 +21,26 @@ public sealed class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
                 id => Ulid.Parse(id)
             );
 
-        builder.Property(s => s.Name)
+        builder.Property(s => s.CompanyName)
             .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(200);
 
-        builder.Property(s => s.Description)
-            .HasMaxLength(500)
-            .HasComment("Описание поставщика");
+        builder.Property(s => s.ContactName)
+            .IsRequired()
+            .HasMaxLength(100)
+            .HasComment("");
 
-        builder.Property(s => s.Logo)
-            .HasMaxLength(200)
-            .HasComment("Ссылка на логотип поставщика");
+        builder.Property(s => s.TaxNumber)
+            .IsRequired()
+            .HasMaxLength(12);
 
         builder.Property(s => s.Phone)
             .IsRequired()
             .HasMaxLength(20);
 
-        builder.Property(s => s.Email)
+        builder.Property(s => s.Address)
             .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(s => s.WorkingHours)
-            .IsRequired();
-
-        builder.Property(s => s.IsActive)
-            .HasDefaultValue(true)
-            .IsRequired();
+            .HasMaxLength(500);
 
         builder.HasMany(s => s.Dishes)
             .WithOne(d => d.Supplier)
@@ -73,35 +67,29 @@ public sealed class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
             new Supplier
             {
                 Id = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4"),
-                Name = "Fresh Produce Supplier",
-                Description = "Поставщик свежих продуктов для ресторанов",
-                Logo = "https://example.com/logo1.png",
+                CompanyName = "Fresh Produce Supplier",
+                ContactName = "John Doe",
+                TaxNumber = "123456789",
                 Phone = "+1234567890",
-                Email = "contact@freshproduce.com",
-                WorkingHours = 8,
-                IsActive = true
+                Address = "123 Market Street, City A",
             },
             new Supplier
             {
                 Id = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
-                Name = "Global Catering Supplies",
-                Description = "Глобальный поставщик кейтерингового оборудования",
-                Logo = "https://example.com/logo2.png",
+                CompanyName = "Global Catering Supplies",
+                ContactName = "Jane Smith",
+                TaxNumber = "987654321",
                 Phone = "+0987654321",
-                Email = "info@globalcatering.com",
-                WorkingHours = 10,
-                IsActive = true
+                Address = "456 Business Blvd, City B",
             },
             new Supplier
             {
                 Id = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96"),
-                Name = "Organic Goods Co.",
-                Description = "Поставщик органических продуктов питания",
-                Logo = "https://example.com/logo3.png",
+                CompanyName = "Organic Goods Co.",
+                ContactName = "Alice Johnson",
+                TaxNumber = "112233445",
                 Phone = "+1122334455",
-                Email = "sales@organicgoods.com",
-                WorkingHours = 6,
-                IsActive = false
+                Address = "789 Green Lane, City C",
             }
         );
     }

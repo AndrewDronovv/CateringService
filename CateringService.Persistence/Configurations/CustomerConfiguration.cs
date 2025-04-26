@@ -23,46 +23,52 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
                id => Ulid.Parse(id)
            );
 
-        builder.Property(c => c.Name)
+        builder.Property(c => c.FullName)
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(c => c.ContactInfo)
+        builder.Property(c => c.Phone)
             .IsRequired()
+            .HasMaxLength(20);
+
+        builder.Property(c => c.CustomerType)
+            .IsRequired()
+            .HasConversion(new EnumToStringConverter<CustomerType>());
+
+        builder.Property(c => c.CompanyName)
             .HasMaxLength(200);
 
-        builder.Property(c => c.PaymentType)
-            .HasConversion(new EnumToStringConverter<PaymentType>())
-            .IsRequired();
-
-        builder.HasMany(c => c.Orders)
-            .WithOne(o => o.Customer)
-            .HasForeignKey(o => o.CustomerId)
-            .OnDelete(DeleteBehavior.SetNull);
+        builder.Property(c => c.TaxNumber)
+            .HasMaxLength(12);
 
         builder.HasData
         (
             new Customer
             {
                 Id = Ulid.Parse("01H5QJ37V03WH5TXE2N1AW3JF9"),
-                Name = "John Doe",
-                ContactInfo = "john.doe@example.com",
-                PaymentType = PaymentType.CreditCard
+                FullName = "John Doe",
+                Phone = "+1-555-0123",
+                CustomerType = CustomerType.Individual,
+                CompanyName = null,
+                TaxNumber = null
             },
             new Customer
             {
                 Id = Ulid.Parse("01H5QJ38KGWM2N56TFH99WQZ03"),
-                Name = "Jane Smith",
-                ContactInfo = "jane.smith@domain.com",
-                PaymentType = PaymentType.PayPal
-
+                FullName = "Jane Smith",
+                Phone = "+1-555-0456",
+                CustomerType = CustomerType.Individual,
+                CompanyName = null,
+                TaxNumber = null
             },
             new Customer
             {
                 Id = Ulid.Parse("01H5QJ391M8PVG6ZWPK4GTN0D8"),
-                Name = "Corporate Client",
-                ContactInfo = "contact@corporate.com",
-                PaymentType = PaymentType.Cash
+                FullName = "Corporate Client",
+                Phone = "+1-555-0789",
+                CustomerType = CustomerType.Corporate,
+                CompanyName = "ACME Inc.",
+                TaxNumber = "1234567890"
             }
         );
     }

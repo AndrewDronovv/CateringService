@@ -5,9 +5,10 @@ namespace CateringService.Domain.Entities;
 
 public sealed class Customer : UlidEntity
 {
-    public string Name { get; set; } = string.Empty;
-    public string ContactInfo { get; set; } = string.Empty;
-    public PaymentType PaymentType { get; set; }
-
-    public ICollection<Order> Orders { get; set; } = [];
+    public string FullName { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
+    public CustomerType CustomerType { get; set; }
+    public string? CompanyName { get; set; } = string.Empty;
+    public string? TaxNumber { get; set; } = string.Empty;
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
 }

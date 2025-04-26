@@ -15,11 +15,4 @@ public sealed class SupplierRepository : GenericRepository<Supplier, Ulid>, ISup
         return await _context.Suppliers
             .AnyAsync(s => s.Id == suppllierId);
     }
-
-    public async Task<IEnumerable<Supplier>> GetActiveSuppliersWithWorkingHoursAsync(int workingHours)
-    {
-        return await _context.Suppliers
-            .Where(s => s.IsActive && s.WorkingHours >= workingHours)
-            .ToListAsync();
-    }
 }

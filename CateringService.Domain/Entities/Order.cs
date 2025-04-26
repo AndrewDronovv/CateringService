@@ -13,7 +13,7 @@ public sealed class Order : UlidEntity
     public Customer Customer { get; set; }
     public Ulid SupplierId { get; set; }
     public Supplier Supplier { get; set; }
-    public ICollection<OrderItem> OrderItems { get; set; } = [];
+    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public Ulid DeliveryId { get; set; }
     public Delivery Delivery { get; set; }
 }

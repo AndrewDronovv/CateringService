@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250425142223_Initial")]
+    [Migration("20250427102627_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -74,19 +74,27 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(26)")
                         .HasColumnName("CustomerId");
 
-                    b.Property<string>("ContactInfo")
-                        .IsRequired()
+                    b.Property<string>("CompanyName")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("CustomerType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<string>("PaymentType")
+                    b.Property<string>("Phone")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("TaxNumber")
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
 
                     b.HasKey("Id");
 
@@ -96,23 +104,25 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = "01H5QJ37V03WH5TXE2N1AW3JF9",
-                            ContactInfo = "john.doe@example.com",
-                            Name = "John Doe",
-                            PaymentType = "CreditCard"
+                            CustomerType = "Individual",
+                            FullName = "John Doe",
+                            Phone = "+1-555-0123"
                         },
                         new
                         {
                             Id = "01H5QJ38KGWM2N56TFH99WQZ03",
-                            ContactInfo = "jane.smith@domain.com",
-                            Name = "Jane Smith",
-                            PaymentType = "PayPal"
+                            CustomerType = "Individual",
+                            FullName = "Jane Smith",
+                            Phone = "+1-555-0456"
                         },
                         new
                         {
                             Id = "01H5QJ391M8PVG6ZWPK4GTN0D8",
-                            ContactInfo = "contact@corporate.com",
-                            Name = "Corporate Client",
-                            PaymentType = "Cash"
+                            CompanyName = "ACME Inc.",
+                            CustomerType = "Corporate",
+                            FullName = "Corporate Client",
+                            Phone = "+1-555-0789",
+                            TaxNumber = "1234567890"
                         });
                 });
 
@@ -763,40 +773,31 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(26)")
                         .HasColumnName("SupplierId");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasComment("Описание поставщика");
+                        .HasColumnType("character varying(500)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Logo")
+                    b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasComment("Ссылка на логотип поставщика");
+                        .HasColumnType("character varying(200)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ContactName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("character varying(100)")
+                        .HasComment("");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
-                    b.Property<int>("WorkingHours")
-                        .HasColumnType("integer");
+                    b.Property<string>("TaxNumber")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)");
 
                     b.HasKey("Id");
 
@@ -806,35 +807,29 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = "01H5QJ6PTMVRFZT58GQX902JC4",
-                            Description = "Поставщик свежих продуктов для ресторанов",
-                            Email = "contact@freshproduce.com",
-                            IsActive = true,
-                            Logo = "https://example.com/logo1.png",
-                            Name = "Fresh Produce Supplier",
+                            Address = "123 Market Street, City A",
+                            CompanyName = "Fresh Produce Supplier",
+                            ContactName = "John Doe",
                             Phone = "+1234567890",
-                            WorkingHours = 8
+                            TaxNumber = "123456789"
                         },
                         new
                         {
                             Id = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
-                            Description = "Глобальный поставщик кейтерингового оборудования",
-                            Email = "info@globalcatering.com",
-                            IsActive = true,
-                            Logo = "https://example.com/logo2.png",
-                            Name = "Global Catering Supplies",
+                            Address = "456 Business Blvd, City B",
+                            CompanyName = "Global Catering Supplies",
+                            ContactName = "Jane Smith",
                             Phone = "+0987654321",
-                            WorkingHours = 10
+                            TaxNumber = "987654321"
                         },
                         new
                         {
                             Id = "01H5QJ6PX4FTQY8KZVW9JMBT96",
-                            Description = "Поставщик органических продуктов питания",
-                            Email = "sales@organicgoods.com",
-                            IsActive = false,
-                            Logo = "https://example.com/logo3.png",
-                            Name = "Organic Goods Co.",
+                            Address = "789 Green Lane, City C",
+                            CompanyName = "Organic Goods Co.",
+                            ContactName = "Alice Johnson",
                             Phone = "+1122334455",
-                            WorkingHours = 6
+                            TaxNumber = "112233445"
                         });
                 });
 

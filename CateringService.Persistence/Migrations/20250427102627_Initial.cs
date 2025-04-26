@@ -31,9 +31,11 @@ namespace CateringService.Persistence.Migrations
                 columns: table => new
                 {
                     CustomerId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    ContactInfo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    PaymentType = table.Column<string>(type: "text", nullable: false)
+                    FullName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    CustomerType = table.Column<string>(type: "text", nullable: false),
+                    CompanyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    TaxNumber = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -58,13 +60,11 @@ namespace CateringService.Persistence.Migrations
                 columns: table => new
                 {
                     SupplierId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false, comment: "Описание поставщика"),
-                    Logo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false, comment: "Ссылка на логотип поставщика"),
+                    CompanyName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    ContactName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false, comment: ""),
+                    TaxNumber = table.Column<string>(type: "character varying(12)", maxLength: 12, nullable: false),
                     Phone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    WorkingHours = table.Column<int>(type: "integer", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true)
+                    Address = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -314,12 +314,12 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Customers",
-                columns: new[] { "CustomerId", "ContactInfo", "Name", "PaymentType" },
+                columns: new[] { "CustomerId", "CompanyName", "CustomerType", "FullName", "Phone", "TaxNumber" },
                 values: new object[,]
                 {
-                    { "01H5QJ37V03WH5TXE2N1AW3JF9", "john.doe@example.com", "John Doe", "CreditCard" },
-                    { "01H5QJ38KGWM2N56TFH99WQZ03", "jane.smith@domain.com", "Jane Smith", "PayPal" },
-                    { "01H5QJ391M8PVG6ZWPK4GTN0D8", "contact@corporate.com", "Corporate Client", "Cash" }
+                    { "01H5QJ37V03WH5TXE2N1AW3JF9", null, "Individual", "John Doe", "+1-555-0123", null },
+                    { "01H5QJ38KGWM2N56TFH99WQZ03", null, "Individual", "Jane Smith", "+1-555-0456", null },
+                    { "01H5QJ391M8PVG6ZWPK4GTN0D8", "ACME Inc.", "Corporate", "Corporate Client", "+1-555-0789", "1234567890" }
                 });
 
             migrationBuilder.InsertData(
@@ -334,17 +334,13 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Suppliers",
-                columns: new[] { "SupplierId", "Description", "Email", "IsActive", "Logo", "Name", "Phone", "WorkingHours" },
+                columns: new[] { "SupplierId", "Address", "CompanyName", "ContactName", "Phone", "TaxNumber" },
                 values: new object[,]
                 {
-                    { "01H5QJ6PTMVRFZT58GQX902JC4", "Поставщик свежих продуктов для ресторанов", "contact@freshproduce.com", true, "https://example.com/logo1.png", "Fresh Produce Supplier", "+1234567890", 8 },
-                    { "01H5QJ6PVB8FYN4QXMR3T7JC9A", "Глобальный поставщик кейтерингового оборудования", "info@globalcatering.com", true, "https://example.com/logo2.png", "Global Catering Supplies", "+0987654321", 10 }
+                    { "01H5QJ6PTMVRFZT58GQX902JC4", "123 Market Street, City A", "Fresh Produce Supplier", "John Doe", "+1234567890", "123456789" },
+                    { "01H5QJ6PVB8FYN4QXMR3T7JC9A", "456 Business Blvd, City B", "Global Catering Supplies", "Jane Smith", "+0987654321", "987654321" },
+                    { "01H5QJ6PX4FTQY8KZVW9JMBT96", "789 Green Lane, City C", "Organic Goods Co.", "Alice Johnson", "+1122334455", "112233445" }
                 });
-
-            migrationBuilder.InsertData(
-                table: "Suppliers",
-                columns: new[] { "SupplierId", "Description", "Email", "Logo", "Name", "Phone", "WorkingHours" },
-                values: new object[] { "01H5QJ6PX4FTQY8KZVW9JMBT96", "Поставщик органических продуктов питания", "sales@organicgoods.com", "https://example.com/logo3.png", "Organic Goods Co.", "+1122334455", 6 });
 
             migrationBuilder.InsertData(
                 table: "Deliveries",

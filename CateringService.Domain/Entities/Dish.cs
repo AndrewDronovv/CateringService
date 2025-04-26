@@ -11,8 +11,8 @@ public sealed class Dish : UlidEntity
     public double Weight { get; set; }
     public string? ImageUrl { get; set; } = string.Empty;
     public bool IsAvailable { get; set; } = true;
-    public string? Allergens { get; set; }
-    public string? PortionSize { get; set; }
+    public string? Allergens { get; set; } = string.Empty;
+    public string? PortionSize { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public Ulid SupplierId { get; set; }

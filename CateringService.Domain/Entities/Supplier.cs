@@ -4,17 +4,15 @@ namespace CateringService.Domain.Entities;
 
 public sealed class Supplier : UlidEntity
 {
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string Logo { get; set; } = string.Empty;
+    public string CompanyName { get; set; } = string.Empty;
+    public string ContactName { get; set; } = string.Empty;
+    public string TaxNumber { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public int WorkingHours { get; set; }
-    public bool IsActive { get; set; }
+    public string Address { get; set; }
 
-    public ICollection<Dish> Dishes { get; set; } = [];
-    public ICollection<MenuCategory> MenuCategories { get; set; } = [];
-    public ICollection<Promotion> Promotions { get; set; } = [];
-    public ICollection<Invoice> Invoices { get; set; } = [];
-    public ICollection<Order> Orders { get; set; } = [];
+    public ICollection<Dish> Dishes { get; set; } = new List<Dish>();
+    public ICollection<MenuCategory> MenuCategories { get; set; } = new List<MenuCategory>();
+    public ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
+    public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
 }
