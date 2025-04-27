@@ -8,7 +8,7 @@ public sealed class Supplier : UlidEntity
     public string ContactName { get; set; } = string.Empty;
     public string TaxNumber { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
-    public string Address { get; set; }
+    public string Address { get; set; } = string.Empty;
 
     public ICollection<Dish> Dishes { get; set; } = new List<Dish>();
     public ICollection<MenuCategory> MenuCategories { get; set; } = new List<MenuCategory>();

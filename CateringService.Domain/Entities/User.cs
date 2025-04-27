@@ -3,7 +3,7 @@ using CateringService.Domain.Enums;
 
 namespace CateringService.Domain.Entities;
 
-public sealed class User : UlidEntity
+public sealed class User
 {
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;

@@ -1,4 +1,5 @@
-﻿using CateringService.Application.Abstractions;
+﻿using System.Text;
+using CateringService.Application.Abstractions;
 using CateringService.Application.Mapping;
 using CateringService.Application.Services;
 using CateringService.Application.Validators.Dish;
@@ -8,7 +9,9 @@ using CateringService.Persistence;
 using CateringService.Persistence.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CateringService.Extensions;
 
@@ -62,5 +65,33 @@ public static class ServiceExtensions
     {
         services.AddControllers();
         services.AddSwaggerGen();
+    }
+
+    public static IServiceCollection AddJwt(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection("Jwt:AccessToken");
+        var key = jwtSettings["Key"];
+        var issuer = jwtSettings["Issuer"];
+        var audience = jwtSettings["Audience"];
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ClockSkew = TimeSpan.Zero,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                };
+            });
+
+        return services;
     }
 }

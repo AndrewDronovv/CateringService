@@ -6,12 +6,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, config) =>
 {
-    config.ReadFrom.Configuration(context.Configuration);   
+    config.ReadFrom.Configuration(context.Configuration);
 });
 
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureCors();
 builder.Services.ApplicationServiceExtensions();
+builder.Services.AddJwt(builder.Configuration);
 builder.Services.AddPersistence();
 builder.Services.AddPresentationServices();
 
