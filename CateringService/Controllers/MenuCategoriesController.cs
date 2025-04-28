@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.MenuCategory;
+using CateringService.Application.Services;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using static CateringService.ApiEndPoints;
 
 namespace CateringService.Controllers;
 
@@ -26,7 +28,7 @@ public class MenuCategoriesController : ControllerBase
     [HttpGet(ApiEndPoints.MenuCategories.GetAll)]
     [ProducesResponseType(typeof(List<MenuCategoryDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<List<MenuCategoryDto>>> GetMenuCategoriesBySupplierIdAsync(Ulid supplierId)
+    public async Task<ActionResult<List<MenuCategoryDto>>> GetMenuCategoriesAsync(Ulid supplierId)
     {
         _logger.LogInformation($"Получен запрос на категории меню у поставщика с Id = {supplierId}.");
 
@@ -54,7 +56,7 @@ public class MenuCategoriesController : ControllerBase
     [ProducesResponseType(typeof(MenuCategoryDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<MenuCategoryDto>> GetMenuCategoryBySupplierId(Ulid categoryId, Ulid supplierId)
+    public async Task<ActionResult<MenuCategoryDto>> GetMenuCategoryAsync(Ulid categoryId, Ulid supplierId)
     {
         _logger.LogInformation($"Получен запрос на категорию меню с Id = {categoryId} и поставщка с Id = {supplierId}.");
 
@@ -135,7 +137,7 @@ public class MenuCategoriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteDishAsync(Ulid categoryId, Ulid supplierId)
+    public async Task<IActionResult> DeleteMenuCategoryAsync(Ulid categoryId, Ulid supplierId)
     {
         try
         {
@@ -153,6 +155,39 @@ public class MenuCategoriesController : ControllerBase
         {
             _logger.LogError(ex, "Ошибка при удалении категории меню.");
             return StatusCode(500, new { Error = "Произошла ошибка на сервере" });
+        }
+    }
+
+    [HttpPut(ApiEndPoints.MenuCategories.Delete)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid categoryId, MenuCategoryUpdateDto input)
+    {
+        if (categoryId == Ulid.Empty)
+        {
+            _logger.LogWarning($"Id не должен быть пустым.");
+            return BadRequest(new { Error = "Id не должен быть пустым." });
+        }
+
+        if (input is null)
+        {
+            _logger.LogWarning("Входные данные не указаны. Операция обновления категории меню не может быть выполнена.");
+            return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания категории меню." });
+        }
+        try
+        {
+            var updateRequest = _mapper.Map<MenuCategory>(input);
+
+            await _menuCategoryService.UpdateAsync(categoryId, updateRequest);
+
+            _logger.LogInformation($"Категория меню с Id = {categoryId} успешно обновлена.");
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ошибка при обновлении категории меню.");
+            return StatusCode(500, new { Error = "Произошла ошибка на сервере." });
         }
     }
 }

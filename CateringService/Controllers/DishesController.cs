@@ -52,32 +52,32 @@ public class DishesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult<DishDto>> GetDishAsync(Ulid id)
+    public async Task<ActionResult<DishDto>> GetDishAsync(Ulid dishId)
     {
         try
         {
-            _logger.LogInformation($"Получен запрос блюда с Id = {id}.");
-            if (id == Ulid.Empty)
+            _logger.LogInformation($"Получен запрос блюда с Id = {dishId}.");
+            if (dishId == Ulid.Empty)
             {
                 _logger.LogWarning($"Id не должен быть пустым.");
                 return BadRequest(new { Error = "Id не должен быть пустым." });
             }
 
-            var dish = await _dishService.GetByIdAsync(id);
+            var dish = await _dishService.GetByIdAsync(dishId);
             if (dish is null)
             {
-                _logger.LogWarning($"Блюдо с Id = {id} не найдено.");
-                return NotFound(new { Error = $"Блюдо с Id = {id} не найдено." });
+                _logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
+                return NotFound(new { Error = $"Блюдо с Id = {dishId} не найдено." });
             }
 
             var dishDto = _mapper.Map<DishDto>(dish);
 
-            _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {id} успешно получено.");
+            _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishId} успешно получено.");
             return Ok(dishDto);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Ошибка при получении блюда по Id = {id}.");
+            _logger.LogError(ex, $"Ошибка при получении блюда по Id = {dishId}.");
             return StatusCode(500, new { Error = "Произошла ошибка на сервере." });
         }
     }
@@ -124,20 +124,20 @@ public class DishesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteDishAsync(Ulid id)
+    public async Task<IActionResult> DeleteDishAsync(Ulid dishId)
     {
         try
         {
-            if (id == Ulid.Empty)
+            if (dishId == Ulid.Empty)
             {
                 _logger.LogWarning($"Id не должен быть пустым.");
                 return BadRequest(new { Error = "Id не должен быть пустым." });
             }
 
-            var deletedDish = await _dishService.GetByIdAsync(id);
+            var deletedDish = await _dishService.GetByIdAsync(dishId);
 
-            await _dishService.DeleteAsync(id);
-            _logger.LogInformation($"Блюдо {deletedDish} с Id = {id} успешно удалено.");
+            await _dishService.DeleteAsync(dishId);
+            _logger.LogInformation($"Блюдо {deletedDish} с Id = {dishId} успешно удалено.");
             return Ok(new
             {
                 Success = true,
@@ -156,12 +156,12 @@ public class DishesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateDishAsync(Ulid id, DishUpdateDto input)
+    public async Task<IActionResult> UpdateDishAsync(Ulid dishId, DishUpdateDto input)
     {
-        if (id == Ulid.Empty)
+        if (dishId == Ulid.Empty)
         {
             _logger.LogWarning($"Id не должен быть пустым.");
-            return BadRequest(new { Error = "Id должен быть больше 0." });
+            return BadRequest(new { Error = "Id не должен быть пустым." });
         }
 
         if (input is null)
@@ -174,9 +174,9 @@ public class DishesController : ControllerBase
         {
             var updateRequest = _mapper.Map<Dish>(input);
 
-            await _dishService.UpdateAsync(id, updateRequest);
+            await _dishService.UpdateAsync(dishId, updateRequest);
 
-            _logger.LogInformation($"Блюдо с Id = {id} успешно обновлено.");
+            _logger.LogInformation($"Блюдо с Id = {dishId} успешно обновлено.");
             return NoContent();
         }
         catch (Exception ex)

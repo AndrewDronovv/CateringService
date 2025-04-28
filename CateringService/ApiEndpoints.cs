@@ -9,10 +9,10 @@ public static class ApiEndPoints
         private const string Base = $"{ApiBase}/dishes";
 
         public const string GetAll = Base;
-        public const string Get = $"{Base}/{{id}}";
+        public const string Get = $"{Base}/{{dishId}}";
         public const string Create = Base;
-        public const string Update = $"{Base}/{{id}}";
-        public const string Delete = $"{Base}/{{id}}";
+        public const string Update = $"{Base}/{{dishId}}";
+        public const string Delete = $"{Base}/{{dishId}}";
     }
 
     public static class MenuCategories
@@ -22,6 +22,7 @@ public static class ApiEndPoints
         public const string GetAll = $"{Base}";
         public const string Get = $"{Base}/{{categoryId}}";
         public const string Create = $"{Base}";
+        public const string Update = $"{Base}/{{categoryId}}";
         public const string Delete = $"{Base}/{{categoryId}}";
     }
 }
