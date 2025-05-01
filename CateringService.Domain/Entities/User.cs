@@ -1,5 +1,4 @@
-﻿using CateringService.Domain.Common;
-using CateringService.Domain.Enums;
+﻿using CateringService.Domain.Enums;
 
 namespace CateringService.Domain.Entities;
 
