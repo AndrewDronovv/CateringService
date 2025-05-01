@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.MenuCategory;
-using CateringService.Application.Services;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using static CateringService.ApiEndPoints;
 
 namespace CateringService.Controllers;
 
@@ -158,11 +156,11 @@ public class MenuCategoriesController : ControllerBase
         }
     }
 
-    [HttpPut(ApiEndPoints.MenuCategories.Delete)]
+    [HttpPut(ApiEndPoints.MenuCategories.Update)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid categoryId, MenuCategoryUpdateDto input)
+    public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid supplierId, Ulid categoryId, MenuCategoryUpdateDto input)
     {
         if (categoryId == Ulid.Empty)
         {
@@ -175,6 +173,7 @@ public class MenuCategoriesController : ControllerBase
             _logger.LogWarning("Входные данные не указаны. Операция обновления категории меню не может быть выполнена.");
             return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания категории меню." });
         }
+
         try
         {
             var updateRequest = _mapper.Map<MenuCategory>(input);

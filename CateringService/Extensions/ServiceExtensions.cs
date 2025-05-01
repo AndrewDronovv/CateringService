@@ -30,7 +30,9 @@ public static class ServiceExtensions
 
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("DefaultConnection");
+        string connectionString = configuration.GetConnectionString("DefaultConnection") ??
+        throw new InvalidOperationException("Connection string: DefaultConnection was not found.");
+        
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
         .LogTo(Console.WriteLine, LogLevel.Information));
     }

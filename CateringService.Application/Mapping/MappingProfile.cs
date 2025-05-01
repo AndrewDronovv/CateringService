@@ -9,11 +9,12 @@ public sealed class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<DishCreateDto, Dish>();
-        CreateMap<Dish, DishDto>();
-        CreateMap<DishUpdateDto, Dish>();
+        CreateMap<Dish, DishDto>().ReverseMap();
+        CreateMap<DishCreateDto, Dish>().ReverseMap();
+        CreateMap<DishUpdateDto, Dish>().ReverseMap();
 
-        CreateMap<MenuCategory, MenuCategoryDto>();
-        CreateMap<MenuCategoryCreateDto, MenuCategory>();
+        CreateMap<MenuCategory, MenuCategoryDto>().ReverseMap();
+        CreateMap<MenuCategoryCreateDto, MenuCategory>().ReverseMap();
+        CreateMap<MenuCategoryUpdateDto, MenuCategory>().ReverseMap();
     }
 }

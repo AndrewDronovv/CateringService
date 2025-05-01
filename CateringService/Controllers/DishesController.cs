@@ -113,7 +113,6 @@ public class DishesController : ControllerBase
                 return BadRequest($"Блюдо не было создано");
             }
 
-
             _logger.LogInformation($"Блюдо {createdDish} с Id = {createdDish.Id} создано в {createdDish.CreatedAt}");
             return CreatedAtRoute("GetDishById",
                 new
@@ -198,7 +197,7 @@ public class DishesController : ControllerBase
 
     [HttpPatch(ApiEndPoints.Dishes.Toggle)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ToggleDishState(Ulid dishId)
     {

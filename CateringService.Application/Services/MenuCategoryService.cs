@@ -32,4 +32,17 @@ public class MenuCategoryService : BaseService<MenuCategory, Ulid>, IMenuCategor
     {
         return _menuCategoryRepository.GetBySupplierIdAsync(supplilerId);
     }
+
+    protected override void UpdateEntity(MenuCategory oldEntity, MenuCategory newEntity)
+    {
+        if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
+        {
+            oldEntity.Name = newEntity.Name;
+        }
+
+        if (!oldEntity.Description.Equals(newEntity.Description, StringComparison.Ordinal))
+        {
+            oldEntity.Description = newEntity.Description;
+        }
+    }
 }
