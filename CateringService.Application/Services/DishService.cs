@@ -22,21 +22,19 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
         return _dishRepository.CheckSupplierExists(supplierId);
     }
 
-    public async Task<IEnumerable<Dish>> GetAvailableDishesAsync()
+    public async Task<bool> ToggleDishState(Ulid dishId)
     {
-        return await _dishRepository.GetAvailableDishesAsync();
-    }
-
-    public async Task<bool> ToggleDishState(Ulid dishId, bool isAvailable)
-    {
-        var newDish = new Dish()
+        var dish = await _dishRepository.GetByIdAsync(dishId);
+        if (dish == null)
         {
-            Id = dishId,
-            IsAvailable = !isAvailable
-        };
+            throw new KeyNotFoundException($"Блюдо с ID {dishId} не найдено.");
+        }
 
-        var result = _dishRepository.ToggleState(newDish);
+        dish.IsAvailable = !dish.IsAvailable;
+
+        var result = _dishRepository.ToggleState(dish);
         await _unitOfWork.SaveChangesAsync();
+
         return result;
     }
 
@@ -45,6 +43,18 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
         if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
         {
             oldEntity.Name = newEntity.Name;
+        }
+        if (!oldEntity.Description.Equals(newEntity.Description, StringComparison.Ordinal))
+        {
+            oldEntity.Description = newEntity.Description;
+        }
+        if (oldEntity.Price != newEntity.Price)
+        {
+            oldEntity.Price = newEntity.Price;
+        }
+        if (!oldEntity.ImageUrl.Equals(newEntity.ImageUrl, StringComparison.Ordinal))
+        {
+            oldEntity.ImageUrl = newEntity.ImageUrl;
         }
     }
 }

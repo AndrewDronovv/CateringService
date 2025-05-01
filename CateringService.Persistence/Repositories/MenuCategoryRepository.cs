@@ -9,8 +9,6 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
     public MenuCategoryRepository(AppDbContext context) : base(context)
     {
     }
-
-
     public async Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid supplierId, Ulid menuCategoryId)
     {
         var menuCategory = await _context.MenuCategories

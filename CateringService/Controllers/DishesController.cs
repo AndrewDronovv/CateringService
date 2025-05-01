@@ -95,6 +95,16 @@ public class DishesController : ControllerBase
                 return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания блюда." });
             }
 
+            if (!_dishService.CheckSupplierExists(input.SupplierId))
+            {
+                return NotFound($"Поставщик c Id = {input.SupplierId} не найден");
+            }
+
+            if (!_dishService.CheckMenuCategoryExists(input.MenuCategoryId))
+            {
+                return NotFound($"Категория меню с Id = {input.MenuCategoryId} не найдена");
+            }
+
             var dish = _mapper.Map<Dish>(input);
 
             var createdDish = await _dishService.AddAsync(dish);
@@ -108,7 +118,7 @@ public class DishesController : ControllerBase
             return CreatedAtRoute("GetDishById",
                 new
                 {
-                    id = createdDish.Id
+                    dishId = createdDish.Id
                 },
                 _mapper.Map<DishDto>(createdDish));
 
@@ -141,7 +151,7 @@ public class DishesController : ControllerBase
             return Ok(new
             {
                 Success = true,
-                Message = $"Выбранное блюдо {deletedDish.Name} удалено",
+                Message = $"Выбранное блюдо {deletedDish?.Name} удалено",
                 Timestamp = DateTime.Now
             });
         }
@@ -194,19 +204,19 @@ public class DishesController : ControllerBase
     {
         try
         {
-            var dish = await _dishService.GetByIdAsync(dishId, true);
+            var dish = await _dishService.GetByIdAsync(dishId);
             if (dish is null)
             {
                 return NotFound();
             }
 
-            var result = _dishService.ToggleDishState(dishId, dish.IsAvailable);
-            return Ok(result);
+            var result = await _dishService.ToggleDishState(dishId);
+            return NoContent();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-
-            throw;
+            _logger.LogError(ex, "Ошибка при переключении состояния блюда.");
+            return StatusCode(500, new { Error = "Произошла ошибка на сервере." });
         }
     }
 }
