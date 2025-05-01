@@ -7,4 +7,5 @@ public interface IDishService : IBaseService<Dish, Ulid>
     Task<IEnumerable<Dish>> GetAvailableDishesAsync();
     bool CheckSupplierExists(Ulid supplierId);
     bool CheckMenuCategoryExists(Ulid menuCategoryId);
+    Task<bool> ToggleDishState(Ulid dishId, bool isAvailable);
 }

@@ -4,7 +4,7 @@ namespace CateringService.Domain.Repositories;
 
 public interface IGenericRepository<TEntity, TPrimaryKey> where TEntity : Entity<TPrimaryKey>
 {
-    Task<TEntity?> GetByIdAsync(TPrimaryKey entityId, CancellationToken cancellationToken = default);
+    Task<TEntity?> GetByIdAsync(TPrimaryKey entityId, bool asNoTracking = false, CancellationToken cancellationToken = default);
     Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default);
     TPrimaryKey Add(TEntity entity);
     void Delete(TEntity entity);

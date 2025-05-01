@@ -38,9 +38,9 @@ public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryK
         return await _repository.GetAllAsync();
     }
 
-    public async Task<TEntity?> GetByIdAsync(TPrimaryKey id)
+    public async Task<TEntity?> GetByIdAsync(TPrimaryKey id, bool isTrackable = false)
     {
-        return await _repository.GetByIdAsync(id);
+        return await _repository.GetByIdAsync(id, isTrackable);
     }
 
     public async Task<TEntity?> UpdateAsync(TPrimaryKey id, TEntity entity)

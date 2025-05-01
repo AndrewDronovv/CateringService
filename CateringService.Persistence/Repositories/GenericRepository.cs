@@ -30,22 +30,25 @@ public class GenericRepository<TEntity, TPrimaryKey> : IGenericRepository<TEntit
         return await _context.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<TEntity?> GetByIdAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> GetByIdAsync(TPrimaryKey id, bool asNoTracking = false, CancellationToken cancellationToken = default)
     {
-        return await _context.Set<TEntity>().FindAsync(id);
+        var dbSet = _context.Set<TEntity>();
+        if (asNoTracking)
+        {
+            dbSet.AsNoTracking();
+        }
+
+        return await dbSet.FindAsync(id, cancellationToken);
     }
 
-    public TPrimaryKey Update(TEntity entity, bool isTracked = false)
+    public TPrimaryKey Update(TEntity entity, bool isNotTracked = false)
     {
-        if (isTracked)
-        {
-            _context.Set<TEntity>().Update(entity);
-        }
-        else
+        if (isNotTracked)
         {
             _context.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
         }
+
         return entity.Id;
     }
 }

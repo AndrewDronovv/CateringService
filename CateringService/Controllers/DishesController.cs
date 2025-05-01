@@ -185,4 +185,28 @@ public class DishesController : ControllerBase
             return StatusCode(500, new { Error = "Произошла ошибка на сервере." });
         }
     }
+
+    [HttpPatch(ApiEndPoints.Dishes.Toggle)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ToggleDishState(Ulid dishId)
+    {
+        try
+        {
+            var dish = await _dishService.GetByIdAsync(dishId, true);
+            if (dish is null)
+            {
+                return NotFound();
+            }
+
+            var result = _dishService.ToggleDishState(dishId, dish.IsAvailable);
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+    }
 }

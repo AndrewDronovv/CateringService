@@ -7,4 +7,5 @@ public interface IDishRepository : IGenericRepository<Dish, Ulid>
     Task<IEnumerable<Dish>> GetAvailableDishesAsync();
     bool CheckSupplierExists(Ulid supplierId);
     bool CheckMenuCategoryExists(Ulid menuCategoryId);
+    bool ToggleState(Dish dish);
 }

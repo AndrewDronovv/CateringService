@@ -31,7 +31,8 @@ public static class ServiceExtensions
     public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)
     {
         string connectionString = configuration.GetConnectionString("DefaultConnection");
-        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
+        .LogTo(Console.WriteLine, LogLevel.Information));
     }
 
     public static void AddPersistence(this IServiceCollection services)

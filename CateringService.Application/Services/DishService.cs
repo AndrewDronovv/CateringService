@@ -27,6 +27,19 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
         return await _dishRepository.GetAvailableDishesAsync();
     }
 
+    public async Task<bool> ToggleDishState(Ulid dishId, bool isAvailable)
+    {
+        var newDish = new Dish()
+        {
+            Id = dishId,
+            IsAvailable = !isAvailable
+        };
+
+        var result = _dishRepository.ToggleState(newDish);
+        await _unitOfWork.SaveChangesAsync();
+        return result;
+    }
+
     protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
     {
         if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))

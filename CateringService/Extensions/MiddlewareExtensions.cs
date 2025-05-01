@@ -8,7 +8,6 @@ public static class MiddlewareExtensions
         {
             app.UseSwagger();
             app.UseSwaggerUI();
-            app.ApplyMigrations();
         }
 
         app.UseRouting();

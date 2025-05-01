@@ -13,6 +13,7 @@ public static class ApiEndPoints
         public const string Create = Base;
         public const string Update = $"{Base}/{{dishId}}";
         public const string Delete = $"{Base}/{{dishId}}";
+        public const string Toggle = $"{Base}/{{dishId}}/toggle";
     }
 
     public static class MenuCategories

@@ -28,4 +28,11 @@ public class DishRepository : GenericRepository<Dish, Ulid>, IDishRepository
             .Where(d => d.IsAvailable)
             .ToListAsync();
     }
+
+    public bool ToggleState(Dish dish)
+    {
+        _context.Dishes.Attach(dish);
+        _context.Entry(dish).Property(p => p.IsAvailable).IsModified = true;
+        return dish.IsAvailable;
+    }
 }
