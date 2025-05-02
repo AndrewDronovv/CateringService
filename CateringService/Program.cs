@@ -1,14 +1,8 @@
 using CateringService.Extensions;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-builder.Host.UseSerilog((context, config) =>
-{
-    config.ReadFrom.Configuration(context.Configuration);
-});
-
+builder.ConfigureSerilog();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureCors();
 builder.Services.ApplicationServiceExtensions();
