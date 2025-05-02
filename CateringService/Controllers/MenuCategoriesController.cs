@@ -15,7 +15,8 @@ public class MenuCategoriesController : ControllerBase
     private readonly ILogger<MenuCategoriesController> _logger;
     private readonly IMapper _mapper;
 
-    public MenuCategoriesController(IMenuCategoryService menuCategoryService, ILogger<MenuCategoriesController> logger, IMapper mapper, ISupplierService supplierService)
+    public MenuCategoriesController(IMenuCategoryService menuCategoryService, ILogger<MenuCategoriesController> logger, 
+        IMapper mapper, ISupplierService supplierService)
     {
         _menuCategoryService = menuCategoryService ?? throw new ArgumentNullException(nameof(menuCategoryService));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -26,4 +26,11 @@ public static class ApiEndPoints
         public const string Update = $"{Base}/{{categoryId}}";
         public const string Delete = $"{Base}/{{categoryId}}";
     }
+
+    public static class Tenants
+    {
+        private const string Base = $"{ApiBase}/tenants";
+
+        public const string GetAll = $"{Base}";
+    }
 }

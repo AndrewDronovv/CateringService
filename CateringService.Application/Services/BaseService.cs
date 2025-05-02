@@ -4,7 +4,8 @@ using CateringService.Domain.Repositories;
 
 namespace CateringService.Application.Services;
 
-public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryKey> where TEntity : Entity<TPrimaryKey>
+public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryKey> 
+    where TEntity : Entity<TPrimaryKey>
 {
     private readonly IGenericRepository<TEntity, TPrimaryKey> _repository;
     protected readonly IUnitOfWorkRepository _unitOfWork;

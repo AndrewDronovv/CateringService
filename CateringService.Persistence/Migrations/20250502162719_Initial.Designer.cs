@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250501072408_Initial")]
+    [Migration("20250502162719_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -830,6 +830,54 @@ namespace CateringService.Persistence.Migrations
                             ContactName = "Alice Johnson",
                             Phone = "+1122334455",
                             TaxNumber = "112233445"
+                        });
+                });
+
+            modelBuilder.Entity("CateringService.Domain.Entities.Tenant", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
+                        .HasColumnName("TenantId");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp without time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tenants", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            CreatedAt = new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "First tenant"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "Second tenant"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ7XQZKTYZ9QW8VRCMND5B",
+                            CreatedAt = new DateTime(2025, 4, 22, 14, 15, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "Third tenant"
                         });
                 });
 

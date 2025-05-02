@@ -7,7 +7,8 @@ namespace CateringService.Application.Services;
 public class DishService : BaseService<Dish, Ulid>, IDishService
 {
     private readonly IDishRepository _dishRepository;
-    public DishService(IDishRepository dishRepository, IUnitOfWorkRepository unitOfWork) : base(dishRepository, unitOfWork)
+    public DishService(IDishRepository dishRepository, IUnitOfWorkRepository unitOfWork) : 
+        base(dishRepository, unitOfWork)
     {
         _dishRepository = dishRepository ?? throw new ArgumentNullException(nameof(dishRepository));
     }

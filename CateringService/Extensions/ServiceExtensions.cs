@@ -32,7 +32,7 @@ public static class ServiceExtensions
     {
         string connectionString = configuration.GetConnectionString("DefaultConnection") ??
         throw new InvalidOperationException("Connection string: DefaultConnection was not found.");
-        
+
         services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString)
         .LogTo(Console.WriteLine, LogLevel.Information));
     }
@@ -52,6 +52,9 @@ public static class ServiceExtensions
 
         services.AddScoped<ISupplierRepository, SupplierRepository>();
         services.AddScoped<ISupplierService, SupplierService>();
+
+        services.AddScoped<ITenantRepository, TenantRepository>();
+        services.AddScoped<ITenantService, TenantService>();
 
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
     }
