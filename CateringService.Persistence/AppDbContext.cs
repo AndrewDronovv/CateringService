@@ -38,7 +38,28 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new SupplierConfiguration());
         modelBuilder.ApplyConfiguration(new TenantConfiguration());
     }
-
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder
+    //        .UseSeeding((context, _) =>
+    //        {
+    //            var menuCategory = context.Set<MenuCategory>().FirstOrDefault(mc => mc.Name == "Desserts");
+    //            if (menuCategory == null)
+    //            {
+    //                context.Set<MenuCategory>().Add(new MenuCategory { Id = Ulid.NewUlid(), Name = "None", Description = "None" });
+    //                context.SaveChanges();
+    //            }
+    //        })
+    //        .UseAsyncSeeding(async (context, _, cancellationToken) =>
+    //        {
+    //            var menuCategory = await context
+    //            .Set<MenuCategory>()
+    //            .FirstOrDefaultAsync(mc => mc.Name == "Desserts", cancellationToken);
+    //            if (menuCategory is null)
+    //            {
+    //                context.Set<MenuCategory>().Add(new MenuCategory { Id = Ulid.NewUlid(), Name = "None", Description = "None" });
+    //                await context.SaveChangesAsync(cancellationToken);
+    //            }
+    //        });
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         base.ConfigureConventions(configurationBuilder);

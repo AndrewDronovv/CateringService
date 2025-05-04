@@ -23,28 +23,19 @@ public class DishesController : ControllerBase
     [HttpGet(ApiEndPoints.Dishes.GetAll)]
     [ProducesResponseType(typeof(IEnumerable<DishDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<DishDto>>> GetDishesAsync()
     {
         _logger.LogInformation("Получен запрос на список блюд.");
-        try
+        var dishes = await _dishService.GetAllAsync();
+        if (dishes is null || !dishes.Any())
         {
-            var dishes = await _dishService.GetAllAsync();
-            if (dishes is null || !dishes.Any())
-            {
-                _logger.LogInformation("Список блюд пуст.");
-                return Ok(Enumerable.Empty<DishDto>());
-            }
+            _logger.LogInformation("Список блюд пуст.");
+            return Ok(Enumerable.Empty<DishDto>());
+        }
 
-            var dishesDto = _mapper.Map<IEnumerable<DishDto>>(dishes);
-            _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishes.Count()} блюд.");
-            return Ok(dishesDto);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка при получении списка блюд.");
-            return StatusCode(500, new { Error = "Произошла ошибка на сервере." });
-        }
+        var dishesDto = _mapper.Map<IEnumerable<DishDto>>(dishes);
+        _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishes.Count()} блюд.");
+        return Ok(dishesDto);
     }
 
     [HttpGet(ApiEndPoints.Dishes.Get, Name = "GetDishById")]
@@ -54,32 +45,25 @@ public class DishesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<DishDto>> GetDishAsync(Ulid dishId)
     {
-        try
+        //логирование сделать через action filters
+        _logger.LogInformation($"Получен запрос блюда с Id = {dishId}.");
+        if (dishId == Ulid.Empty)
         {
-            _logger.LogInformation($"Получен запрос блюда с Id = {dishId}.");
-            if (dishId == Ulid.Empty)
-            {
-                _logger.LogWarning($"Id не должен быть пустым.");
-                return BadRequest(new { Error = "Id не должен быть пустым." });
-            }
-
-            var dish = await _dishService.GetByIdAsync(dishId);
-            if (dish is null)
-            {
-                _logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
-                return NotFound(new { Error = $"Блюдо с Id = {dishId} не найдено." });
-            }
-
-            var dishDto = _mapper.Map<DishDto>(dish);
-
-            _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishId} успешно получено.");
-            return Ok(dishDto);
+            _logger.LogWarning($"Id не должен быть пустым.");
+            return BadRequest(new { Error = "Id не должен быть пустым." });
         }
-        catch (Exception ex)
+
+        var dish = await _dishService.GetByIdAsync(dishId);
+        if (dish is null)
         {
-            _logger.LogError(ex, $"Ошибка при получении блюда по Id = {dishId}.");
-            return StatusCode(500, new { Error = "Произошла ошибка на сервере." });
+            _logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
+            return NotFound(new { Error = $"Блюдо с Id = {dishId} не найдено." });
         }
+
+        var dishDto = _mapper.Map<DishDto>(dish);
+
+        _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishId} успешно получено.");
+        return Ok(dishDto);
     }
 
     [HttpPost(ApiEndPoints.Dishes.Create)]

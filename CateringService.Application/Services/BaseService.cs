@@ -1,10 +1,11 @@
 ﻿using CateringService.Domain.Abstractions;
 using CateringService.Domain.Common;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 
 namespace CateringService.Application.Services;
 
-public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryKey> 
+public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryKey>
     where TEntity : Entity<TPrimaryKey>
 {
     private readonly IGenericRepository<TEntity, TPrimaryKey> _repository;
@@ -39,9 +40,14 @@ public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryK
         return await _repository.GetAllAsync();
     }
 
-    public async Task<TEntity?> GetByIdAsync(TPrimaryKey id, bool isTrackable = false)
+    public async Task<TEntity> GetByIdAsync(TPrimaryKey id, bool isTrackable = false)
     {
-        return await _repository.GetByIdAsync(id, isTrackable);
+        var entity = await _repository.GetByIdAsync(id, isTrackable);
+        if (entity is null)
+        {
+            throw new NotFoundException(typeof(TEntity).Name, id.ToString());
+        }
+        return entity;
     }
 
     public async Task<TEntity?> UpdateAsync(TPrimaryKey id, TEntity entity)
