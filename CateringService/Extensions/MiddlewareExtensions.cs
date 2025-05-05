@@ -6,22 +6,18 @@ public static class MiddlewareExtensions
 {
     public static void ConfigurePipeline(this WebApplication app)
     {
-        app.UseMiddleware<ErrorHandlingMiddleware>();
+        app.UseErrorHandling();
 
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI();
         }
-
-        app.UseRouting();
-        app.UseStaticFiles();
-
         app.UseHttpsRedirection();
-
+        app.UseStaticFiles();
+        app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
-
         app.MapControllers();
     }
 }

@@ -13,8 +13,25 @@ public class TenantRepository : ITenantRepository
         _context = context;
     }
 
+    public Ulid Add(Tenant input)
+    {
+        _context.Tenants.Add(input);
+        return input.Id;
+    }
+
+    public void Delete(Tenant tenant)
+    {
+        _context.Tenants.Remove(tenant);
+    }
+
     public async Task<IEnumerable<Tenant>> GetAllAsync()
     {
         return await _context.Tenants.ToListAsync();
+    }
+
+    public async Task<Tenant?> GetByIdAsync(Ulid tenantId)
+    {
+        return await _context.Tenants
+            .FindAsync(tenantId);
     }
 }

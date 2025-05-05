@@ -15,11 +15,6 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
             .Where(mc => mc.SupplierId == menuCategoryId && mc.Id == supplierId)
             .FirstOrDefaultAsync();
 
-        if (menuCategory == null)
-        {
-            throw new Exception("Категория меню не найдена");
-        }
-
         return menuCategory;
     }
 
@@ -34,11 +29,6 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
         var entity = await _context.MenuCategories
             .Where(mc => mc.Id == categoryId && mc.SupplierId == supplierId)
             .FirstOrDefaultAsync();
-
-        if (entity == null)
-        {
-            throw new KeyNotFoundException($"Категория меню с Id = {categoryId} или поставщик с Id = {supplierId} не найдены.");
-        }
 
         _context.MenuCategories.Remove(entity);
     }

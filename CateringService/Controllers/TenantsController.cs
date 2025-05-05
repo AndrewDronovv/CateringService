@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
+using CateringService.Application.DataTransferObjects.Dish;
 using CateringService.Application.DataTransferObjects.Tenants;
+using CateringService.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using static CateringService.ApiEndPoints;
 
 namespace CateringService.Controllers;
 
@@ -37,5 +38,69 @@ public class TenantsController : ControllerBase
         _logger.LogInformation($"Запрос списка арендаторов выполнен успешно. Найдено {tenants.Count()} арендатора.");
 
         return Ok(tenantsDto);
+    }
+
+    [HttpGet(ApiEndPoints.Tenants.Get, Name = "GetTenantById")]
+    [ProducesResponseType(typeof(DishDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TenantDto>> GetTenantAsync(Ulid tenantId)
+    {
+        if (tenantId == Ulid.Empty)
+        {
+            return BadRequest(new { Error = "Id не должен быть пустым." });
+        }
+
+        var tenant = await _tenantService.GetTenantByIdAsync(tenantId);
+        if (tenant is null)
+        {
+            return NotFound(new { Error = $"Арендатор с Id = {tenantId} не найден." });
+        }
+
+        var tenantDto = _mapper.Map<TenantDto>(tenant);
+        return Ok(tenantDto);
+    }
+
+    [HttpPost(ApiEndPoints.Tenants.Create)]
+    [ProducesResponseType(typeof(TenantDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<TenantDto>> CreateTenantAsync([FromBody] TenantCreateDto input)
+    {
+        if (input is null)
+        {
+            return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания арендатора." });
+        }
+
+        var tenant = _mapper.Map<Tenant>(input);
+
+        var createdTenant = await _tenantService.AddAsync(tenant);
+        if (createdTenant is null)
+        {
+            return BadRequest("Арендатор не был создан.");
+        }
+
+        return CreatedAtRoute("GetTenantById",
+        new
+        {
+            tenantId = createdTenant.Id,
+        },
+        _mapper.Map<TenantDto>(createdTenant));
+    }
+
+    [HttpDelete(ApiEndPoints.Tenants.Delete)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteTenantAsync(Ulid tenantId)
+    {
+        if (tenantId == Ulid.Empty)
+        {
+            return BadRequest(new { Error = "Id не должен быть пустым." });
+        }
+
+        var deletedTenant = await _tenantService.GetTenantByIdAsync(tenantId);
+
+        await _tenantService.DeleteAsync(tenantId);
+
+        return NoContent();
     }
 }

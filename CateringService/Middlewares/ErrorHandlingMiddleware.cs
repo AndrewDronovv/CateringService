@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text.Json;
 using CateringService.Domain.Exceptions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Middlewares;
@@ -60,5 +61,13 @@ public class ErrorHandlingMiddleware
             Instance = context.Request.Path
         };
         return problem;
+    }
+}
+
+public static class ErrorHandlingMiddlewareExtension
+{
+    public static IApplicationBuilder UseErrorHandling(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<ErrorHandlingMiddleware>();
     }
 }

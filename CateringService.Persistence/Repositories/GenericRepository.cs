@@ -14,8 +14,6 @@ public class GenericRepository<TEntity, TPrimaryKey> : IGenericRepository<TEntit
 
     public TPrimaryKey Add(TEntity entity)
     {
-        if (entity == null) throw new ArgumentNullException(nameof(entity));
-
         _context.Set<TEntity>().Add(entity);
         return entity.Id;
     }

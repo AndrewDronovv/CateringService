@@ -19,5 +19,6 @@ public sealed class MappingProfile : Profile
         CreateMap<MenuCategoryUpdateDto, MenuCategory>().ReverseMap();
 
         CreateMap<TenantDto, Tenant>().ReverseMap();
+        CreateMap<TenantCreateDto, Tenant>().ReverseMap();
     }
 }

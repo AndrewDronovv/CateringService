@@ -1,8 +1,12 @@
 using CateringService.Extensions;
+using CateringService.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.ConfigureSerilog();
+builder.Services.AddScoped<LoggingActionFilter>();
+
+
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureCors();
 builder.Services.ApplicationServiceExtensions();

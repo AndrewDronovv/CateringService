@@ -32,5 +32,8 @@ public static class ApiEndPoints
         private const string Base = $"{ApiBase}/tenants";
 
         public const string GetAll = $"{Base}";
+        public const string Get = $"{Base}/{{tenantId}}";
+        public const string Create = $"{Base}";
+        public const string Delete = $"{Base}/{{tenantId}}";
     }
 }
