@@ -3,11 +3,13 @@ using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.MenuCategory;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
+using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers;
 
 [ApiController]
+[TypeFilter<LoggingActionFilter>]
 public class MenuCategoriesController : ControllerBase
 {
     private readonly IMenuCategoryService _menuCategoryService;
@@ -44,9 +46,7 @@ public class MenuCategoriesController : ControllerBase
             return Ok(Enumerable.Empty<MenuCategoryDto>());
         }
 
-        _logger.LogInformation(@$"Запрос списка категорий меню выполнен успешно. У поставщика с Id = {supplierId} 
-            найдено {menuCategories.Count} категорий меню.");
-
+        _logger.LogInformation($"Запрос списка категорий меню выполнен успешно. У поставщика с Id = {supplierId} найдено {menuCategories.Count} категорий меню.");
         var menuCategoriesDto = _mapper.Map<List<MenuCategoryDto>>(menuCategories);
         return Ok(menuCategoriesDto);
     }
@@ -103,21 +103,18 @@ public class MenuCategoriesController : ControllerBase
         }
 
         var menuCategory = _mapper.Map<MenuCategory>(input);
-
         var createdMenuCategory = await _menuCategoryService.AddAsync(menuCategory);
-
-        var menuCategoryDto = _mapper.Map<MenuCategoryDto>(menuCategory);
-
         if (createdMenuCategory == null)
         {
             return BadRequest($"Категория меню не была создана.");
         }
 
-        _logger.LogInformation($"Категория меню {createdMenuCategory.Name} с Id = {createdMenuCategory.Id} создана в {createdMenuCategory.CreatedAt}");
+        var menuCategoryDto = _mapper.Map<MenuCategoryDto>(menuCategory);
+        _logger.LogInformation($"Категория меню {menuCategoryDto.Name} с Id = {menuCategoryDto.Id} создана в {menuCategoryDto.CreatedAt}");
         return CreatedAtRoute("GetMenuCategoryById",
             new
             {
-                categoryId = menuCategory.Id,
+                categoryId = menuCategoryDto.Id,
                 supplierId = supplierId
             },
                 menuCategoryDto
@@ -127,7 +124,6 @@ public class MenuCategoriesController : ControllerBase
     [HttpDelete(ApiEndPoints.MenuCategories.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteMenuCategoryAsync(Ulid categoryId, Ulid supplierId)
     {
         if (categoryId == Ulid.Empty || supplierId == Ulid.Empty)
@@ -144,7 +140,6 @@ public class MenuCategoriesController : ControllerBase
     [HttpPut(ApiEndPoints.MenuCategories.Update)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid supplierId, Ulid categoryId, MenuCategoryUpdateDto input)
     {
         if (categoryId == Ulid.Empty)

@@ -3,11 +3,13 @@ using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Dish;
 using CateringService.Application.DataTransferObjects.Tenants;
 using CateringService.Domain.Entities;
+using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers;
 
 [ApiController]
+[TypeFilter<LoggingActionFilter>]
 public class TenantsController : ControllerBase
 {
     private readonly ITenantService _tenantService;
@@ -36,7 +38,6 @@ public class TenantsController : ControllerBase
 
         var tenantsDto = _mapper.Map<IEnumerable<TenantDto>>(tenants);
         _logger.LogInformation($"Запрос списка арендаторов выполнен успешно. Найдено {tenants.Count()} арендатора.");
-
         return Ok(tenantsDto);
     }
 
@@ -47,16 +48,19 @@ public class TenantsController : ControllerBase
     {
         if (tenantId == Ulid.Empty)
         {
+            _logger.LogWarning("Id не должен быть пустым.");
             return BadRequest(new { Error = "Id не должен быть пустым." });
         }
 
         var tenant = await _tenantService.GetTenantByIdAsync(tenantId);
         if (tenant is null)
         {
+            _logger.LogWarning($"Арендатор с Id = {tenantId} не найден.");
             return NotFound(new { Error = $"Арендатор с Id = {tenantId} не найден." });
         }
 
         var tenantDto = _mapper.Map<TenantDto>(tenant);
+        _logger.LogInformation($"Арендатор {tenantDto.Name} с Id = {tenantId} успешно получен.");
         return Ok(tenantDto);
     }
 
@@ -67,6 +71,7 @@ public class TenantsController : ControllerBase
     {
         if (input is null)
         {
+            _logger.LogWarning("Входные данные не указаны. Операция создания арендатора не может быть выполнена.");
             return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания арендатора." });
         }
 
@@ -75,9 +80,12 @@ public class TenantsController : ControllerBase
         var createdTenant = await _tenantService.AddAsync(tenant);
         if (createdTenant is null)
         {
+            _logger.LogWarning("Арендатор не был создан.");
             return BadRequest("Арендатор не был создан.");
         }
 
+        var tenantDto = _mapper.Map<TenantDto>(createdTenant);
+        _logger.LogInformation($"Арендатор {tenantDto.Name} с Id = {tenantDto.Id} создан в {tenantDto.CreatedAt}");
         return CreatedAtRoute("GetTenantById",
         new
         {
@@ -94,13 +102,11 @@ public class TenantsController : ControllerBase
     {
         if (tenantId == Ulid.Empty)
         {
+            _logger.LogWarning("Id не должен быть пустым.");
             return BadRequest(new { Error = "Id не должен быть пустым." });
         }
 
-        var deletedTenant = await _tenantService.GetTenantByIdAsync(tenantId);
-
         await _tenantService.DeleteAsync(tenantId);
-
         return NoContent();
     }
 }

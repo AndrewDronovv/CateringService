@@ -8,33 +8,32 @@ using Microsoft.AspNetCore.Mvc;
 namespace CateringService.Controllers;
 
 [ApiController]
+[TypeFilter<LoggingActionFilter>]
 public class DishesController : ControllerBase
 {
     private readonly IDishService _dishService;
     private readonly IMapper _mapper;
-
-    public DishesController(IDishService dishAppService, IMapper mapper)
+    private readonly ILogger<DishesController> _logger;
+    public DishesController(IDishService dishAppService, IMapper mapper, ILogger<DishesController> logger)
     {
         _dishService = dishAppService ?? throw new ArgumentNullException(nameof(dishAppService));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet(ApiEndPoints.Dishes.GetAll)]
-    [TypeFilter<LoggingActionFilter>]
     [ProducesResponseType(typeof(IEnumerable<DishDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IEnumerable<DishDto>>> GetDishesAsync()
     {
-        //_logger.LogInformation("Получен запрос на список блюд.");
         var dishes = await _dishService.GetAllAsync();
         if (dishes is null || !dishes.Any())
         {
-            //_logger.LogInformation("Список блюд пуст.");
+            _logger.LogInformation("Список блюд пуст.");
             return Ok(Enumerable.Empty<DishDto>());
         }
 
         var dishesDto = _mapper.Map<IEnumerable<DishDto>>(dishes);
-        //_logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishes.Count()} блюд.");
+        _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishesDto.Count()} блюд.");
         return Ok(dishesDto);
     }
 
@@ -42,26 +41,24 @@ public class DishesController : ControllerBase
     [ProducesResponseType(typeof(DishDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<DishDto>> GetDishAsync(Ulid dishId)
     {
-        //логирование сделать через action filters
-        //_logger.LogInformation($"Получен запрос блюда с Id = {dishId}.");
+        _logger.LogInformation($"Получен запрос блюда с Id = {dishId}.");
         if (dishId == Ulid.Empty)
         {
-            //_logger.LogWarning($"Id не должен быть пустым.");
+            _logger.LogWarning($"Id не должен быть пустым.");
             return BadRequest(new { Error = "Id не должен быть пустым." });
         }
 
         var dish = await _dishService.GetByIdAsync(dishId);
         if (dish is null)
         {
-            //_logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
+            _logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
             return NotFound(new { Error = $"Блюдо с Id = {dishId} не найдено." });
         }
 
         var dishDto = _mapper.Map<DishDto>(dish);
-        //_logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishId} успешно получено.");
+        _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishId} успешно получено.");
         return Ok(dishDto);
     }
 
@@ -72,53 +69,55 @@ public class DishesController : ControllerBase
     {
         if (input is null)
         {
-            //_logger.LogWarning("Входные данные не указаны. Операция создания блюда не может быть выполнена.");
+            _logger.LogWarning("Входные данные не указаны. Операция создания блюда не может быть выполнена.");
             return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания блюда." });
         }
 
         if (!_dishService.CheckSupplierExists(input.SupplierId))
         {
-            return NotFound($"Поставщик c Id = {input.SupplierId} не найден");
+            _logger.LogWarning($"Поставщик с Id = {input.SupplierId} не найден.");
+            return NotFound($"Поставщик c Id = {input.SupplierId} не найден.");
         }
 
         if (!_dishService.CheckMenuCategoryExists(input.MenuCategoryId))
         {
-            return NotFound($"Категория меню с Id = {input.MenuCategoryId} не найдена");
+            _logger.LogWarning($"Категория меню с Id = {input.MenuCategoryId} не найдена.");
+            return NotFound($"Категория меню с Id = {input.MenuCategoryId} не найдена.");
         }
 
         var dish = _mapper.Map<Dish>(input);
-
         var createdDish = await _dishService.AddAsync(dish);
         if (createdDish is null)
         {
-            return BadRequest("Блюдо не было создано");
+            _logger.LogWarning("Блюдо не было создано.");
+            return BadRequest("Блюдо не было создано.");
         }
 
-        //_logger.LogInformation($"Блюдо {createdDish} с Id = {createdDish.Id} создано в {createdDish.CreatedAt}");
+        var dishDto = _mapper.Map<DishDto>(createdDish);
+        _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishDto.Id} создано в {dishDto.CreatedAt}");
         return CreatedAtRoute("GetDishById",
         new
         {
-            dishId = createdDish.Id
+            dishId = dishDto.Id
         },
-        _mapper.Map<DishDto>(createdDish));
+        dishDto);
     }
 
     [HttpDelete(ApiEndPoints.Dishes.Delete)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> DeleteDishAsync(Ulid dishId)
     {
         if (dishId == Ulid.Empty)
         {
-            //_logger.LogWarning($"Id не должен быть пустым.");
+            _logger.LogWarning($"Id не должен быть пустым.");
             return BadRequest(new { Error = "Id не должен быть пустым." });
         }
 
         var deletedDish = await _dishService.GetByIdAsync(dishId);
 
         await _dishService.DeleteAsync(dishId);
-        //_logger.LogInformation($"Блюдо {deletedDish} с Id = {dishId} успешно удалено.");
+        _logger.LogInformation($"Блюдо {deletedDish} с Id = {dishId} успешно удалено.");
         return Ok(new
         {
             Success = true,
@@ -130,18 +129,17 @@ public class DishesController : ControllerBase
     [HttpPut(ApiEndPoints.Dishes.Update)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateDishAsync(Ulid dishId, DishUpdateDto input)
     {
         if (dishId == Ulid.Empty)
         {
-            //_logger.LogWarning($"Id не должен быть пустым.");
+            _logger.LogWarning($"Id не должен быть пустым.");
             return BadRequest(new { Error = "Id не должен быть пустым." });
         }
 
         if (input is null)
         {
-            //_logger.LogWarning("Входные данные не указаны. Операция обновления блюда не может быть выполнена.");
+            _logger.LogWarning("Входные данные не указаны. Операция обновления блюда не может быть выполнена.");
             return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания блюда." });
         }
 
@@ -149,23 +147,24 @@ public class DishesController : ControllerBase
 
         await _dishService.UpdateAsync(dishId, updateRequest);
 
-        //_logger.LogInformation($"Блюдо с Id = {dishId} успешно обновлено.");
+        _logger.LogInformation($"Блюдо с Id = {dishId} успешно обновлено.");
         return NoContent();
     }
 
     [HttpPatch(ApiEndPoints.Dishes.Toggle)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ToggleDishState(Ulid dishId)
     {
         var dish = await _dishService.GetByIdAsync(dishId);
         if (dish is null)
         {
+            _logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
             return NotFound();
         }
 
         var result = await _dishService.ToggleDishState(dishId);
+
         return NoContent();
     }
 }
