@@ -15,7 +15,7 @@ public class TenantService : ITenantService
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<Tenant?> AddAsync(Tenant tenant)
+    public async Task<Tenant?> AddTenantAsync(Tenant tenant)
     {
         var id = _tenantRepository.Add(tenant);
         await _unitOfWork.SaveChangesAsync();
@@ -41,5 +41,29 @@ public class TenantService : ITenantService
     public async Task<IEnumerable<Tenant>> GetTenantsAsync()
     {
         return await _tenantRepository.GetAllAsync();
+    }
+
+    public async Task<Tenant?> UpdateTenantAsync(Ulid tenantId, Tenant tenant)
+    {
+        var oldTenant = await _tenantRepository.GetByIdAsync(tenantId);
+
+        if (oldTenant == null)
+        {
+            throw new Exception($"Сущность с ключом {tenantId} не найдена");
+        }
+
+        UpdateTenant(oldTenant, tenant);
+
+        var updatedTenant = _tenantRepository.UpdateAsync(tenant);
+        await _unitOfWork.SaveChangesAsync();
+        return await updatedTenant;
+    }
+
+    private void UpdateTenant(Tenant oldTenant, Tenant newTenant)
+    {
+        if (!oldTenant.Name.Equals(newTenant.Name, StringComparison.Ordinal))
+        {
+            oldTenant.Name = newTenant.Name;
+        }
     }
 }

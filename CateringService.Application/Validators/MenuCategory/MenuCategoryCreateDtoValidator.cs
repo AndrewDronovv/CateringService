@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.MenuCategory;
 
-public class MenuCategoryDtoValidator : AbstractValidator<MenuCategoryCreateDto>
+public sealed class MenuCategoryCreateDtoValidator : AbstractValidator<MenuCategoryCreateDto>
 {
-    public MenuCategoryDtoValidator()
+    public MenuCategoryCreateDtoValidator()
     {
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)

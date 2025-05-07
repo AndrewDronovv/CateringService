@@ -20,5 +20,6 @@ public sealed class MappingProfile : Profile
 
         CreateMap<TenantDto, Tenant>().ReverseMap();
         CreateMap<TenantCreateDto, Tenant>().ReverseMap();
+        CreateMap<TenantUpdateDto, Tenant>().ReverseMap();
     }
 }

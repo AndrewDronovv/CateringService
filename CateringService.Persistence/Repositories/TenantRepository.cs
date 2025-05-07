@@ -1,4 +1,5 @@
-﻿using CateringService.Domain.Entities;
+﻿using CateringService.Domain.Common;
+using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,5 +34,16 @@ public class TenantRepository : ITenantRepository
     {
         return await _context.Tenants
             .FindAsync(tenantId);
+    }
+
+    public async Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false)
+    {
+        if (isNotTracked)
+        {
+            _context.Attach(tenant);
+            _context.Entry(tenant).State = EntityState.Modified;
+        }
+
+        return tenant;
     }
 }

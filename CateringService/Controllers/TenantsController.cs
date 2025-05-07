@@ -77,7 +77,7 @@ public class TenantsController : ControllerBase
 
         var tenant = _mapper.Map<Tenant>(input);
 
-        var createdTenant = await _tenantService.AddAsync(tenant);
+        var createdTenant = await _tenantService.AddTenantAsync(tenant);
         if (createdTenant is null)
         {
             _logger.LogWarning("Арендатор не был создан.");
@@ -107,6 +107,33 @@ public class TenantsController : ControllerBase
         }
 
         await _tenantService.DeleteAsync(tenantId);
+        _logger.LogInformation($"Арендатор с Id = {tenantId} удален.");
         return NoContent();
+    }
+
+    [HttpPut(ApiEndPoints.Tenants.Update)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateTenantAsync(Ulid tenantId, TenantUpdateDto input)
+    {
+        if (tenantId == Ulid.Empty)
+        {
+            _logger.LogWarning($"Id не должен быть пустым.");
+            return BadRequest(new { Error = "Id не должен быть пустым." });
+        }
+
+        if (input is null)
+        {
+            _logger.LogWarning("Входные данные не указаны. Операция обновления арендатора не может быть выполнена.");
+            return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания арендатора." });
+        }
+
+        var updateRequest = _mapper.Map<Tenant>(input);
+
+        await _tenantService.UpdateTenantAsync(tenantId, updateRequest);
+
+        _logger.LogInformation($"Арендатор с Id = {tenantId} успешно обновлен.");
+        return Ok(updateRequest);
     }
 }
