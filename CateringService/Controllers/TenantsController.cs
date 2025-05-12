@@ -136,4 +136,22 @@ public class TenantsController : ControllerBase
         _logger.LogInformation($"Арендатор с Id = {tenantId} успешно обновлен.");
         return Ok(updateRequest);
     }
+    [HttpPut(ApiEndPoints.Tenants.Block)]
+    public async Task<ActionResult<TenantDto>> BlockTenantAsync([FromRoute] Ulid tenantId, [FromQuery] string blockReason)
+    {
+        if (tenantId == Ulid.Empty)
+        {
+            _logger.LogWarning("Id не должен быть пустым.");
+            return BadRequest(new { Error = "Id не должен быть пустым." });
+        }
+        var tenant = await _tenantService.BlockTenantAsync(tenantId, blockReason);
+        if (tenant is null)
+        {
+            _logger.LogWarning($"Арендатор с Id = {tenantId} не найден.");
+            return NotFound(new { Error = $"Арендатор с Id = {tenantId} не найден." });
+        }
+        var tenantDto = _mapper.Map<TenantDto>(tenant);
+        _logger.LogInformation($"Арендатор {tenantDto.Name} с Id = {tenantId} успешно заблокирован.");
+        return Ok(tenantDto);
+    }
 }

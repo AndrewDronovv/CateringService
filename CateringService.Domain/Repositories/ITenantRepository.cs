@@ -10,4 +10,5 @@ public interface ITenantRepository
     Ulid Add(Tenant tenant);
     void Delete(Tenant tenant);
     Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false);
+    Task BlockAsync(Ulid tenantId, string blockReason);
 }

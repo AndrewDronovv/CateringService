@@ -76,8 +76,9 @@ namespace CateringService.Persistence.Migrations
                 columns: table => new
                 {
                     TenantId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
-                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     IsActive = table.Column<bool>(type: "boolean", nullable: true),
+                    BlockReason = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
@@ -358,12 +359,12 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Tenants",
-                columns: new[] { "TenantId", "CreatedAt", "IsActive", "Name" },
+                columns: new[] { "TenantId", "BlockReason", "CreatedAt", "IsActive", "Name" },
                 values: new object[,]
                 {
-                    { "01H5PY6RF4WKFCR9VCMY2QNFGP", new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified), true, "First tenant" },
-                    { "01H5QJ6PVB8FYN4QXMR3T7JC9A", new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified), true, "Second tenant" },
-                    { "01H5QJ7XQZKTYZ9QW8VRCMND5B", new DateTime(2025, 4, 22, 14, 15, 0, 0, DateTimeKind.Unspecified), true, "Third tenant" }
+                    { "01H5PY6RF4WKFCR9VCMY2QNFGP", "", new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified), true, "First tenant" },
+                    { "01H5QJ6PVB8FYN4QXMR3T7JC9A", "", new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified), true, "Second tenant" },
+                    { "01H5QJ7XQZKTYZ9QW8VRCMND5B", "", new DateTime(2025, 4, 22, 14, 15, 0, 0, DateTimeKind.Unspecified), true, "Third tenant" }
                 });
 
             migrationBuilder.InsertData(

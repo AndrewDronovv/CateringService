@@ -1,4 +1,5 @@
 ﻿using CateringService.Application.Abstractions;
+using CateringService.Application.DataTransferObjects.Tenants;
 using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
 
@@ -20,6 +21,28 @@ public class TenantService : ITenantService
         var id = _tenantRepository.Add(tenant);
         await _unitOfWork.SaveChangesAsync();
         return await _tenantRepository.GetByIdAsync(id);
+    }
+
+    public async Task<TenantDto> BlockTenantAsync(Ulid tenantId, string blockReason)
+    {
+        var tenant = await _tenantRepository.GetByIdAsync(tenantId);
+        if (tenant is null)
+        {
+            throw new KeyNotFoundException($"Арендатор с Id = {tenantId} не найден.");
+        }
+
+        return await _tenantRepository.BlockAsync(tenantId, blockReason).ContinueWith(t =>
+        {
+            if (t.IsFaulted)
+            {
+                throw new Exception($"Не удалось заблокировать арендатора с Id = {tenantId}.", t.Exception);
+            }
+            return new TenantDto
+            {
+                Id = tenantId,
+                BlockReason = blockReason
+            };
+        });
     }
 
     public async Task DeleteAsync(Ulid tenantId)

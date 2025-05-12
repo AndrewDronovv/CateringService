@@ -1,5 +1,4 @@
-﻿using CateringService.Domain.Common;
-using CateringService.Domain.Entities;
+﻿using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +17,14 @@ public class TenantRepository : ITenantRepository
     {
         _context.Tenants.Add(input);
         return input.Id;
+    }
+
+    public async Task BlockAsync(Ulid tenantId, string blockReason)
+    {
+        await _context.Tenants
+            .Where(t => t.Id == tenantId)
+            .ExecuteUpdateAsync(t => t.SetProperty(x => x.IsActive, false)
+            .SetProperty(x => x.BlockReason, blockReason));
     }
 
     public void Delete(Tenant tenant)

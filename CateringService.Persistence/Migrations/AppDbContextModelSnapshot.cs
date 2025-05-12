@@ -837,6 +837,10 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(26)")
                         .HasColumnName("TenantId");
 
+                    b.Property<string>("BlockReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
@@ -847,8 +851,8 @@ namespace CateringService.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.HasKey("Id");
 
@@ -858,6 +862,7 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            BlockReason = "",
                             CreatedAt = new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Name = "First tenant"
@@ -865,6 +870,7 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
+                            BlockReason = "",
                             CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Name = "Second tenant"
@@ -872,6 +878,7 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = "01H5QJ7XQZKTYZ9QW8VRCMND5B",
+                            BlockReason = "",
                             CreatedAt = new DateTime(2025, 4, 22, 14, 15, 0, 0, DateTimeKind.Unspecified),
                             IsActive = true,
                             Name = "Third tenant"

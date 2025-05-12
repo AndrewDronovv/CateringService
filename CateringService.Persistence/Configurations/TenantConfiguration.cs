@@ -27,6 +27,9 @@ public sealed class TenantConfiguration : IEntityTypeConfiguration<Tenant>
 
         builder.Property(t => t.IsActive);
 
+        builder.Property(t => t.BlockReason)
+            .HasMaxLength(500);
+
         builder.Property(t => t.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .ValueGeneratedOnAdd()
