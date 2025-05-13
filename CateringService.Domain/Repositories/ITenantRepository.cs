@@ -11,4 +11,5 @@ public interface ITenantRepository
     void Delete(Tenant tenant);
     Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false);
     Task BlockAsync(Ulid tenantId, string blockReason);
+    Task UnblockAsync(Ulid tenantId);
 }

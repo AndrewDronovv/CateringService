@@ -11,4 +11,5 @@ public interface ITenantService
     Task DeleteAsync(Ulid tenantId);
     Task<Tenant> UpdateTenantAsync(Ulid tenantId, Tenant tenant);
     Task<TenantDto> BlockTenantAsync(Ulid tenantId, string blockReason);
+    Task<TenantDto> UnblockTenantAsync(Ulid tenantId);
 }

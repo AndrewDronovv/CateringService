@@ -40,7 +40,33 @@ public class TenantService : ITenantService
             return new TenantDto
             {
                 Id = tenantId,
+                Name = tenant.Name,
+                IsActive = false,
                 BlockReason = blockReason
+            };
+        });
+    }
+
+    public async Task<TenantDto> UnblockTenantAsync(Ulid tenantId)
+    {
+        var tenant = await _tenantRepository.GetByIdAsync(tenantId);
+        if (tenant is null)
+        {
+            throw new KeyNotFoundException($"Арендатор с Id = {tenantId} не найден.");
+        }
+
+        return await _tenantRepository.UnblockAsync(tenantId).ContinueWith(t =>
+        {
+            if (t.IsFaulted)
+            {
+                throw new Exception($"Не удалось разблокировать арендатора с Id = {tenantId}.", t.Exception);
+            }
+            return new TenantDto
+            {
+                Id = tenantId,
+                Name = tenant.Name,
+                IsActive = true,
+                BlockReason = string.Empty
             };
         });
     }

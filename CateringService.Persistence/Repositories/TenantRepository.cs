@@ -24,7 +24,14 @@ public class TenantRepository : ITenantRepository
         await _context.Tenants
             .Where(t => t.Id == tenantId)
             .ExecuteUpdateAsync(t => t.SetProperty(x => x.IsActive, false)
-            .SetProperty(x => x.BlockReason, blockReason));
+            .SetProperty(t => t.BlockReason, blockReason));
+    }
+    public async Task UnblockAsync(Ulid tenantId)
+    {
+        await _context.Tenants
+            .Where(t => t.Id == tenantId)
+            .ExecuteUpdateAsync(t => t.SetProperty(x => x.IsActive, true)
+            .SetProperty(t => t.BlockReason, string.Empty));
     }
 
     public void Delete(Tenant tenant)
@@ -42,6 +49,7 @@ public class TenantRepository : ITenantRepository
         return await _context.Tenants
             .FindAsync(tenantId);
     }
+
 
     public async Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false)
     {

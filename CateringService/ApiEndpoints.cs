@@ -37,5 +37,6 @@ public static class ApiEndPoints
         public const string Delete = $"{Base}/{{tenantId}}";
         public const string Update = $"{Base}/{{tenantId}}";
         public const string Block = $"{Base}/{{tenantId}}/block";
+        public const string Unblock = $"{Base}/{{tenantId}}/unblock";
     }
 }

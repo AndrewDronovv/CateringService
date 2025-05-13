@@ -137,21 +137,46 @@ public class TenantsController : ControllerBase
         return Ok(updateRequest);
     }
     [HttpPut(ApiEndPoints.Tenants.Block)]
-    public async Task<ActionResult<TenantDto>> BlockTenantAsync([FromRoute] Ulid tenantId, [FromQuery] string blockReason)
+    public async Task<ActionResult<TenantDto>> BlockTenantAsync([FromBody] TenantBlockDto input)
+    {
+        if (input.Id == Ulid.Empty)
+        {
+            _logger.LogWarning("Id не должен быть пустым.");
+            return BadRequest(new { Error = "Id не должен быть пустым." });
+        }
+
+        if (string.IsNullOrWhiteSpace(input.BlockReason))
+        {
+            _logger.LogWarning("Причина блокировки не указана.");
+            return BadRequest(new { Error = "Причина блокировки не указана." });
+        }
+
+        var blockedTenant = await _tenantService.BlockTenantAsync(input.Id, input.BlockReason ?? string.Empty);
+        if (blockedTenant is null)
+        {
+            _logger.LogWarning($"Арендатор с Id = {input.Id} не найден.");
+            return NotFound(new { Error = $"Арендатор с Id = {input.Id} не найден." });
+        }
+        _logger.LogInformation($"Арендатор {blockedTenant.Name} с Id = {blockedTenant.Id} успешно заблокирован.");
+        return Ok(blockedTenant);
+    }
+
+    [HttpPut(ApiEndPoints.Tenants.Unblock)]
+    public async Task<ActionResult<TenantDto>> UnblockTenansAsync([FromRoute] Ulid tenantId)
     {
         if (tenantId == Ulid.Empty)
         {
             _logger.LogWarning("Id не должен быть пустым.");
             return BadRequest(new { Error = "Id не должен быть пустым." });
         }
-        var tenant = await _tenantService.BlockTenantAsync(tenantId, blockReason);
-        if (tenant is null)
+
+        var unblockedTenant = await _tenantService.UnblockTenantAsync(tenantId);
+        if (unblockedTenant is null)
         {
             _logger.LogWarning($"Арендатор с Id = {tenantId} не найден.");
             return NotFound(new { Error = $"Арендатор с Id = {tenantId} не найден." });
         }
-        var tenantDto = _mapper.Map<TenantDto>(tenant);
-        _logger.LogInformation($"Арендатор {tenantDto.Name} с Id = {tenantId} успешно заблокирован.");
-        return Ok(tenantDto);
+        _logger.LogInformation($"Арендатор {unblockedTenant.Name} с Id = {tenantId} успешно разблокирован.");
+        return Ok(unblockedTenant);
     }
 }
