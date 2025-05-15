@@ -10,7 +10,6 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
     public DishService(IDishRepository dishRepository, IUnitOfWorkRepository unitOfWork) : 
         base(dishRepository, unitOfWork)
     {
-        _dishRepository = dishRepository ?? throw new ArgumentNullException(nameof(dishRepository));
     }
 
     public bool CheckMenuCategoryExists(Ulid menuCategoryId)
