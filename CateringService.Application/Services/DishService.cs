@@ -7,13 +7,19 @@ namespace CateringService.Application.Services;
 public class DishService : BaseService<Dish, Ulid>, IDishService
 {
     private readonly IDishRepository _dishRepository;
-    public DishService(IDishRepository dishRepository, IUnitOfWorkRepository unitOfWork) : 
+    public DishService(IDishRepository dishRepository, IUnitOfWorkRepository unitOfWork) :
         base(dishRepository, unitOfWork)
     {
+        _dishRepository = dishRepository;
     }
 
     public bool CheckMenuCategoryExists(Ulid menuCategoryId)
     {
+        if (menuCategoryId == Ulid.Empty)
+        {
+            throw new ArgumentException(nameof(menuCategoryId), "MenuCategoryId is empty.");
+        }
+
         return _dishRepository.CheckMenuCategoryExists(menuCategoryId);
     }
 
@@ -22,12 +28,12 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
         return _dishRepository.CheckSupplierExists(supplierId);
     }
 
-    public async Task<bool> ToggleDishState(Ulid dishId)
+    public async Task<bool> ToggleDishStateAsync(Ulid dishId)
     {
         var dish = await _dishRepository.GetByIdAsync(dishId);
         if (dish == null)
         {
-            throw new KeyNotFoundException($"Блюдо с ID {dishId} не найдено.");
+            throw new KeyNotFoundException($"Блюдо с Id {dishId} не найдено.");
         }
 
         dish.IsAvailable = !dish.IsAvailable;
@@ -40,11 +46,11 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
 
     protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
     {
-        if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
+        if (!string.Equals(oldEntity.Name, newEntity.Name, StringComparison.Ordinal))
         {
             oldEntity.Name = newEntity.Name;
         }
-        if (!oldEntity.Description.Equals(newEntity.Description, StringComparison.Ordinal))
+        if (!string.Equals(oldEntity.Description, newEntity.Description, StringComparison.Ordinal))
         {
             oldEntity.Description = newEntity.Description;
         }
@@ -52,7 +58,7 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
         {
             oldEntity.Price = newEntity.Price;
         }
-        if (!oldEntity.ImageUrl.Equals(newEntity.ImageUrl, StringComparison.Ordinal))
+        if (!string.Equals(oldEntity.ImageUrl, newEntity.ImageUrl, StringComparison.Ordinal))
         {
             oldEntity.ImageUrl = newEntity.ImageUrl;
         }

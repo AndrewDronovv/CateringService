@@ -37,7 +37,7 @@ public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryK
 
     public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await _repository.GetAllAsync();
+        return await _repository.GetAllAsync() ?? Enumerable.Empty<TEntity>();
     }
 
     public async Task<TEntity?> GetByIdAsync(TPrimaryKey id, bool isTrackable = false)
@@ -45,7 +45,7 @@ public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryK
         var entity = await _repository.GetByIdAsync(id, isTrackable);
         if (entity is null)
         {
-            throw new NotFoundException(typeof(TEntity).Name, id.ToString());
+            throw new NotFoundException(typeof(TEntity).Name, id?.ToString() ?? string.Empty);
         }
         return entity;
     }
@@ -56,7 +56,7 @@ public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryK
 
         if (oldEntity == null)
         {
-            throw new Exception($"Сущность с ключом {id} не найдена");
+            throw new KeyNotFoundException($"Сущность с ключом {id} не найдена");
         }
 
         UpdateEntity(oldEntity, entity);

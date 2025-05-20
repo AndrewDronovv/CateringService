@@ -163,7 +163,7 @@ public class DishesController : ControllerBase
             return NotFound();
         }
 
-        var result = await _dishService.ToggleDishState(dishId);
+        var result = await _dishService.ToggleDishStateAsync(dishId);
 
         return NoContent();
     }
