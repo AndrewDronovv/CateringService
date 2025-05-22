@@ -25,6 +25,11 @@ public class DishService : BaseService<Dish, Ulid>, IDishService
 
     public bool CheckSupplierExists(Ulid supplierId)
     {
+        if (supplierId == Ulid.Empty)
+        {
+            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
+        }
+
         return _dishRepository.CheckSupplierExists(supplierId);
     }
 

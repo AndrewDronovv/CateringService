@@ -20,6 +20,7 @@ public class DishServiceTests
         _dishService = new DishService(_dishRepositorySubstitute, _unitOfWorkSubstitute);
     }
 
+    #region Тесты конструктора
     [Fact]
     public void Ctor_DishRepositoryNull_ThrowsArgumentNullException()
     {
@@ -40,7 +41,9 @@ public class DishServiceTests
         var dishService = new DishService(_dishRepositorySubstitute, _unitOfWorkSubstitute);
         Assert.NotNull(dishService);
     }
+    #endregion 
 
+    #region Тесты добавления
     [Fact]
     public async Task AddAsync_NewDish_ReturnsDish()
     {
@@ -59,7 +62,9 @@ public class DishServiceTests
         _dishRepositorySubstitute.Received(1).Add(dish);
         await _unitOfWorkSubstitute.Received(1).SaveChangesAsync();
     }
+    #endregion
 
+    #region Тесты удаления
     [Fact]
     public async Task DeleteAsync_ExistingDish_DeletesDish()
     {
@@ -86,7 +91,9 @@ public class DishServiceTests
         var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _dishService.DeleteAsync(dish.Id));
         Assert.Contains($"Сущность с Id = {dish.Id} не найдена.", exception.Message);
     }
+    #endregion
 
+    #region Тесты получения сущности по Id
     [Fact]
     public async Task GetByIdAsync_ExistingDish_ReturnsDish()
     {
@@ -115,7 +122,9 @@ public class DishServiceTests
         Assert.Contains(typeof(Dish).Name, exception.Message);
         Assert.Contains(dish.Id.ToString(), exception.Message);
     }
+    #endregion
 
+    #region Тесты получения всех сущностей
     [Fact]
     public async Task GetAllAsync_ReturnsDishList()
     {
@@ -153,16 +162,43 @@ public class DishServiceTests
         Assert.NotNull(result);
         Assert.Empty(result);
     }
+    #endregion
+
+    #region Тесты обновления
+    [Fact]
+    public async Task UpdateAsync_ShouldUpdateEntity_WhenEntityExists()
+    {
+        //Arrange
+        Dish oldDish = new Dish { Id = Ulid.NewUlid(), Name = "Old name" };
+        Dish updatedDish = new Dish { Id = oldDish.Id, Name = "New name" };
+        _dishRepositorySubstitute.GetByIdAsync(oldDish.Id).Returns(Task.FromResult<Dish?>(oldDish));
+        _dishRepositorySubstitute.Update(updatedDish).Returns(updatedDish.Id);
+
+        //Act
+        var result = await _dishService.UpdateAsync(oldDish.Id, updatedDish);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.Equal(oldDish.Id, result.Id);
+        Assert.Equal("New name", result.Name);
+        await _unitOfWorkSubstitute.Received(1).SaveChangesAsync();
+    }
 
     [Fact]
     public async Task UpdateAsync_NotExistingDish_ThrowsKeyNotFoundException()
     {
         //Arrange
-        Dish dish = new Dish { Id = Ulid.NewUlid() };
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(dish));
+        Dish oldDish = new Dish { Id = Ulid.NewUlid() };
+        Dish newDish = new Dish { Id = oldDish.Id };
+        _dishRepositorySubstitute.GetByIdAsync(oldDish.Id).Returns(Task.FromResult<Dish?>(null));
 
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<KeyNotFoundException>(async () => await _dishService.UpdateAsync(oldDish.Id, newDish));
+        Assert.Contains($"Сущность с ключом {oldDish.Id} не найдена", exception.Message);
     }
+    #endregion
 
+    #region Тесты переключения доступности
     [Fact]
     public async Task ToggleDishState_ExistingDish_ChangesState()
     {
@@ -191,7 +227,9 @@ public class DishServiceTests
         var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _dishService.ToggleDishStateAsync(dish.Id));
         Assert.Contains($"Блюдо с Id {dish.Id} не найдено.", exception.Message);
     }
+    #endregion
 
+    #region Тесты существования категории меню
     [Fact]
     public void CheckMenuCategoryExists_ReturnsTrue_WhenCategoryExists()
     {
@@ -217,7 +255,6 @@ public class DishServiceTests
         var result = _dishService.CheckMenuCategoryExists(categoryId);
 
         //Assert
-        Assert.NotEmpty(categoryId.ToString());
         Assert.False(result);
     }
 
@@ -231,4 +268,46 @@ public class DishServiceTests
         Assert.Throws<ArgumentException>(() => _dishService.CheckMenuCategoryExists(categoryId));
         Assert.Equal(Ulid.Empty, categoryId);
     }
+    #endregion
+
+    #region Тесты поставщика
+    [Fact]
+    public void CheckSupplierExists_ReturnsTrue_WhenSupplierExists()
+    {
+        //Arrange
+        var supplierId = Ulid.NewUlid();
+        _dishRepositorySubstitute.CheckSupplierExists(supplierId).Returns(true);
+
+        //Act
+        var result = _dishService.CheckSupplierExists(supplierId);
+
+        //Assert
+        Assert.True(result);
+    }
+
+    [Fact]
+    public void CheckSupplierExists_ReturnsFalse_WhenSupplierNotExists()
+    {
+        //Arrange
+        var supplierId = Ulid.NewUlid();
+        _dishRepositorySubstitute.CheckSupplierExists(supplierId).Returns(false);
+
+        //Act
+        var result = _dishService.CheckSupplierExists(supplierId);
+
+        //Assert
+        Assert.False(result);
+    }
+
+    [Fact]
+    public void CheckSupplierExists_ThrowsArgumentException_WhenSupplierIdIsEmpty()
+    {
+        //Arrange
+        var supplierId = Ulid.Empty;
+
+        //Act & Assert
+        Assert.Throws<ArgumentException>(() => _dishService.CheckSupplierExists(supplierId));
+        Assert.Equal(Ulid.Empty, supplierId);
+    }
+    #endregion
 }
