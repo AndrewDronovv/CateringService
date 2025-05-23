@@ -1,4 +1,5 @@
 ﻿using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
 using CateringService.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,20 +7,22 @@ namespace CateringService.Persistence;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
+    public DbSet<Dish> Dishes { get; set; }
+    public DbSet<MenuCategory> MenuCategories { get; set; }
+    public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<Address> Addresses { get; set; }
+
     public DbSet<Broker> Brokers { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<Delivery> Deliveries { get; set; }
     public DbSet<DeliveryPerson> DeliveryPersons { get; set; }
-    public DbSet<Dish> Dishes { get; set; }
     public DbSet<Incident> Incidents { get; set; }
     public DbSet<Invoice> Invoices { get; set; }
-    public DbSet<MenuCategory> MenuCategories { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Promotion> Promotions { get; set; }
     public DbSet<Report> Reports { get; set; }
     public DbSet<Supplier> Suppliers { get; set; }
-    public DbSet<Tenant> Tenants { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

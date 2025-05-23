@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CateringService.Application.DataTransferObjects.Dish;
 using CateringService.Domain.Abstractions;
-using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
 using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
 

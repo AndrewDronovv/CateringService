@@ -1,6 +1,6 @@
 ﻿using CateringService.Domain.Common;
 
-namespace CateringService.Domain.Entities;
+namespace CateringService.Domain.Entities.Approved;
 
 public sealed class MenuCategory : UlidEntity
 {

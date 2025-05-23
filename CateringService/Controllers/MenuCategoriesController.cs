@@ -2,7 +2,7 @@
 using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.MenuCategory;
 using CateringService.Domain.Abstractions;
-using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
 using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
 

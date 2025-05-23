@@ -3,6 +3,7 @@ using CateringService.Application.DataTransferObjects.Dish;
 using CateringService.Application.DataTransferObjects.MenuCategory;
 using CateringService.Application.DataTransferObjects.Tenants;
 using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
 
 namespace CateringService.Application.Mapping;
 

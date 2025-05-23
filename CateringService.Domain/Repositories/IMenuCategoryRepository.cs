@@ -1,4 +1,4 @@
-﻿using CateringService.Domain.Entities;
+﻿using CateringService.Domain.Entities.Approved;
 
 namespace CateringService.Domain.Repositories;
 

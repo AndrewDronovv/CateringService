@@ -1,6 +1,6 @@
 ﻿using CateringService.Application.Services;
 using CateringService.Domain.Abstractions;
-using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using NSubstitute;
