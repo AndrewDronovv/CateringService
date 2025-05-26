@@ -1,6 +1,6 @@
-﻿namespace CateringService.Application.DataTransferObjects.Tenants;
+﻿namespace CateringService.Application.DataTransferObjects.Responses;
 
-public sealed class TenantDto
+public sealed class TenantViewModel
 {
     public Ulid Id { get; set; }
     public string Name { get; set; } = string.Empty;

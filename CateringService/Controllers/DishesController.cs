@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using CateringService.Application.DataTransferObjects.Dish;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities.Approved;
 using CateringService.Filters;
@@ -22,26 +23,26 @@ public class DishesController : ControllerBase
     }
 
     [HttpGet(ApiEndPoints.Dishes.GetAll)]
-    [ProducesResponseType(typeof(IEnumerable<DishDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<DishDto>>> GetDishesAsync()
+    [ProducesResponseType(typeof(IEnumerable<DishViewModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<DishViewModel>>> GetDishesAsync()
     {
         var dishes = await _dishService.GetAllAsync();
         if (dishes is null || !dishes.Any())
         {
             _logger.LogInformation("Список блюд пуст.");
-            return Ok(Enumerable.Empty<DishDto>());
+            return Ok(Enumerable.Empty<DishViewModel>());
         }
 
-        var dishesDto = _mapper.Map<IEnumerable<DishDto>>(dishes);
+        var dishesDto = _mapper.Map<IEnumerable<DishViewModel>>(dishes);
         _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishesDto.Count()} блюд.");
         return Ok(dishesDto);
     }
 
     [HttpGet(ApiEndPoints.Dishes.Get, Name = "GetDishById")]
-    [ProducesResponseType(typeof(DishDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DishDto>> GetDishAsync(Ulid dishId)
+    public async Task<ActionResult<DishViewModel>> GetDishAsync(Ulid dishId)
     {
         _logger.LogInformation($"Получен запрос блюда с Id = {dishId}.");
         if (dishId == Ulid.Empty)
@@ -57,15 +58,15 @@ public class DishesController : ControllerBase
             return NotFound(new { Error = $"Блюдо с Id = {dishId} не найдено." });
         }
 
-        var dishDto = _mapper.Map<DishDto>(dish);
+        var dishDto = _mapper.Map<DishViewModel>(dish);
         _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishId} успешно получено.");
         return Ok(dishDto);
     }
 
     [HttpPost(ApiEndPoints.Dishes.Create)]
-    [ProducesResponseType(typeof(DishDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<DishDto>> CreateDishAsync([FromBody] DishCreateDto input)
+    public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest input)
     {
         if (input is null)
         {
@@ -93,7 +94,7 @@ public class DishesController : ControllerBase
             return BadRequest("Блюдо не было создано.");
         }
 
-        var dishDto = _mapper.Map<DishDto>(createdDish);
+        var dishDto = _mapper.Map<DishViewModel>(createdDish);
         _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishDto.Id} создано в {dishDto.CreatedAt}");
         return CreatedAtRoute("GetDishById",
         new
@@ -129,7 +130,7 @@ public class DishesController : ControllerBase
     [HttpPut(ApiEndPoints.Dishes.Update)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateDishAsync(Ulid dishId, DishUpdateDto input)
+    public async Task<IActionResult> UpdateDishAsync(Ulid dishId, UpdateDishRequest input)
     {
         if (dishId == Ulid.Empty)
         {

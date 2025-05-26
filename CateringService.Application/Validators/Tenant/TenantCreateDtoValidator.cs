@@ -1,9 +1,9 @@
-﻿using CateringService.Application.DataTransferObjects.Tenants;
+﻿using CateringService.Application.DataTransferObjects.Requests;
 using FluentValidation;
 
 namespace CateringService.Application.Validators.Tenant;
 
-public sealed class TenantCreateDtoValidator : AbstractValidator<TenantCreateDto>
+public sealed class TenantCreateDtoValidator : AbstractValidator<AddTenantRequest>
 {
     public TenantCreateDtoValidator()
     {

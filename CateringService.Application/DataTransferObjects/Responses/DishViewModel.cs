@@ -1,6 +1,6 @@
-﻿namespace CateringService.Application.DataTransferObjects.Dish;
+﻿namespace CateringService.Application.DataTransferObjects.Responses;
 
-public sealed class DishDto
+public sealed class DishViewModel
 {
     public Ulid Id { get; set; }
     public string Name { get; set; } = string.Empty;

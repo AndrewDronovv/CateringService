@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using CateringService.Application.DataTransferObjects.Address;
-using CateringService.Application.DataTransferObjects.Dish;
-using CateringService.Application.DataTransferObjects.MenuCategory;
-using CateringService.Application.DataTransferObjects.Tenants;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities;
 using CateringService.Domain.Entities.Approved;
 
@@ -12,19 +10,19 @@ public sealed class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Dish, DishDto>().ReverseMap();
-        CreateMap<DishCreateDto, Dish>().ReverseMap();
-        CreateMap<DishUpdateDto, Dish>().ReverseMap();
+        CreateMap<Dish, DishViewModel>().ReverseMap();
+        CreateMap<AddDishRequest, Dish>().ReverseMap();
+        CreateMap<UpdateDishRequest, Dish>().ReverseMap();
 
-        CreateMap<MenuCategory, MenuCategoryDto>().ReverseMap();
-        CreateMap<MenuCategoryCreateDto, MenuCategory>().ReverseMap();
-        CreateMap<MenuCategoryUpdateDto, MenuCategory>().ReverseMap();
+        CreateMap<MenuCategory, MenuCategoryViewModel>().ReverseMap();
+        CreateMap<AddMenuCategoryRequest, MenuCategory>().ReverseMap();
+        CreateMap<UpdateMenuCategoryRequest, MenuCategory>().ReverseMap();
 
-        CreateMap<TenantDto, Tenant>().ReverseMap();
-        CreateMap<TenantCreateDto, Tenant>().ReverseMap();
-        CreateMap<TenantUpdateDto, Tenant>().ReverseMap();
+        CreateMap<TenantViewModel, Tenant>().ReverseMap();
+        CreateMap<AddTenantRequest, Tenant>().ReverseMap();
+        CreateMap<UpdateTenantRequest, Tenant>().ReverseMap();
 
-        CreateMap<AddressCreateDto, Address>().ReverseMap();
-        CreateMap<Address, AddressDto>().ReverseMap();
+        CreateMap<AddAddressRequest, Address>().ReverseMap();
+        CreateMap<Address, AddressViewModel>().ReverseMap();
     }
 }

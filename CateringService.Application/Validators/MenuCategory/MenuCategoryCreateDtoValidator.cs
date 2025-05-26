@@ -1,9 +1,9 @@
-﻿using CateringService.Application.DataTransferObjects.MenuCategory;
+﻿using CateringService.Application.DataTransferObjects.Requests;
 using FluentValidation;
 
 namespace CateringService.Application.Validators.MenuCategory;
 
-public sealed class MenuCategoryCreateDtoValidator : AbstractValidator<MenuCategoryCreateDto>
+public sealed class MenuCategoryCreateDtoValidator : AbstractValidator<AddMenuCategoryRequest>
 {
     public MenuCategoryCreateDtoValidator()
     {

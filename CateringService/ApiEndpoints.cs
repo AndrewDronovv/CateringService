@@ -47,5 +47,6 @@ public static class ApiEndPoints
         private const string Base = $"{ApiBase}/addresses";
 
         public const string Create = $"{Base}";
+        public const string Get = $"{Base}/{{addressId}}";
     }
 }

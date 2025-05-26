@@ -1,9 +1,9 @@
-﻿using CateringService.Application.DataTransferObjects.Dish;
+﻿using CateringService.Application.DataTransferObjects.Requests;
 using FluentValidation;
 
 namespace CateringService.Application.Validators.Dish;
 
-public sealed class DishUpdateDtoValidator : AbstractValidator<DishUpdateDto>
+public sealed class DishUpdateDtoValidator : AbstractValidator<UpdateDishRequest>
 {
     public DishUpdateDtoValidator()
     {

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
-using CateringService.Application.DataTransferObjects.Address;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace CateringService.Application.Services;
 
@@ -12,16 +14,18 @@ public class AddressService : IAddressService
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly ITenantRepository _tenantRepository;
     private readonly IMapper _mapper;
+    private readonly ILogger<AddressService> _logger;
 
-    public AddressService(IAddressRepository addressRepository, IUnitOfWorkRepository unitOfWorkRepository, ITenantRepository tenantRepository, IMapper mapper)
+    public AddressService(IAddressRepository addressRepository, IUnitOfWorkRepository unitOfWorkRepository, ITenantRepository tenantRepository, IMapper mapper, ILogger<AddressService> logger)
     {
-        _addressRepository = addressRepository;
-        _unitOfWorkRepository = unitOfWorkRepository;
-        _tenantRepository = tenantRepository;
-        _mapper = mapper;
+        _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
+        _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
+        _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<AddressDto> CreateAddressAsync(AddressCreateDto request, Ulid tenantId)
+    public async Task<AddressViewModel> CreateAddressAsync(AddAddressRequest request, Ulid tenantId)
     {
         if (request is null)
         {
@@ -37,17 +41,28 @@ public class AddressService : IAddressService
 
         if (tenant == null || !tenant.IsActive)
         {
-            throw new Exception("Tenant is not active or not found.");
+            throw new Exception("Tenant is not found or not active.");
         }
 
-        var addressDto = _mapper.Map<Address>(request);
+        var address = _mapper.Map<Address>(request);
 
-        var addressId = _addressRepository.Add(addressDto);
-
+        var addressId = _addressRepository.Add(address);
         await _unitOfWorkRepository.SaveChangesAsync();
 
         var createdAddress = await _addressRepository.GetByIdAsync(addressId);
 
-        return _mapper.Map<AddressDto>(createdAddress);
+        return _mapper.Map<AddressViewModel>(createdAddress);
+    }
+
+    public async Task<AddressViewModel> GetByIdAsync(Ulid addressId)
+    {
+        if (addressId == Ulid.Empty)
+        {
+            throw new ArgumentException(nameof(addressId), "AddressId is empty.");
+        }
+
+        var address = await _addressRepository.GetByIdAsync(addressId, true);
+
+        return _mapper.Map<AddressViewModel>(address);
     }
 }

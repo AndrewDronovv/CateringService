@@ -1,6 +1,6 @@
-﻿namespace CateringService.Application.DataTransferObjects.Address;
+﻿namespace CateringService.Application.DataTransferObjects.Requests;
 
-public sealed class AddressCreateDto
+public sealed class AddAddressRequest
 {
     public Ulid TenantId { get; set; }
     public string Country { get; set; } = string.Empty;
@@ -9,5 +9,5 @@ public sealed class AddressCreateDto
     public string City { get; set; } = string.Empty;
     public string? Region { get; set; } = string.Empty;
     public string? Comment { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; } = string.Empty;
 }

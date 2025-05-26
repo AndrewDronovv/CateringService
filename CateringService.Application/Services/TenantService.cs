@@ -1,5 +1,5 @@
 ﻿using CateringService.Application.Abstractions;
-using CateringService.Application.DataTransferObjects.Tenants;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
 
@@ -23,7 +23,7 @@ public class TenantService : ITenantService
         return await _tenantRepository.GetByIdAsync(id);
     }
 
-    public async Task<TenantDto> BlockTenantAsync(Ulid tenantId, string blockReason)
+    public async Task<TenantViewModel> BlockTenantAsync(Ulid tenantId, string blockReason)
     {
         var tenant = await _tenantRepository.GetByIdAsync(tenantId);
         if (tenant is null)
@@ -37,7 +37,7 @@ public class TenantService : ITenantService
             {
                 throw new Exception($"Не удалось заблокировать арендатора с Id = {tenantId}.", t.Exception);
             }
-            return new TenantDto
+            return new TenantViewModel
             {
                 Id = tenantId,
                 Name = tenant.Name,
@@ -47,7 +47,7 @@ public class TenantService : ITenantService
         });
     }
 
-    public async Task<TenantDto> UnblockTenantAsync(Ulid tenantId)
+    public async Task<TenantViewModel> UnblockTenantAsync(Ulid tenantId)
     {
         var tenant = await _tenantRepository.GetByIdAsync(tenantId);
         if (tenant is null)
@@ -61,7 +61,7 @@ public class TenantService : ITenantService
             {
                 throw new Exception($"Не удалось разблокировать арендатора с Id = {tenantId}.", t.Exception);
             }
-            return new TenantDto
+            return new TenantViewModel
             {
                 Id = tenantId,
                 Name = tenant.Name,

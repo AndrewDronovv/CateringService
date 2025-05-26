@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
-using CateringService.Application.DataTransferObjects.Address;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers
@@ -18,11 +19,21 @@ namespace CateringService.Controllers
         }
 
         [HttpPost(ApiEndPoints.Addresses.Create)]
-        public async Task<IActionResult> CreateAddressAsync([FromBody] AddressCreateDto input)
+        [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status201Created)]
+        public async Task<ActionResult<AddressViewModel>> CreateAddressAsync([FromBody] AddAddressRequest input)
         {
-            var model = await _addressService.CreateAddressAsync(input, Ulid.NewUlid());
+            var createdAddress = await _addressService.CreateAddressAsync(input, Ulid.NewUlid());
 
-            return Ok(model);
+            return Ok(createdAddress);
+        }
+
+        [HttpGet(ApiEndPoints.Addresses.Get)]
+        [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status200OK)]
+        public async Task<ActionResult<AddressViewModel>> GetAddressAsync(Ulid addressId)
+        {
+            var address = await _addressService.GetByIdAsync(addressId);
+
+            return Ok(address);
         }
     }
 }

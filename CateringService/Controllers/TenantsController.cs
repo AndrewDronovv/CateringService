@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
-using CateringService.Application.DataTransferObjects.Dish;
-using CateringService.Application.DataTransferObjects.Tenants;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities;
 using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +24,8 @@ public class TenantsController : ControllerBase
     }
 
     [HttpGet(ApiEndPoints.Tenants.GetAll)]
-    [ProducesResponseType(typeof(IEnumerable<TenantDto>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<TenantDto>>> GetTenantsAsync()
+    [ProducesResponseType(typeof(IEnumerable<TenantViewModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<TenantViewModel>>> GetTenantsAsync()
     {
         _logger.LogInformation("Получен запрос на список арендаторов.");
         var tenants = await _tenantService.GetTenantsAsync();
@@ -33,18 +33,18 @@ public class TenantsController : ControllerBase
         if (tenants is null || !tenants.Any())
         {
             _logger.LogInformation("Список арендаторов пуст.");
-            return Ok(Enumerable.Empty<TenantDto>());
+            return Ok(Enumerable.Empty<TenantViewModel>());
         }
 
-        var tenantsDto = _mapper.Map<IEnumerable<TenantDto>>(tenants);
+        var tenantsDto = _mapper.Map<IEnumerable<TenantViewModel>>(tenants);
         _logger.LogInformation($"Запрос списка арендаторов выполнен успешно. Найдено {tenants.Count()} арендатора.");
         return Ok(tenantsDto);
     }
 
     [HttpGet(ApiEndPoints.Tenants.Get, Name = "GetTenantById")]
-    [ProducesResponseType(typeof(DishDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<TenantDto>> GetTenantAsync(Ulid tenantId)
+    public async Task<ActionResult<TenantViewModel>> GetTenantAsync(Ulid tenantId)
     {
         if (tenantId == Ulid.Empty)
         {
@@ -59,15 +59,15 @@ public class TenantsController : ControllerBase
             return NotFound(new { Error = $"Арендатор с Id = {tenantId} не найден." });
         }
 
-        var tenantDto = _mapper.Map<TenantDto>(tenant);
+        var tenantDto = _mapper.Map<TenantViewModel>(tenant);
         _logger.LogInformation($"Арендатор {tenantDto.Name} с Id = {tenantId} успешно получен.");
         return Ok(tenantDto);
     }
 
     [HttpPost(ApiEndPoints.Tenants.Create)]
-    [ProducesResponseType(typeof(TenantDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(TenantViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<TenantDto>> CreateTenantAsync([FromBody] TenantCreateDto input)
+    public async Task<ActionResult<TenantViewModel>> CreateTenantAsync([FromBody] AddTenantRequest input)
     {
         if (input is null)
         {
@@ -84,14 +84,14 @@ public class TenantsController : ControllerBase
             return BadRequest("Арендатор не был создан.");
         }
 
-        var tenantDto = _mapper.Map<TenantDto>(createdTenant);
+        var tenantDto = _mapper.Map<TenantViewModel>(createdTenant);
         _logger.LogInformation($"Арендатор {tenantDto.Name} с Id = {tenantDto.Id} создан в {tenantDto.CreatedAt}");
         return CreatedAtRoute("GetTenantById",
         new
         {
             tenantId = createdTenant.Id,
         },
-        _mapper.Map<TenantDto>(createdTenant));
+        _mapper.Map<TenantViewModel>(createdTenant));
     }
 
     [HttpDelete(ApiEndPoints.Tenants.Delete)]
@@ -115,7 +115,7 @@ public class TenantsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateTenantAsync(Ulid tenantId, TenantUpdateDto input)
+    public async Task<IActionResult> UpdateTenantAsync(Ulid tenantId, UpdateTenantRequest input)
     {
         if (tenantId == Ulid.Empty)
         {
@@ -137,7 +137,7 @@ public class TenantsController : ControllerBase
         return Ok(updateRequest);
     }
     [HttpPut(ApiEndPoints.Tenants.Block)]
-    public async Task<ActionResult<TenantDto>> BlockTenantAsync([FromBody] TenantBlockDto input)
+    public async Task<ActionResult<TenantViewModel>> BlockTenantAsync([FromBody] BlockTenantRequest input)
     {
         if (input.Id == Ulid.Empty)
         {
@@ -162,7 +162,7 @@ public class TenantsController : ControllerBase
     }
 
     [HttpPut(ApiEndPoints.Tenants.Unblock)]
-    public async Task<ActionResult<TenantDto>> UnblockTenansAsync([FromRoute] Ulid tenantId)
+    public async Task<ActionResult<TenantViewModel>> UnblockTenansAsync([FromRoute] Ulid tenantId)
     {
         if (tenantId == Ulid.Empty)
         {

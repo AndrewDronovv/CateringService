@@ -1,6 +1,6 @@
-﻿namespace CateringService.Application.DataTransferObjects.Address;
+﻿namespace CateringService.Application.DataTransferObjects.Responses;
 
-public sealed class AddressDto
+public sealed class AddressViewModel
 {
     public Ulid TenantId { get; set; }
     public string Country { get; set; } = string.Empty;

@@ -1,8 +1,10 @@
-﻿using CateringService.Application.DataTransferObjects.Address;
+﻿using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 
 namespace CateringService.Application.Abstractions;
 
 public interface IAddressService
 {
-    Task<AddressDto> CreateAddressAsync(AddressCreateDto request, Ulid tenantId);
+    Task<AddressViewModel> CreateAddressAsync(AddAddressRequest request, Ulid tenantId);
+    Task<AddressViewModel> GetByIdAsync(Ulid addresId);
 }

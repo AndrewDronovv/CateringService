@@ -1,9 +1,9 @@
-﻿using CateringService.Application.DataTransferObjects.Tenants;
+﻿using CateringService.Application.DataTransferObjects.Requests;
 using FluentValidation;
 
 namespace CateringService.Application.Validators.Tenant;
 
-public class TenantUpdateDtoValidator : AbstractValidator<TenantUpdateDto>
+public class TenantUpdateDtoValidator : AbstractValidator<UpdateTenantRequest>
 {
     public TenantUpdateDtoValidator()
     {

@@ -1,6 +1,6 @@
-﻿namespace CateringService.Application.DataTransferObjects.MenuCategory;
+﻿namespace CateringService.Application.DataTransferObjects.Responses;
 
-public sealed class MenuCategoryDto
+public sealed class MenuCategoryViewModel
 {
     public Ulid Id { get; set; }
     public string Name { get; set; } = string.Empty;
