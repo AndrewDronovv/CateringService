@@ -1,4 +1,6 @@
-﻿namespace CateringService;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace CateringService;
 
 public static class ApiEndPoints
 {
@@ -38,5 +40,12 @@ public static class ApiEndPoints
         public const string Update = $"{Base}/{{tenantId}}";
         public const string Block = $"{Base}/{{tenantId}}/block";
         public const string Unblock = $"{Base}/{{tenantId}}/unblock";
+    }
+
+    public static class Addresses
+    {
+        private const string Base = $"{ApiBase}/addresses";
+
+        public const string Create = $"{Base}";
     }
 }

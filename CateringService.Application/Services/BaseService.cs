@@ -17,7 +17,7 @@ public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryK
         _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
     }
 
-    public async Task<TEntity?> AddAsync(TEntity entity)
+    public virtual async Task<TEntity?> AddAsync(TEntity entity)
     {
         var id = _repository.Add(entity);
         await _unitOfWork.SaveChangesAsync();

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CateringService.Application.DataTransferObjects.Address;
 using CateringService.Application.DataTransferObjects.Dish;
 using CateringService.Application.DataTransferObjects.MenuCategory;
 using CateringService.Application.DataTransferObjects.Tenants;
@@ -22,6 +23,8 @@ public sealed class MappingProfile : Profile
         CreateMap<TenantDto, Tenant>().ReverseMap();
         CreateMap<TenantCreateDto, Tenant>().ReverseMap();
         CreateMap<TenantUpdateDto, Tenant>().ReverseMap();
-        //CreateMap<TenantBlockDto, Tenant>().ReverseMap();
+
+        CreateMap<AddressCreateDto, Address>().ReverseMap();
+        CreateMap<Address, AddressDto>().ReverseMap();
     }
 }
