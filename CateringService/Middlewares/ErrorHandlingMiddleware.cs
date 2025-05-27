@@ -1,9 +1,7 @@
-﻿using System;
+﻿using CateringService.Domain.Exceptions;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Text.Json;
-using CateringService.Domain.Exceptions;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Middlewares;
 

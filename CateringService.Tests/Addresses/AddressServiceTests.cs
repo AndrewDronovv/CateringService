@@ -2,11 +2,8 @@
 using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.Services;
-using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
-using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Repositories;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
