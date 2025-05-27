@@ -14,7 +14,7 @@ public sealed class AddressCreateDtoValidator : AbstractValidator<AddAddressRequ
         RuleFor(x => x.Country)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Название страны не должно быть пустым.")
-            .MinimumLength(4).WithMessage("Название страны должно содержать не менее 4 символов.")
+            .MinimumLength(2).WithMessage("Название страны должно содержать не менее 4 символов.")
             .MaximumLength(64).WithMessage("Название страны не должно превышать 64 символа.");
 
         RuleFor(x => x.StreetAndBuilding)
