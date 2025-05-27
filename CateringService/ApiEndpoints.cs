@@ -8,11 +8,11 @@ public static class ApiEndPoints
 
     public static class Dishes
     {
-        private const string Base = $"{ApiBase}/dishes";
+        private const string Base = $"{ApiBase}/suppliers/{{supplierId}}";
 
         public const string GetAll = Base;
         public const string Get = $"{Base}/{{dishId}}";
-        public const string Create = Base;
+        public const string Create = $"{Base}/dishes";
         public const string Update = $"{Base}/{{dishId}}";
         public const string Delete = $"{Base}/{{dishId}}";
         public const string Toggle = $"{Base}/{{dishId}}/toggle";

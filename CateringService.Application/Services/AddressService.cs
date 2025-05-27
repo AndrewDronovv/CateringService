@@ -39,12 +39,12 @@ public class AddressService : IAddressService
             throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
         }
 
-        _logger.LogInformation($"Создание адреса для tenantId: {tenantId}");
-        var tenant = await _tenantRepository.GetByIdAsync(request.TenantId);
+        _logger.LogInformation($"Создание адреса для арендатора с Id = {tenantId}");
 
+        var tenant = await _tenantRepository.GetByIdAsync(request.TenantId);
         if (tenant is null || !tenant.IsActive)
         {
-            _logger.LogWarning($"Tenant with Id = {request.TenantId} is not found or not active.");
+            _logger.LogWarning($"Tenant with Id = {request.TenantId} was not found or not active.");
             return null;
         }
 
