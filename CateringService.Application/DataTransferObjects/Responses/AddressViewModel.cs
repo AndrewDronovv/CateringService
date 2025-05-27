@@ -2,6 +2,7 @@
 
 public sealed class AddressViewModel
 {
+    public Ulid Id { get; set; }
     public Ulid TenantId { get; set; }
     public string Country { get; set; } = string.Empty;
     public string StreetAndBuilding { get; set; } = string.Empty;

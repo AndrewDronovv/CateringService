@@ -9,36 +9,36 @@ namespace CateringService.Tests.Dishes;
 
 public class DishServiceTests
 {
-    private readonly IDishRepository _dishRepositorySubstitute;
-    private readonly IUnitOfWorkRepository _unitOfWorkSubstitute;
+    private readonly IDishRepository _dishRepositoryMock;
+    private readonly IUnitOfWorkRepository _unitOfWorkMock;
     private readonly IDishService _dishService;
 
     public DishServiceTests()
     {
-        _dishRepositorySubstitute = Substitute.For<IDishRepository>();
-        _unitOfWorkSubstitute = Substitute.For<IUnitOfWorkRepository>();
-        _dishService = new DishService(_dishRepositorySubstitute, _unitOfWorkSubstitute);
+        _dishRepositoryMock = Substitute.For<IDishRepository>();
+        _unitOfWorkMock = Substitute.For<IUnitOfWorkRepository>();
+        _dishService = new DishService(_dishRepositoryMock, _unitOfWorkMock);
     }
 
     #region Тесты конструктора
     [Fact]
     public void Ctor_DishRepositoryNull_ThrowsArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(null, _unitOfWorkSubstitute));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(null, _unitOfWorkMock));
         Assert.Contains("repository", exception.Message);
     }
 
     [Fact]
     public void Ctor_UnitOfWorkNull_ThrowsArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositorySubstitute, null));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, null));
         Assert.Contains("unitOfWork", exception.Message);
     }
 
     [Fact]
     public void Ctor_AllParameters_CreatesNewInstance()
     {
-        var dishService = new DishService(_dishRepositorySubstitute, _unitOfWorkSubstitute);
+        var dishService = new DishService(_dishRepositoryMock, _unitOfWorkMock);
         Assert.NotNull(dishService);
     }
     #endregion 
@@ -49,8 +49,8 @@ public class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid() };
-        _dishRepositorySubstitute.Add(dish).Returns(dish.Id);
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(dish));
+        _dishRepositoryMock.Add(dish).Returns(dish.Id);
+        _dishRepositoryMock.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(dish));
 
         //Act
         var result = await _dishService.AddAsync(dish);
@@ -59,8 +59,8 @@ public class DishServiceTests
         Assert.NotNull(result);
         Assert.NotEqual(Ulid.Empty, result.Id);
         Assert.Equal(dish.Id, result.Id);
-        _dishRepositorySubstitute.Received(1).Add(dish);
-        await _unitOfWorkSubstitute.Received(1).SaveChangesAsync();
+        _dishRepositoryMock.Received(1).Add(dish);
+        await _unitOfWorkMock.Received(1).SaveChangesAsync();
     }
     #endregion
 
@@ -70,14 +70,14 @@ public class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid() };
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(dish));
+        _dishRepositoryMock.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(dish));
 
         //Act
         await _dishService.DeleteAsync(dish.Id);
 
         //Assert
-        _dishRepositorySubstitute.Received(1).Delete(dish);
-        await _unitOfWorkSubstitute.Received(1).SaveChangesAsync();
+        _dishRepositoryMock.Received(1).Delete(dish);
+        await _unitOfWorkMock.Received(1).SaveChangesAsync();
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid() };
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(null));
+        _dishRepositoryMock.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(null));
 
         //Act & Assert
         var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _dishService.DeleteAsync(dish.Id));
@@ -99,7 +99,7 @@ public class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid() };
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(dish));
+        _dishRepositoryMock.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(dish));
 
         //Act
         var result = await _dishService.GetByIdAsync(dish.Id);
@@ -107,7 +107,7 @@ public class DishServiceTests
         //Assert
         Assert.NotNull(result);
         Assert.Equal(dish.Id, result.Id);
-        await _dishRepositorySubstitute.Received(1).GetByIdAsync(dish.Id, false);
+        await _dishRepositoryMock.Received(1).GetByIdAsync(dish.Id, false);
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid() };
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(null));
+        _dishRepositoryMock.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(null));
 
         //Act & Assert
         var exception = await Assert.ThrowsAsync<NotFoundException>(() => _dishService.GetByIdAsync(dish.Id));
@@ -135,7 +135,7 @@ public class DishServiceTests
             new Dish {Id = Ulid.NewUlid(), Name = "Pasta"}
         };
 
-        _dishRepositorySubstitute.GetAllAsync().Returns(Task.FromResult<IEnumerable<Dish>>(dishes));
+        _dishRepositoryMock.GetAllAsync().Returns(Task.FromResult<IEnumerable<Dish>>(dishes));
 
         //Act
         var result = await _dishService.GetAllAsync();
@@ -146,14 +146,14 @@ public class DishServiceTests
         Assert.Contains(result, d => d.Name == "Pizza");
         Assert.Contains(result, d => d.Name == "Pasta");
         Assert.All(result, dish => Assert.NotNull(dish.Name));
-        await _dishRepositorySubstitute.Received(1).GetAllAsync();
+        await _dishRepositoryMock.Received(1).GetAllAsync();
     }
 
     [Fact]
     public async Task GetAllAsync_WhenNoDishes_ReturnsEmptyList()
     {
         //Arrange
-        _dishRepositorySubstitute.GetAllAsync().Returns(Task.FromResult(Enumerable.Empty<Dish>()));
+        _dishRepositoryMock.GetAllAsync().Returns(Task.FromResult(Enumerable.Empty<Dish>()));
 
         //Act
         var result = await _dishService.GetAllAsync();
@@ -171,8 +171,8 @@ public class DishServiceTests
         //Arrange
         Dish oldDish = new Dish { Id = Ulid.NewUlid(), Name = "Old name" };
         Dish updatedDish = new Dish { Id = oldDish.Id, Name = "New name" };
-        _dishRepositorySubstitute.GetByIdAsync(oldDish.Id).Returns(Task.FromResult<Dish?>(oldDish));
-        _dishRepositorySubstitute.Update(updatedDish).Returns(updatedDish.Id);
+        _dishRepositoryMock.GetByIdAsync(oldDish.Id).Returns(Task.FromResult<Dish?>(oldDish));
+        _dishRepositoryMock.Update(updatedDish).Returns(updatedDish.Id);
 
         //Act
         var result = await _dishService.UpdateAsync(oldDish.Id, updatedDish);
@@ -181,7 +181,7 @@ public class DishServiceTests
         Assert.NotNull(result);
         Assert.Equal(oldDish.Id, result.Id);
         Assert.Equal("New name", result.Name);
-        await _unitOfWorkSubstitute.Received(1).SaveChangesAsync();
+        await _unitOfWorkMock.Received(1).SaveChangesAsync();
     }
 
     [Fact]
@@ -190,7 +190,7 @@ public class DishServiceTests
         //Arrange
         Dish oldDish = new Dish { Id = Ulid.NewUlid() };
         Dish newDish = new Dish { Id = oldDish.Id };
-        _dishRepositorySubstitute.GetByIdAsync(oldDish.Id).Returns(Task.FromResult<Dish?>(null));
+        _dishRepositoryMock.GetByIdAsync(oldDish.Id).Returns(Task.FromResult<Dish?>(null));
 
         //Act & Assert
         var exception = await Assert.ThrowsAsync<KeyNotFoundException>(async () => await _dishService.UpdateAsync(oldDish.Id, newDish));
@@ -204,8 +204,8 @@ public class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid(), IsAvailable = true };
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(dish));
-        _dishRepositorySubstitute.ToggleState(dish).Returns(true);
+        _dishRepositoryMock.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(dish));
+        _dishRepositoryMock.ToggleState(dish).Returns(true);
 
         //Act
         var result = await _dishService.ToggleDishStateAsync(dish.Id);
@@ -213,7 +213,7 @@ public class DishServiceTests
         //Assert
         Assert.True(result);
         Assert.False(dish.IsAvailable);
-        await _unitOfWorkSubstitute.Received(1).SaveChangesAsync();
+        await _unitOfWorkMock.Received(1).SaveChangesAsync();
     }
 
     [Fact]
@@ -221,7 +221,7 @@ public class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid(), IsAvailable = true };
-        _dishRepositorySubstitute.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(null));
+        _dishRepositoryMock.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(null));
 
         //Act & Assert
         var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => _dishService.ToggleDishStateAsync(dish.Id));
@@ -235,7 +235,7 @@ public class DishServiceTests
     {
         //Arrange
         var categoryId = Ulid.NewUlid();
-        _dishRepositorySubstitute.CheckMenuCategoryExists(categoryId).Returns(true);
+        _dishRepositoryMock.CheckMenuCategoryExists(categoryId).Returns(true);
 
         //Act
         var result = _dishService.CheckMenuCategoryExists(categoryId);
@@ -249,7 +249,7 @@ public class DishServiceTests
     {
         //Arrange
         var categoryId = Ulid.NewUlid();
-        _dishRepositorySubstitute.CheckMenuCategoryExists(categoryId).Returns(false);
+        _dishRepositoryMock.CheckMenuCategoryExists(categoryId).Returns(false);
 
         //Act
         var result = _dishService.CheckMenuCategoryExists(categoryId);
@@ -276,7 +276,7 @@ public class DishServiceTests
     {
         //Arrange
         var supplierId = Ulid.NewUlid();
-        _dishRepositorySubstitute.CheckSupplierExists(supplierId).Returns(true);
+        _dishRepositoryMock.CheckSupplierExists(supplierId).Returns(true);
 
         //Act
         var result = _dishService.CheckSupplierExists(supplierId);
@@ -290,7 +290,7 @@ public class DishServiceTests
     {
         //Arrange
         var supplierId = Ulid.NewUlid();
-        _dishRepositorySubstitute.CheckSupplierExists(supplierId).Returns(false);
+        _dishRepositoryMock.CheckSupplierExists(supplierId).Returns(false);
 
         //Act
         var result = _dishService.CheckSupplierExists(supplierId);
