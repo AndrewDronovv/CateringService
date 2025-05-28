@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Abstractions;
 
-public interface IMenuCategoryService : IBaseService<MenuCategory, Ulid>
+public interface IMenuCategoryService
 {
     Task<List<MenuCategory>> GetCategoriesAsync(Ulid supplilerId);
     Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId);

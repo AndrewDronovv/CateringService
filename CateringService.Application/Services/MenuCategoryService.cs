@@ -1,13 +1,18 @@
-﻿using CateringService.Domain.Abstractions;
+﻿using AutoMapper;
+using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace CateringService.Application.Services;
 
-public class MenuCategoryService : BaseService<MenuCategory, Ulid>, IMenuCategoryService
+public class MenuCategoryService : IMenuCategoryService
 {
     private readonly IMenuCategoryRepository _menuCategoryRepository;
-    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, IUnitOfWorkRepository unitOfWork) : 
+    private readonly IUnitOfWorkRepository _unitOfWorkRepository;
+    private readonly IMapper _mapper;
+    private readonly ILogger<MenuCategoryService> _logger;
+    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, IUnitOfWorkRepository unitOfWork) :
         base(menuCategoryRepository, unitOfWork)
     {
         _menuCategoryRepository = menuCategoryRepository ?? throw new ArgumentNullException(nameof(menuCategoryRepository));
