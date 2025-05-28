@@ -18,11 +18,11 @@ public class DishService : IDishService
 
     public DishService(IDishRepository dishRepository, ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<DishService> logger)
     {
-        _dishRepository = dishRepository;
-        _supplierRepository = supplierRepository;
-        _unitOfWorkRepository = unitOfWorkRepository;
-        _mapper = mapper;
-        _logger = logger;
+        _dishRepository = dishRepository ?? throw new ArgumentNullException(nameof(dishRepository));
+        _supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
+        _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task<DishViewModel?> CreateDishAsync(AddDishRequest request, Ulid supplierId)

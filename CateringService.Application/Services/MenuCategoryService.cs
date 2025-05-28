@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Repositories;
@@ -12,10 +13,13 @@ public class MenuCategoryService : IMenuCategoryService
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<MenuCategoryService> _logger;
-    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, IUnitOfWorkRepository unitOfWork) :
-        base(menuCategoryRepository, unitOfWork)
+
+    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<MenuCategoryService> logger)
     {
         _menuCategoryRepository = menuCategoryRepository ?? throw new ArgumentNullException(nameof(menuCategoryRepository));
+        _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     public async Task DeleteCategoryAsync(Ulid categoryId, Ulid supplierId)
@@ -26,7 +30,7 @@ public class MenuCategoryService : IMenuCategoryService
         }
 
         await _menuCategoryRepository.DeleteAsync(categoryId, supplierId);
-        _unitOfWork.SaveChanges();
+        _unitOfWorkRepository.SaveChanges();
     }
 
     public Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId)
@@ -39,16 +43,43 @@ public class MenuCategoryService : IMenuCategoryService
         return _menuCategoryRepository.GetBySupplierIdAsync(supplilerId);
     }
 
-    protected override void UpdateEntity(MenuCategory oldEntity, MenuCategory newEntity)
+    public async Task<List<MenuCategoryViewModel>> GetMenuCategoriesAsync(Ulid supplierId)
     {
-        if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
+        if (supplierId == Ulid.Empty)
         {
-            oldEntity.Name = newEntity.Name;
+            _logger.LogWarning($"SupplierId не должен быть пустым.");
+            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
         }
 
-        if (!oldEntity.Description.Equals(newEntity.Description, StringComparison.Ordinal))
+        _logger.LogInformation($"Получение категорий меню поставщика с Id = {supplierId}");
+        var menuCategories = await _menuCategoryRepository.GetBySupplierIdAsync(supplierId);
+
+        if (menuCategories is null)
         {
-            oldEntity.Description = newEntity.Description;
+            _logger.LogWarning($"Категории меню у поставщика с Id = {supplierId} не найдены.");
+            return null;
         }
+
+        var mappedMenuCategories = _mapper.Map<List<MenuCategoryViewModel>>(menuCategories);
+        if (mappedMenuCategories is null)
+        {
+            _logger.LogWarning($"Ошибка маппинга {nameof(MenuCategoryViewModel)} для Id = {supplierId}");
+            throw new InvalidOperationException($"Failed to map {nameof(MenuCategoryViewModel)} for Id = {supplierId}");
+        }
+
+        return mappedMenuCategories;
     }
+
+    //protected override void UpdateEntity(MenuCategory oldEntity, MenuCategory newEntity)
+    //{
+    //    if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
+    //    {
+    //        oldEntity.Name = newEntity.Name;
+    //    }
+
+    //    if (!oldEntity.Description.Equals(newEntity.Description, StringComparison.Ordinal))
+    //    {
+    //        oldEntity.Description = newEntity.Description;
+    //    }
+    //}
 }

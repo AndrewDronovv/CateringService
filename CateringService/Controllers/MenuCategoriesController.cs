@@ -78,49 +78,49 @@ public class MenuCategoriesController : ControllerBase
         return Ok(menuCategoryDto);
     }
 
-    [HttpPost(ApiEndPoints.MenuCategories.Create)]
-    [ProducesResponseType(typeof(MenuCategoryViewModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<MenuCategoryViewModel>> CreateMenuCategoryAsync([FromBody] AddMenuCategoryRequest input, Ulid supplierId)
-    {
-        if (input is null)
-        {
-            _logger.LogWarning("Входные данные не указаны. Операция создания категории меню не может быть выполнена.");
-            return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания категории меню." });
-        }
+    //[HttpPost(ApiEndPoints.MenuCategories.Create)]
+    //[ProducesResponseType(typeof(MenuCategoryViewModel), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    //public async Task<ActionResult<MenuCategoryViewModel>> CreateMenuCategoryAsync([FromBody] AddMenuCategoryRequest input, Ulid supplierId)
+    //{
+    //    if (input is null)
+    //    {
+    //        _logger.LogWarning("Входные данные не указаны. Операция создания категории меню не может быть выполнена.");
+    //        return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания категории меню." });
+    //    }
 
-        if (supplierId == Ulid.Empty)
-        {
-            _logger.LogWarning("Id не должен быть пустым.");
-            return BadRequest(new { Error = "Id не должен быть пустым." });
-        }
+    //    if (supplierId == Ulid.Empty)
+    //    {
+    //        _logger.LogWarning("Id не должен быть пустым.");
+    //        return BadRequest(new { Error = "Id не должен быть пустым." });
+    //    }
 
-        var supplierData = await _supplierService.GetByIdAsync(supplierId);
-        if (supplierData is null)
-        {
-            _logger.LogInformation($"Поставщика с Id = {supplierId} не существует.");
-            return NotFound(new { Error = "Поставщик не найден." });
-        }
+    //    var supplierData = await _supplierService.GetByIdAsync(supplierId);
+    //    if (supplierData is null)
+    //    {
+    //        _logger.LogInformation($"Поставщика с Id = {supplierId} не существует.");
+    //        return NotFound(new { Error = "Поставщик не найден." });
+    //    }
 
-        var menuCategory = _mapper.Map<MenuCategory>(input);
-        var createdMenuCategory = await _menuCategoryService.AddAsync(menuCategory);
-        if (createdMenuCategory == null)
-        {
-            return BadRequest($"Категория меню не была создана.");
-        }
+    //    var menuCategory = _mapper.Map<MenuCategory>(input);
+    //    var createdMenuCategory = await _menuCategoryService.AddAsync(menuCategory);
+    //    if (createdMenuCategory == null)
+    //    {
+    //        return BadRequest($"Категория меню не была создана.");
+    //    }
 
-        var menuCategoryDto = _mapper.Map<MenuCategoryViewModel>(menuCategory);
-        _logger.LogInformation($"Категория меню {menuCategoryDto.Name} с Id = {menuCategoryDto.Id} создана в {menuCategoryDto.CreatedAt}");
-        return CreatedAtRoute("GetMenuCategoryById",
-            new
-            {
-                categoryId = menuCategoryDto.Id,
-                supplierId = supplierId
-            },
-                menuCategoryDto
-            );
-    }
+    //    var menuCategoryDto = _mapper.Map<MenuCategoryViewModel>(menuCategory);
+    //    _logger.LogInformation($"Категория меню {menuCategoryDto.Name} с Id = {menuCategoryDto.Id} создана в {menuCategoryDto.CreatedAt}");
+    //    return CreatedAtRoute("GetMenuCategoryById",
+    //        new
+    //        {
+    //            categoryId = menuCategoryDto.Id,
+    //            supplierId = supplierId
+    //        },
+    //            menuCategoryDto
+    //        );
+    //}
 
     [HttpDelete(ApiEndPoints.MenuCategories.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -138,28 +138,28 @@ public class MenuCategoriesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut(ApiEndPoints.MenuCategories.Update)]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid supplierId, Ulid categoryId, UpdateMenuCategoryRequest input)
-    {
-        if (categoryId == Ulid.Empty)
-        {
-            _logger.LogWarning($"Id не должен быть пустым.");
-            return BadRequest(new { Error = "Id не должен быть пустым." });
-        }
+    //[HttpPut(ApiEndPoints.MenuCategories.Update)]
+    //[ProducesResponseType(StatusCodes.Status204NoContent)]
+    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+    //public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid supplierId, Ulid categoryId, UpdateMenuCategoryRequest input)
+    //{
+    //    if (categoryId == Ulid.Empty)
+    //    {
+    //        _logger.LogWarning($"Id не должен быть пустым.");
+    //        return BadRequest(new { Error = "Id не должен быть пустым." });
+    //    }
 
-        if (input is null)
-        {
-            _logger.LogWarning("Входные данные не указаны. Операция обновления категории меню не может быть выполнена.");
-            return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания категории меню." });
-        }
+    //    if (input is null)
+    //    {
+    //        _logger.LogWarning("Входные данные не указаны. Операция обновления категории меню не может быть выполнена.");
+    //        return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания категории меню." });
+    //    }
 
-        var updateRequest = _mapper.Map<MenuCategory>(input);
+    //    var updateRequest = _mapper.Map<MenuCategory>(input);
 
-        await _menuCategoryService.UpdateAsync(categoryId, updateRequest);
+    //    await _menuCategoryService.UpdateAsync(categoryId, updateRequest);
 
-        _logger.LogInformation($"Категория меню с Id = {categoryId} успешно обновлена.");
-        return NoContent();
-    }
+    //    _logger.LogInformation($"Категория меню с Id = {categoryId} успешно обновлена.");
+    //    return NoContent();
+    //}
 }
