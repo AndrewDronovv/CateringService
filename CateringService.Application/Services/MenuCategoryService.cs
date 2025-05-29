@@ -14,12 +14,14 @@ public class MenuCategoryService : IMenuCategoryService
 {
     private readonly IMenuCategoryRepository _menuCategoryRepository;
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
+    private readonly ISupplierRepository _supplierRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<MenuCategoryService> _logger;
 
-    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<MenuCategoryService> logger)
+    public MenuCategoryService(IMenuCategoryRepository menuCategoryRepository, ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<MenuCategoryService> logger)
     {
         _menuCategoryRepository = menuCategoryRepository ?? throw new ArgumentNullException(nameof(menuCategoryRepository));
+        _supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
         _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -41,7 +43,7 @@ public class MenuCategoryService : IMenuCategoryService
 
         _logger.LogInformation("Создание категори меню. Поставщик: {SupplierId}, Название: {Name}.", supplierId, request?.Name);
 
-        var supplier = await _menuCategoryRepository.GetByIdAsync(supplierId);
+        var supplier = await _supplierRepository.GetByIdAsync(supplierId);
         if (supplier is null)
         {
             _logger.LogWarning("Поставщик {SupplierId} не найден.", supplierId);
