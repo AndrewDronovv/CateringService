@@ -35,16 +35,16 @@ public class AddressService : IAddressService
 
         if (tenantId == Ulid.Empty)
         {
-            _logger.LogWarning($"TenantId не должен быть пустым.");
+            _logger.LogWarning("Параметр tenantId не должен быть пустым. Значение: {TenantId}", tenantId);
             throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
         }
 
-        _logger.LogInformation($"Создание адреса для арендатора с Id = {tenantId}");
+        _logger.LogInformation("Создание адреса для арендатора с Id = {TenantId}", tenantId);
 
         var tenant = await _tenantRepository.GetByIdAsync(request.TenantId);
         if (tenant is null || !tenant.IsActive)
         {
-            _logger.LogWarning($"Tenant with Id = {request.TenantId} was not found or not active.");
+            _logger.LogWarning("Арендатор с Id = {request.TenantId} не найден или не активен.", request.TenantId);
             return null;
         }
 
@@ -61,7 +61,7 @@ public class AddressService : IAddressService
         var createdAddress = await _addressRepository.GetByIdAsync(addressId);
         if (createdAddress is null)
         {
-            _logger.LogWarning($"Ошибка получения созданного адреса с Id = {addressId}");
+            _logger.LogWarning("Ошибка получения созданного адреса с Id = {AddressId}", addressId);
             return null;
         }
 
@@ -75,7 +75,7 @@ public class AddressService : IAddressService
     {
         if (addressId == Ulid.Empty)
         {
-            _logger.LogWarning("AddressId не должен быть пустым.");
+            _logger.LogWarning("Параметр addressId не должен быть пустым. Значение: {AddressId}", addressId);
             throw new ArgumentNullException(nameof(addressId), "AddressId is empty.");
         }
 
@@ -91,8 +91,8 @@ public class AddressService : IAddressService
         var mappedAddress = _mapper.Map<AddressViewModel>(address);
         if (mappedAddress is null)
         {
-            _logger.LogWarning($"Ошибка маппинга AddressViewModel для Id = {addressId}");
-            throw new InvalidOperationException($"Failed to map AddressViewModel for Id = {addressId}");
+            _logger.LogWarning("Ошибка маппинга AddressViewModel для Id = {AddressId}", addressId);
+            throw new InvalidOperationException("Failed to map AddressViewModel.");
         }
 
         _logger.LogInformation("Адрес успешно получен: страна = {Country}, город = {City}, ZIP код = {Zip}",

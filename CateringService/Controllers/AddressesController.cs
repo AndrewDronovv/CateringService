@@ -12,9 +12,9 @@ namespace CateringService.Controllers
         public AddressesController(IAddressService addressService) => _addressService = addressService;
 
         [HttpPost(ApiEndPoints.Addresses.Create)]
-        [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<AddressViewModel>> CreateAddressAsync([FromBody] AddAddressRequest request)
+        public async Task<ActionResult<DishViewModel>> CreateAddressAsync([FromBody] AddAddressRequest request)
         {
             var createdAddress = await _addressService.CreateAddressAsync(request, Ulid.NewUlid());
             if (createdAddress is null)
@@ -31,14 +31,14 @@ namespace CateringService.Controllers
         }
 
         [HttpGet(ApiEndPoints.Addresses.Get, Name = "GetAddressById")]
-        [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<AddressViewModel>> GetAddressAsync(Ulid addressId)
+        public async Task<ActionResult<DishViewModel>> GetAddressAsync(Ulid addressId)
         {
             var address = await _addressService.GetByIdAsync(addressId);
             if (address is null)
             {
-                return NotFound(new { Message = $"Адрес с Id = {addressId} не найден." });
+                return NotFound(new { Message = $"Адрес {addressId} не найден." });
             }
 
             return Ok(address);

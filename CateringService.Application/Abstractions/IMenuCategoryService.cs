@@ -1,12 +1,12 @@
-﻿using CateringService.Application.DataTransferObjects.Responses;
-using CateringService.Domain.Entities.Approved;
+﻿using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 
 namespace CateringService.Domain.Abstractions;
 
 public interface IMenuCategoryService
 {
-    Task<List<MenuCategoryViewModel>> GetMenuCategoriesAsync(Ulid supplierId);
-    Task<List<MenuCategory>> GetCategoriesAsync(Ulid supplilerId);
-    Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId);
+    Task<List<MenuCategoryViewModel>> GetMenuCategoriesAsync(Ulid supplilerId);
+    Task<MenuCategoryViewModel> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId);
+    Task<MenuCategoryViewModel> CreateMenuCategoryAsync(AddMenuCategoryRequest request, Ulid supplierId);
     Task DeleteCategoryAsync(Ulid categoryId, Ulid supplierId);
 }

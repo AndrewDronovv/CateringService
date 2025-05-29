@@ -12,7 +12,7 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
     public async Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid supplierId, Ulid menuCategoryId)
     {
         var menuCategory = await _context.MenuCategories
-            .Where(mc => mc.SupplierId == menuCategoryId && mc.Id == supplierId)
+            .Where(mc => mc.SupplierId == supplierId && mc.Id == menuCategoryId)
             .FirstOrDefaultAsync();
 
         return menuCategory;

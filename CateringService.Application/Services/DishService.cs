@@ -2,8 +2,11 @@
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
+using CateringService.Domain.Entities;
 using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Repositories;
+using CateringService.Persistence.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace CateringService.Application.Services;
@@ -29,30 +32,26 @@ public class DishService : IDishService
     {
         if (request is null)
         {
-            _logger.LogWarning($"Входные данные не указаны. Операция создания блюда не может быть выполнена.");
+            _logger.LogWarning("Входные данные не указаны.");
             throw new ArgumentNullException(nameof(request), "Dish request is null.");
         }
 
         if (supplierId == Ulid.Empty)
         {
             _logger.LogWarning("SupplierId не должен быть пустым.");
-            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
-        }
-
-        _logger.LogInformation($"Создание блюда для поставщика с Id = {supplierId}");
-        var supplier = await _supplierRepository.GetByIdAsync(supplierId);
-        if (supplier is null)
-        {
-            _logger.LogWarning($"Supplier with Id = {supplierId} was not found.");
             return null;
         }
 
-        var dish = _mapper.Map<Dish>(request);
-        if (dish is null)
+        _logger.LogInformation("Создание блюда. Поставщик: {SupplierId}, Название: {DishName}.", supplierId, request?.Name);
+
+        var supplier = await _supplierRepository.GetByIdAsync(supplierId);
+        if (supplier is null)
         {
-            _logger.LogWarning("Ошибка маппинга блюда.");
-            throw new InvalidOperationException("Failed to map Dish.");
+            _logger.LogWarning("Поставщик {SupplierId} не найден.", supplierId);
+            return null;
         }
+
+        var dish = _mapper.Map<Dish>(request) ?? throw new InvalidOperationException("Ошибка маппинга блюда.");
 
         var dishId = _dishRepository.Add(dish);
         await _unitOfWorkRepository.SaveChangesAsync();
@@ -60,14 +59,13 @@ public class DishService : IDishService
         var createdDish = await _dishRepository.GetByIdAsync(dishId);
         if (createdDish is null)
         {
-            _logger.LogWarning($"Ошибка получения созданного блюда с Id = {dishId}");
+            _logger.LogWarning("Ошибка получения блюда {DishId}.", dishId);
             return null;
         }
 
-        _logger.LogInformation("Блюдо {Name} успешно создано", createdDish.Name);
+        _logger.LogInformation("Блюдо {Name} успешно создано.", createdDish.Name);
 
         return _mapper.Map<DishViewModel>(createdDish);
-
     }
 
     public bool CheckMenuCategoryExists(Ulid menuCategoryId)
@@ -104,6 +102,64 @@ public class DishService : IDishService
         await _unitOfWorkRepository.SaveChangesAsync();
 
         return result;
+    }
+
+    //public async Task<List<DishViewModel?>> GetAllByIdAsync(Ulid supplierId)
+    //{
+    //    if (supplierId == Ulid.Empty)
+    //    {
+    //        _logger.LogWarning("Параметр supplierId не должен быть пустым. Значение: {SupplierId}", supplierId);
+    //        throw new ArgumentNullException(nameof(supplierId), "SupplierId is empty.");
+    //    }
+
+    //    _logger.LogInformation("Получение блюда у поставщика с Id = {SupplierId}", supplierId);
+    //    var dish = await _dishRepository.GetByIdAsync(supplierId);
+
+    //    if (dish is null)
+    //    {
+    //        _logger.LogWarning("Блюдо у поставщика с Id = {SupplierId} не было найдено.", supplierId);
+    //        return null;
+    //    }
+
+    //    var mappedDish = _mapper.Map<List<DishViewModel>>(dish);
+    //    if (mappedDish is null)
+    //    {
+    //        _logger.LogWarning("Ошибка маппинга DishViewModel для поставщика с Id = {SupplierId}", supplierId);
+    //        throw new InvalidOperationException("Failed to map AddressViewModel");
+    //    }
+
+    //    _logger.LogInformation("Получено {Count} блюд.", mappedDish.Count);
+
+    //    return mappedDish ?? Enumerable.Empty<DishViewModel>().ToList();
+    //}
+
+    public async Task<DishViewModel?> GetByIdAsync(Ulid dishId)
+    {
+        if (dishId == Ulid.Empty)
+        {
+            _logger.LogWarning("Параметр dishId не должен быть пустым. Значение: {DishId}", dishId);
+            throw new ArgumentNullException(nameof(dishId), "DishId is empty.");
+        }
+
+        _logger.LogInformation("Получение блюда с Id = {DishId}", dishId);
+
+        var dish = await _dishRepository.GetByIdAsync(dishId);
+        if (dish is null)
+        {
+            _logger.LogWarning("Блюдо с Id = {DishId} не было найдено.", dishId);
+            return null;
+        }
+
+        var mappedDish = _mapper.Map<DishViewModel>(dish);
+        if (mappedDish is null)
+        {
+            _logger.LogWarning("Ошибка маппинга DishViewModel для блюда с Id = {DishId}.", dishId);
+            throw new InvalidOperationException("Failed to map DishViewModel.");
+        }
+
+        _logger.LogInformation("Получено блюдо {Name}.", mappedDish.Name);
+
+        return mappedDish;
     }
 
     //protected override void UpdateEntity(Dish oldEntity, Dish newEntity)

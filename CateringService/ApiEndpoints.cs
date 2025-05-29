@@ -11,7 +11,7 @@ public static class ApiEndPoints
         private const string Base = $"{ApiBase}/suppliers/{{supplierId}}";
 
         public const string GetAll = Base;
-        public const string Get = $"{Base}/{{dishId}}";
+        public const string Get = $"api/dishes/{{dishId}}";
         public const string Create = $"{Base}/dishes";
         public const string Update = $"{Base}/{{dishId}}";
         public const string Delete = $"{Base}/{{dishId}}";
@@ -23,10 +23,10 @@ public static class ApiEndPoints
         private const string Base = $"{ApiBase}/suppliers/{{supplierId}}/categories";
 
         public const string GetAll = $"{Base}";
-        public const string Get = $"{Base}/{{categoryId}}";
+        public const string Get = $"{Base}/{{menuCategoryId}}";
         public const string Create = $"{Base}";
-        public const string Update = $"{Base}/{{categoryId}}";
-        public const string Delete = $"{Base}/{{categoryId}}";
+        public const string Update = $"{Base}/{{menuCategoryId}}";
+        public const string Delete = $"{Base}/{{menuCategoryId}}";
     }
 
     public static class Tenants
