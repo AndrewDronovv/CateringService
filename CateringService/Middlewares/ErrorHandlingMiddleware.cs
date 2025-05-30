@@ -36,6 +36,7 @@ public class ErrorHandlingMiddleware
         return exception switch
         {
             NotFoundException => (int)HttpStatusCode.NotFound,
+            ArgumentException => (int)HttpStatusCode.BadRequest,
             _ => (int)HttpStatusCode.InternalServerError,
         };
     }
@@ -45,6 +46,7 @@ public class ErrorHandlingMiddleware
         return exception switch
         {
             NotFoundException => exception.Message,
+            ArgumentException => exception.Message,
             _ => "Внутренняя ошибка сервера.",
         };
     }

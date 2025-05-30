@@ -4,6 +4,7 @@ using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
 using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using CateringService.Persistence.Repositories;
 using Microsoft.Extensions.Logging;
@@ -101,23 +102,50 @@ public class MenuCategoryService : IMenuCategoryService
             throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
         }
 
+        var supplierExists = await _supplierRepository.CheckSupplierExists(supplierId);
+        if (!supplierExists)
+        {
+            throw new NotFoundException(nameof(Supplier), supplierId.ToString());
+        }
+
         _logger.LogInformation("Получен запрос на категории меню для поставщика {SupplierId}", supplierId);
 
         var menuCategories = await _menuCategoryRepository.GetBySupplierIdAsync(supplierId);
+        _logger.LogInformation("Найдено {Count} категорий меню.", menuCategories.Count);
 
         return _mapper.Map<List<MenuCategoryViewModel>>(menuCategories) ?? new List<MenuCategoryViewModel>();
     }
 
-    //protected override void UpdateEntity(MenuCategory oldEntity, MenuCategory newEntity)
-    //{
-    //    if (!oldEntity.Name.Equals(newEntity.Name, StringComparison.Ordinal))
-    //    {
-    //        oldEntity.Name = newEntity.Name;
-    //    }
+    public async Task<MenuCategoryViewModel> UpdateMenuCategoryAsync(Ulid menuCategoryId, Ulid supplierId, UpdateMenuCategoryRequest request)
+    {
+        if (supplierId == Ulid.Empty)
+        {
+            _logger.LogWarning("SupplierId не должен быть пустым.");
+            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
+        }
 
-    //    if (!oldEntity.Description.Equals(newEntity.Description, StringComparison.Ordinal))
-    //    {
-    //        oldEntity.Description = newEntity.Description;
-    //    }
-    //}
+        if (menuCategoryId == Ulid.Empty)
+        {
+            _logger.LogWarning("MenuCategoryId не должен быть пустым.");
+            throw new ArgumentException(nameof(menuCategoryId), "MenuCategoryId is empty.");
+        }
+
+        var supplierExists = await _supplierRepository.CheckSupplierExists(supplierId);
+        if (!supplierExists)
+        {
+            throw new NotFoundException(nameof(Supplier), supplierId.ToString());
+        }
+
+        MenuCategory? menuCategoryCurrent = await _menuCategoryRepository.GetByIdAsync(menuCategoryId);
+        if (menuCategoryCurrent is null)
+        {
+            throw new NotFoundException(nameof(Supplier), supplierId.ToString());
+        }
+
+        _mapper.Map(request, menuCategoryCurrent);
+
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        return _mapper.Map<MenuCategoryViewModel>(menuCategoryCurrent);
+    }
 }

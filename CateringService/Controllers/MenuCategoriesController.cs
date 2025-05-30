@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using CateringService.Application.Abstractions;
+﻿using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
-using CateringService.Domain.Entities.Approved;
 using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,15 +14,13 @@ public class MenuCategoriesController : ControllerBase
     private readonly IMenuCategoryService _menuCategoryService;
     private readonly ISupplierService _supplierService;
     private readonly ILogger<MenuCategoriesController> _logger;
-    private readonly IMapper _mapper;
 
     public MenuCategoriesController(IMenuCategoryService menuCategoryService, ILogger<MenuCategoriesController> logger,
-        IMapper mapper, ISupplierService supplierService)
+         ISupplierService supplierService)
     {
         _menuCategoryService = menuCategoryService ?? throw new ArgumentNullException(nameof(menuCategoryService));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService)); ;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet(ApiEndPoints.MenuCategories.GetAll)]
@@ -33,19 +29,7 @@ public class MenuCategoriesController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<List<MenuCategoryViewModel>>> GetMenuCategoriesAsync(Ulid supplierId)
     {
-        if (supplierId == Ulid.Empty)
-        {
-            _logger.LogWarning("SupplierId не должен быть пустым.");
-            return BadRequest("SupplierId is required.");
-        }
-
         var menuCategories = await _menuCategoryService.GetMenuCategoriesAsync(supplierId);
-
-        if (!menuCategories.Any())
-        {
-            _logger.LogWarning("Список категорий меню у поставщика {SupplierId} пуст.", supplierId);
-            return NotFound(new { Message = "Список категорий меню у поставщика {SupplierId} пуст.", supplierId });
-        }
 
         return Ok(menuCategories);
     }
@@ -116,28 +100,13 @@ public class MenuCategoriesController : ControllerBase
         return NoContent();
     }
 
-    //[HttpPut(ApiEndPoints.MenuCategories.Update)]
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid supplierId, Ulid categoryId, UpdateMenuCategoryRequest input)
-    //{
-    //    if (categoryId == Ulid.Empty)
-    //    {
-    //        _logger.LogWarning($"Id не должен быть пустым.");
-    //        return BadRequest(new { Error = "Id не должен быть пустым." });
-    //    }
+    [HttpPut(ApiEndPoints.MenuCategories.Update)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> UpdateMenuCategoryAsync(Ulid supplierId, Ulid menuCategoryId, UpdateMenuCategoryRequest request)
+    {
+        var viewModel = await _menuCategoryService.UpdateMenuCategoryAsync(menuCategoryId, supplierId, request);
 
-    //    if (input is null)
-    //    {
-    //        _logger.LogWarning("Входные данные не указаны. Операция обновления категории меню не может быть выполнена.");
-    //        return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания категории меню." });
-    //    }
-
-    //    var updateRequest = _mapper.Map<MenuCategory>(input);
-
-    //    await _menuCategoryService.UpdateAsync(categoryId, updateRequest);
-
-    //    _logger.LogInformation($"Категория меню с Id = {categoryId} успешно обновлена.");
-    //    return NoContent();
-    //}
+        return Ok(viewModel);
+    }
 }

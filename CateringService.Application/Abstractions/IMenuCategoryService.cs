@@ -9,4 +9,5 @@ public interface IMenuCategoryService
     Task<MenuCategoryViewModel> GetByIdAndSupplierIdAsync(Ulid categoryId, Ulid supplierId);
     Task<MenuCategoryViewModel> CreateMenuCategoryAsync(AddMenuCategoryRequest request, Ulid supplierId);
     Task DeleteCategoryAsync(Ulid categoryId, Ulid supplierId);
+    Task<MenuCategoryViewModel> UpdateMenuCategoryAsync(Ulid menuCategoryId, Ulid supplierId, UpdateMenuCategoryRequest request);
 }
