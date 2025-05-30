@@ -5,7 +5,7 @@ namespace CateringService.Domain.Repositories;
 public interface IMenuCategoryRepository : IGenericRepository<MenuCategory, Ulid>
 {
     Task<List<MenuCategory>> GetBySupplierIdAsync(Ulid supplierId);
-    Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid supplierId, Ulid menuCategoryId);
-    Task DeleteAsync(Ulid categoryId, Ulid supplierId);
-    Task<bool> HasDishesAsync(Ulid categoryId);
+    Task<MenuCategory> GetMenuCategoryBySupplierIdAsync(Ulid menuCategoryId, Ulid supplierId);
+    Task DeleteAsync(Ulid menuCategoryId, Ulid supplierId);
+    Task<bool> HasDishesAsync(Ulid menuCategoryId);
 }

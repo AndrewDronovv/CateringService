@@ -9,13 +9,11 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
     public MenuCategoryRepository(AppDbContext context) : base(context)
     {
     }
-    public async Task<MenuCategory> GetByIdAndSupplierIdAsync(Ulid supplierId, Ulid menuCategoryId)
+    public async Task<MenuCategory?> GetMenuCategoryBySupplierIdAsync(Ulid menuCategoryId, Ulid supplierId)
     {
-        var menuCategory = await _context.MenuCategories
+        return await _context.MenuCategories
             .Where(mc => mc.SupplierId == supplierId && mc.Id == menuCategoryId)
             .FirstOrDefaultAsync();
-
-        return menuCategory;
     }
 
     public async Task<List<MenuCategory>> GetBySupplierIdAsync(Ulid supplierId)
@@ -33,9 +31,9 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
         _context.MenuCategories.Remove(entity);
     }
 
-    public async Task<bool> HasDishesAsync(Ulid categoryId)
+    public async Task<bool> HasDishesAsync(Ulid menuCategoryId)
     {
         return await _context.MenuCategories
-            .AnyAsync(mc => mc.Id == categoryId && mc.Dishes.Any());
+            .AnyAsync(mc => mc.Id == menuCategoryId && mc.Dishes.Any());
     }
 }

@@ -39,7 +39,7 @@ public class DishService : IDishService
         if (supplierId == Ulid.Empty)
         {
             _logger.LogWarning("SupplierId не должен быть пустым.");
-            return null;
+            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
         }
 
         _logger.LogInformation("Создание блюда. Поставщик: {SupplierId}, Название: {DishName}.", supplierId, request?.Name);

@@ -13,14 +13,11 @@ public class MenuCategoriesController : ControllerBase
 {
     private readonly IMenuCategoryService _menuCategoryService;
     private readonly ISupplierService _supplierService;
-    private readonly ILogger<MenuCategoriesController> _logger;
 
-    public MenuCategoriesController(IMenuCategoryService menuCategoryService, ILogger<MenuCategoriesController> logger,
-         ISupplierService supplierService)
+    public MenuCategoriesController(IMenuCategoryService menuCategoryService, ISupplierService supplierService)
     {
         _menuCategoryService = menuCategoryService ?? throw new ArgumentNullException(nameof(menuCategoryService));
         _supplierService = supplierService ?? throw new ArgumentNullException(nameof(supplierService)); ;
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     [HttpGet(ApiEndPoints.MenuCategories.GetAll)]
@@ -38,26 +35,9 @@ public class MenuCategoriesController : ControllerBase
     [ProducesResponseType(typeof(MenuCategoryViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<MenuCategoryViewModel>> GetMenuCategoryBySupplierIdAsync(Ulid supplierId, Ulid menuCategoryId)
+    public async Task<ActionResult<MenuCategoryViewModel>> GetMenuCategoryBySupplierIdAsync(Ulid menuCategoryId, Ulid supplierId)
     {
-        if (supplierId == Ulid.Empty)
-        {
-            _logger.LogWarning("SupplierId не должен быть пустым.");
-            return BadRequest("SupplierId is required.");
-        }
-
-        if (menuCategoryId == Ulid.Empty)
-        {
-            _logger.LogWarning("MenuCategoryId не должен быть пустым.");
-            return BadRequest("MenuCategoryId is required.");
-        }
-
-        var menuCategory = await _menuCategoryService.GetByIdAndSupplierIdAsync(supplierId, menuCategoryId);
-        if (menuCategory is null)
-        {
-            _logger.LogWarning("Категория меню {MenuCategoryId} у поставщика {SupplierId} не найдена.", menuCategory, supplierId);
-            return NotFound(new { Message = "Категория меню {MenuCategoryId} у поставщика {SupplierId} не найдена.", menuCategory, supplierId });
-        }
+        var menuCategory = await _menuCategoryService.GetMenuCategoryBySupplierIdAsync(menuCategoryId, supplierId);
 
         return Ok(menuCategory);
     }
@@ -69,10 +49,6 @@ public class MenuCategoriesController : ControllerBase
     public async Task<ActionResult<MenuCategoryViewModel>> CreateMenuCategoryAsync([FromBody] AddMenuCategoryRequest request, Ulid supplierId)
     {
         var createdMenuCategory = await _menuCategoryService.CreateMenuCategoryAsync(request, supplierId);
-        if (createdMenuCategory == null)
-        {
-            return BadRequest($"Категория меню не была создана.");
-        }
 
         return CreatedAtRoute("GetMenuCategoryById",
             new
@@ -91,12 +67,10 @@ public class MenuCategoriesController : ControllerBase
     {
         if (categoryId == Ulid.Empty || supplierId == Ulid.Empty)
         {
-            _logger.LogWarning($"Id категории меню или Id поставщика не должны быть пустыми.");
             return BadRequest(new { Error = "Id категории меню или Id поставщика не должны быть пустыми." });
         }
 
-        await _menuCategoryService.DeleteCategoryAsync(categoryId, supplierId);
-        _logger.LogInformation($"Категория меню с Id = {categoryId} у поставщика с Id = {supplierId} удалена.");
+        await _menuCategoryService.DeleteMenuCategoryAsync(categoryId, supplierId);
         return NoContent();
     }
 
