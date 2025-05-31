@@ -46,7 +46,7 @@ public class GenericRepository<TEntity, TPrimaryKey> : IGenericRepository<TEntit
             _context.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
         }
-        
+
         return entity.Id;
     }
 }

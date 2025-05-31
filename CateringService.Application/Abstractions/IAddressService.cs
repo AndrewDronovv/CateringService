@@ -5,6 +5,7 @@ namespace CateringService.Application.Abstractions;
 
 public interface IAddressService
 {
-    Task<AddressViewModel> CreateAddressAsync(AddAddressRequest request, Ulid tenantId);
+    Task<AddressViewModel> CreateAddressAsync(Ulid tenantId, AddAddressRequest request);
     Task<AddressViewModel> GetByIdAsync(Ulid addresId);
+    Task<AddressViewModel> UpdateAddressAsync(Ulid addressId, Ulid tenantId, UpdateAddressRequest request);
 }

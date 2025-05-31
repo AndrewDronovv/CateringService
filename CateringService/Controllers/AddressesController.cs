@@ -20,7 +20,7 @@ public class AddressesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AddressViewModel>> CreateAddressAsync([FromBody] AddAddressRequest request)
     {
-        var createdAddress = await _addressService.CreateAddressAsync(request, Ulid.NewUlid());
+        var createdAddress = await _addressService.CreateAddressAsync(Ulid.NewUlid(), request);
 
         return CreatedAtRoute("GetAddressById", new { addressId = createdAddress.Id }, createdAddress);
     }
@@ -34,5 +34,17 @@ public class AddressesController : ControllerBase
         var address = await _addressService.GetByIdAsync(addressId);
 
         return Ok(address);
+    }
+
+    [HttpPut(ApiEndPoints.Addresses.Update)]
+    [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateAddressAsync(Ulid addressId, UpdateAddressRequest request)
+    {
+        Ulid tenantId = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP");
+        var viewModel = await _addressService.UpdateAddressAsync(addressId, tenantId, request);
+
+        return Ok(viewModel);
     }
 }

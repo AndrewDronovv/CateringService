@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.Tenant;
 
-public class TenantUpdateDtoValidator : AbstractValidator<UpdateTenantRequest>
+public sealed class TenantUpdateDtoValidator : AbstractValidator<UpdateTenantRequest>
 {
     public TenantUpdateDtoValidator()
     {

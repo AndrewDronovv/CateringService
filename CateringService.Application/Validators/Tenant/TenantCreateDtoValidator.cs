@@ -13,8 +13,5 @@ public sealed class TenantCreateDtoValidator : AbstractValidator<AddTenantReques
             .MinimumLength(4).WithMessage("Название должно содержать не менее 4 символов.")
             .MaximumLength(200).WithMessage("Название не должно превышать 100 символов.")
             .Matches(@"^[a-zA-Zа-яА-Я\s]+$").WithMessage("Название должно содержать только буквы и пробелы.");
-
-        RuleFor(x => x.IsActive)
-            .NotNull().WithMessage("Поле (IsActive) должно быть указано.");
     }
 }

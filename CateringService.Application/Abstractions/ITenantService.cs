@@ -1,13 +1,14 @@
-﻿using CateringService.Application.DataTransferObjects.Responses;
+﻿using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities;
 
 namespace CateringService.Application.Abstractions;
 
 public interface ITenantService
 {
-    Task<IEnumerable<Tenant>> GetTenantsAsync();
-    Task<Tenant?> GetTenantByIdAsync(Ulid tenantId);
-    Task<Tenant?> AddTenantAsync(Tenant tenant);
+    Task<List<TenantViewModel>> GetTenantsAsync();
+    Task<TenantViewModel> GetTenantByIdAsync(Ulid tenantId);
+    Task<TenantViewModel?> CreateTenantAsync(AddTenantRequest request);
     Task DeleteAsync(Ulid tenantId);
     Task<Tenant> UpdateTenantAsync(Ulid tenantId, Tenant tenant);
     Task<TenantViewModel> BlockTenantAsync(Ulid tenantId, string blockReason);

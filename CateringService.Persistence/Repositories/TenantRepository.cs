@@ -61,4 +61,10 @@ public class TenantRepository : ITenantRepository
 
         return tenant;
     }
+
+    public async Task<bool> CheckTenantExists(Ulid tenantId)
+    {
+        return await _context.Tenants
+            .AnyAsync(t => t.Id == tenantId);
+    }
 }

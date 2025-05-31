@@ -29,7 +29,7 @@ public class DishService : IDishService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<DishViewModel?> CreateDishAsync(AddDishRequest request, Ulid supplierId)
+    public async Task<DishViewModel?> CreateDishAsync(Ulid supplierId, AddDishRequest request)
     {
         if (request is null)
         {

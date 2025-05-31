@@ -27,7 +27,7 @@ public class MenuCategoryService : IMenuCategoryService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<MenuCategoryViewModel?> CreateMenuCategoryAsync(AddMenuCategoryRequest request, Ulid supplierId)
+    public async Task<MenuCategoryViewModel?> CreateMenuCategoryAsync(Ulid supplierId, AddMenuCategoryRequest request)
     {
         if (request is null)
         {
@@ -188,7 +188,6 @@ public class MenuCategoryService : IMenuCategoryService
         }
 
         _mapper.Map(request, menuCategoryCurrent);
-
         await _unitOfWorkRepository.SaveChangesAsync();
 
         return _mapper.Map<MenuCategoryViewModel>(menuCategoryCurrent) ?? throw new InvalidOperationException("MenuCategoryViewModel mapping failed.");

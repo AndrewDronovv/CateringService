@@ -66,7 +66,7 @@ public class DishesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, Ulid supplierId)
     {
-        var createdDish = await _dishService.CreateDishAsync(request, supplierId);
+        var createdDish = await _dishService.CreateDishAsync(supplierId, request);
 
         return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
     }

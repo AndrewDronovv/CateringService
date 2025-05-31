@@ -45,7 +45,7 @@ public class MenuCategoriesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MenuCategoryViewModel>> CreateMenuCategoryAsync([FromBody] AddMenuCategoryRequest request, Ulid supplierId)
     {
-        var createdMenuCategory = await _menuCategoryService.CreateMenuCategoryAsync(request, supplierId);
+        var createdMenuCategory = await _menuCategoryService.CreateMenuCategoryAsync(supplierId, request);
 
         return CreatedAtRoute("GetMenuCategoryById", new { menuCategoryId = createdMenuCategory.Id, supplierId = supplierId }, createdMenuCategory);
     }

@@ -5,7 +5,7 @@ namespace CateringService.Domain.Abstractions;
 
 public interface IDishService
 {
-    Task<DishViewModel> CreateDishAsync(AddDishRequest request, Ulid supplierId);
+    Task<DishViewModel> CreateDishAsync(Ulid supplierId, AddDishRequest request);
     Task<DishViewModel> GetByIdAsync(Ulid dishId);
     Task<bool> ToggleDishStateAsync(Ulid dishId);
 }

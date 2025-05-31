@@ -27,7 +27,7 @@ public class AddressService : IAddressService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<AddressViewModel?> CreateAddressAsync(AddAddressRequest request, Ulid tenantId)
+    public async Task<AddressViewModel?> CreateAddressAsync(Ulid tenantId, AddAddressRequest request)
     {
         if (request is null)
         {
@@ -87,5 +87,44 @@ public class AddressService : IAddressService
         _logger.LogInformation("Адрес {AddressId} успешно получен.", addressId);
 
         return _mapper.Map<AddressViewModel>(address) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
+    }
+
+    public async Task<AddressViewModel> UpdateAddressAsync(Ulid addressId, Ulid tenantId, UpdateAddressRequest request)
+    {
+        if (addressId == Ulid.Empty)
+        {
+            _logger.LogWarning("AddressId не должен быть пустым.");
+            throw new ArgumentException(nameof(addressId), "AddressId is empty.");
+        }
+
+        if (tenantId == Ulid.Empty)
+        {
+            _logger.LogWarning("TenantId не должен быть пустым.");
+            throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
+        }
+
+        var tenantExists = await _tenantRepository.CheckTenantExists(tenantId);
+        if (!tenantExists)
+        {
+            _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);
+            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
+        }
+
+        Address addressCurrent = await _addressRepository.GetByIdAsync(addressId);
+        if (addressCurrent is null)
+        {
+            _logger.LogWarning("Адрес {AddressId} не найден.", addressId);
+            throw new NotFoundException(nameof(Address), addressId.ToString());
+        }
+        
+        _mapper.Map(request, addressCurrent);
+
+        _addressRepository.Update(addressCurrent, true);
+
+        addressCurrent.UpdatedAt = DateTime.UtcNow;
+
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        return _mapper.Map<AddressViewModel>(addressCurrent) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
     }
 }
