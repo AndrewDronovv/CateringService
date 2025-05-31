@@ -12,13 +12,9 @@ namespace CateringService.Controllers;
 public class DishesController : ControllerBase
 {
     private readonly IDishService _dishService;
-    private readonly IMapper _mapper;
-    private readonly ILogger<DishesController> _logger;
-    public DishesController(IDishService dishAppService, IMapper mapper, ILogger<DishesController> logger)
+    public DishesController(IDishService dishAppService)
     {
         _dishService = dishAppService ?? throw new ArgumentNullException(nameof(dishAppService));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     //[HttpGet(ApiEndPoints.Dishes.GetAll)]
@@ -59,55 +55,20 @@ public class DishesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<DishViewModel>> GetDishAsync(Ulid dishId)
     {
-        _logger.LogInformation($"Получен запрос блюда с Id = {dishId}.");
-        if (dishId == Ulid.Empty)
-        {
-            _logger.LogWarning($"Id не должен быть пустым.");
-            return BadRequest(new { Error = "Id не должен быть пустым." });
-        }
-
         var dish = await _dishService.GetByIdAsync(dishId);
-        if (dish is null)
-        {
-            _logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
-            return NotFound(new { Error = $"Блюдо с Id = {dishId} не найдено." });
-        }
 
-        var dishDto = _mapper.Map<DishViewModel>(dish);
-        _logger.LogInformation($"Блюдо {dishDto.Name} с Id = {dishId} успешно получено.");
-        return Ok(dishDto);
+        return Ok(dish);
     }
 
     [HttpPost(ApiEndPoints.Dishes.Create)]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, Ulid supplierId)
     {
-        //if (!_dishService.CheckSupplierExists(request.SupplierId))
-        //{
-        //    _logger.LogWarning($"Поставщик с Id = {request.SupplierId} не найден.");
-        //    return NotFound($"Поставщик c Id = {request.SupplierId} не найден.");
-        //}
-
-        //if (!_dishService.CheckMenuCategoryExists(request.MenuCategoryId))
-        //{
-        //    _logger.LogWarning($"Категория меню с Id = {request.MenuCategoryId} не найдена.");
-        //    return NotFound($"Категория меню с Id = {request.MenuCategoryId} не найдена.");
-        //}
-
         var createdDish = await _dishService.CreateDishAsync(request, supplierId);
 
-        if (createdDish is null)
-        {
-            return BadRequest("Не удалось создать блюдо.");
-        }
-
-        return CreatedAtRoute("GetDishById",
-        new
-        {
-            dishId = createdDish.Id
-        },
-        createdDish);
+        return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
     }
 
     //[HttpDelete(ApiEndPoints.Dishes.Delete)]

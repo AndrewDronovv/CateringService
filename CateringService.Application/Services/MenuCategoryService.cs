@@ -41,7 +41,7 @@ public class MenuCategoryService : IMenuCategoryService
             throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
         }
 
-        _logger.LogInformation("Создание категории меню. Поставщик: {SupplierId}, Название: {Name}.", supplierId, request?.Name);
+        _logger.LogInformation("Создание категории меню. Поставщик {SupplierId}, Название {Name}.", supplierId, request?.Name);
 
         var supplierExists = await _supplierRepository.CheckSupplierExists(supplierId);
         if (!supplierExists)
@@ -50,7 +50,7 @@ public class MenuCategoryService : IMenuCategoryService
             throw new NotFoundException(nameof(Supplier), supplierId.ToString());
         }
 
-        var menuCategory = _mapper.Map<MenuCategory>(request) ?? throw new InvalidOperationException("Ошибка маппинга категории меню.");
+        var menuCategory = _mapper.Map<MenuCategory>(request) ?? throw new InvalidOperationException("MenuCategory mapping failed.");
 
         var menuCategoryId = _menuCategoryRepository.Add(menuCategory);
         await _unitOfWorkRepository.SaveChangesAsync();
@@ -92,10 +92,12 @@ public class MenuCategoryService : IMenuCategoryService
 
         if (await _menuCategoryRepository.HasDishesAsync(menuCategoryId))
         {
+            _logger.LogWarning("Нельзя удалить категорию меню {MenuCategoryId} так как в ней есть блюда.", menuCategoryId);
             throw new ArgumentException($"Нельзя удалить категорию меню так как в ней есть блюда.");
         }
 
         await _menuCategoryRepository.DeleteAsync(menuCategoryId, supplierId);
+        _logger.LogInformation("Категория меню {MenuCategoryId} у поставщика {SupplierId} удалена.", menuCategoryId, supplierId);
         _unitOfWorkRepository.SaveChanges();
     }
 
@@ -125,12 +127,13 @@ public class MenuCategoryService : IMenuCategoryService
         MenuCategory? menuCategoryCurrent = await _menuCategoryRepository.GetByIdAsync(menuCategoryId);
         if (menuCategoryCurrent is null)
         {
+            _logger.LogWarning("Категория меню {MenuCategoryId} не найдена.", menuCategoryId);
             throw new NotFoundException(nameof(Supplier), supplierId.ToString());
         }
 
         var menuCategory = await _menuCategoryRepository.GetMenuCategoryBySupplierIdAsync(menuCategoryId, supplierId);
 
-        return _mapper.Map<MenuCategoryViewModel>(menuCategory) ?? throw new InvalidOperationException("Ошибка маппинга MenuCategoryViewModel.");
+        return _mapper.Map<MenuCategoryViewModel>(menuCategory) ?? throw new InvalidOperationException("MenuCategoryViewModel mapping failed.");
     }
 
     public async Task<List<MenuCategoryViewModel>> GetMenuCategoriesAsync(Ulid supplierId)
@@ -180,6 +183,7 @@ public class MenuCategoryService : IMenuCategoryService
         MenuCategory? menuCategoryCurrent = await _menuCategoryRepository.GetByIdAsync(menuCategoryId);
         if (menuCategoryCurrent is null)
         {
+            _logger.LogWarning("Категория меню {MenuCategoryId} не найдена.", menuCategoryId);
             throw new NotFoundException(nameof(Supplier), supplierId.ToString());
         }
 
@@ -187,6 +191,6 @@ public class MenuCategoryService : IMenuCategoryService
 
         await _unitOfWorkRepository.SaveChangesAsync();
 
-        return _mapper.Map<MenuCategoryViewModel>(menuCategoryCurrent);
+        return _mapper.Map<MenuCategoryViewModel>(menuCategoryCurrent) ?? throw new InvalidOperationException("MenuCategoryViewModel mapping failed.");
     }
 }

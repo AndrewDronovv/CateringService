@@ -10,18 +10,6 @@ public class DishRepository : GenericRepository<Dish, Ulid>, IDishRepository
     {
     }
 
-    public bool CheckMenuCategoryExists(Ulid menuCategoryId)
-    {
-        return _context.MenuCategories
-            .Any(mc => mc.Id == menuCategoryId);
-    }
-
-    public bool CheckSupplierExists(Ulid supplierId)
-    {
-        return _context.Suppliers
-            .Any(s => s.Id == supplierId);
-    }
-
     public bool ToggleState(Dish dish)
     {
         if (_context.Entry(dish).State == EntityState.Detached)

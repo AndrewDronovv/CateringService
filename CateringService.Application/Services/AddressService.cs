@@ -2,7 +2,9 @@
 using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Domain.Entities;
 using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
@@ -29,31 +31,26 @@ public class AddressService : IAddressService
     {
         if (request is null)
         {
-            _logger.LogWarning("Входные данные не указаны. Операция создания адреса не может быть выполнена.");
+            _logger.LogWarning("Входные данные не указаны.");
             throw new ArgumentNullException(nameof(request), "Address request is null.");
         }
 
         if (tenantId == Ulid.Empty)
         {
-            _logger.LogWarning("Параметр tenantId не должен быть пустым. Значение: {TenantId}", tenantId);
+            _logger.LogWarning("TenantId не должен быть пустым.");
             throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
         }
 
-        _logger.LogInformation("Создание адреса для арендатора с Id = {TenantId}", tenantId);
+        _logger.LogInformation("Создание адреса для арендатора {TenantId}", tenantId);
 
         var tenant = await _tenantRepository.GetByIdAsync(request.TenantId);
         if (tenant is null || !tenant.IsActive)
         {
-            _logger.LogWarning("Арендатор с Id = {request.TenantId} не найден или не активен.", request.TenantId);
-            return null;
+            _logger.LogWarning("Арендатор с Id {request.TenantId} не найден или не активен.", request.TenantId);
+            throw new NotFoundException(nameof(Tenant), request.TenantId.ToString());
         }
 
-        var address = _mapper.Map<Address>(request);
-        if (address is null)
-        {
-            _logger.LogWarning("Ошибка маппинга адреса.");
-            throw new InvalidOperationException("Failed to map Address.");
-        }
+        var address = _mapper.Map<Address>(request) ?? throw new InvalidOperationException("Address mapping failed.");
 
         var addressId = _addressRepository.Add(address);
         await _unitOfWorkRepository.SaveChangesAsync();
@@ -61,12 +58,11 @@ public class AddressService : IAddressService
         var createdAddress = await _addressRepository.GetByIdAsync(addressId);
         if (createdAddress is null)
         {
-            _logger.LogWarning("Ошибка получения созданного адреса с Id = {AddressId}", addressId);
-            return null;
+            _logger.LogWarning("Ошибка получения адреса {AddressId}.", addressId);
+            throw new NotFoundException(nameof(createdAddress), addressId.ToString());
         }
 
-        _logger.LogInformation("Адрес успешно создан, страна = {Country}, город = {City}, Zip код = {Zip}",
-                                createdAddress.Country, createdAddress.City, createdAddress.Zip);
+        _logger.LogInformation("Адрес успешно создан, страна = {Country}, город = {City}, Zip код = {Zip}.", createdAddress.Country, createdAddress.City, createdAddress.Zip);
 
         return _mapper.Map<AddressViewModel>(createdAddress);
     }
@@ -75,29 +71,21 @@ public class AddressService : IAddressService
     {
         if (addressId == Ulid.Empty)
         {
-            _logger.LogWarning("Параметр addressId не должен быть пустым. Значение: {AddressId}", addressId);
-            throw new ArgumentNullException(nameof(addressId), "AddressId is empty.");
+            _logger.LogWarning("AddressId не должен быть пустым.");
+            throw new ArgumentException(nameof(addressId), "AddressId is empty.");
         }
 
-        _logger.LogInformation("Получение адреса с Id = {AddressId}", addressId);
-        var address = await _addressRepository.GetByIdAsync(addressId);
+        _logger.LogInformation("Получен запрос на адрес {AddressId}.", addressId);
 
+        var address = await _addressRepository.GetByIdAsync(addressId);
         if (address is null)
         {
-            _logger.LogWarning("Адрес с Id = {AddressId} не был найден.", addressId);
-            return null;
+            _logger.LogWarning("Адрес {AddressId} не найден.", addressId);
+            throw new NotFoundException(nameof(Address), addressId.ToString());
         }
 
-        var mappedAddress = _mapper.Map<AddressViewModel>(address);
-        if (mappedAddress is null)
-        {
-            _logger.LogWarning("Ошибка маппинга AddressViewModel для Id = {AddressId}", addressId);
-            throw new InvalidOperationException("Failed to map AddressViewModel.");
-        }
+        _logger.LogInformation("Адрес {AddressId} успешно получен.", addressId);
 
-        _logger.LogInformation("Адрес успешно получен: страна = {Country}, город = {City}, ZIP код = {Zip}",
-                               mappedAddress.Country, mappedAddress.City, mappedAddress.Zip);
-
-        return mappedAddress;
+        return _mapper.Map<AddressViewModel>(address) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
     }
 }

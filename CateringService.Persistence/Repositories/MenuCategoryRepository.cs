@@ -9,7 +9,7 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
     public MenuCategoryRepository(AppDbContext context) : base(context)
     {
     }
-    public async Task<MenuCategory?> GetMenuCategoryBySupplierIdAsync(Ulid menuCategoryId, Ulid supplierId)
+    public async Task<MenuCategory> GetMenuCategoryBySupplierIdAsync(Ulid menuCategoryId, Ulid supplierId)
     {
         return await _context.MenuCategories
             .Where(mc => mc.SupplierId == supplierId && mc.Id == menuCategoryId)
@@ -22,18 +22,24 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
             .Where(mc => mc.SupplierId == supplierId)
             .ToListAsync();
     }
-    public async Task DeleteAsync(Ulid categoryId, Ulid supplierId)
+    public async Task DeleteAsync(Ulid menuCategoryId, Ulid supplierId)
     {
         var entity = await _context.MenuCategories
-            .Where(mc => mc.Id == categoryId && mc.SupplierId == supplierId)
+            .Where(mc => mc.Id == menuCategoryId && mc.SupplierId == supplierId)
             .FirstOrDefaultAsync();
 
-        _context.MenuCategories.Remove(entity);
+        _context.MenuCategories.Remove(entity!);
     }
 
     public async Task<bool> HasDishesAsync(Ulid menuCategoryId)
     {
         return await _context.MenuCategories
             .AnyAsync(mc => mc.Id == menuCategoryId && mc.Dishes.Any());
+    }
+
+    public async Task<bool> ChechMenuCategoryExists(Ulid menuCategoryId)
+    {
+        return await _context.MenuCategories
+            .AnyAsync(mc => mc.Id == menuCategoryId);
     }
 }

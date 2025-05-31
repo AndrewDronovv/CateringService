@@ -4,9 +4,8 @@ using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
 using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
-using CateringService.Persistence.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace CateringService.Application.Services;
@@ -15,14 +14,16 @@ public class DishService : IDishService
 {
     private readonly IDishRepository _dishRepository;
     private readonly ISupplierRepository _supplierRepository;
+    private readonly IMenuCategoryRepository _menuCategoryRepository;
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<DishService> _logger;
 
-    public DishService(IDishRepository dishRepository, ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<DishService> logger)
+    public DishService(IDishRepository dishRepository, ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<DishService> logger, IMenuCategoryRepository menuCategoryRepository)
     {
         _dishRepository = dishRepository ?? throw new ArgumentNullException(nameof(dishRepository));
         _supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
+        _menuCategoryRepository = menuCategoryRepository ?? throw new ArgumentNullException(nameof(menuCategoryRepository));
         _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -44,11 +45,18 @@ public class DishService : IDishService
 
         _logger.LogInformation("Создание блюда. Поставщик: {SupplierId}, Название: {DishName}.", supplierId, request?.Name);
 
-        var supplier = await _supplierRepository.GetByIdAsync(supplierId);
-        if (supplier is null)
+        var supplierExists = await _supplierRepository.CheckSupplierExists(supplierId);
+        if (!supplierExists)
         {
             _logger.LogWarning("Поставщик {SupplierId} не найден.", supplierId);
-            return null;
+            throw new NotFoundException(nameof(Supplier), supplierId.ToString());
+        }
+
+        var menuCategoryExists = await _menuCategoryRepository.ChechMenuCategoryExists(request.MenuCategoryId);
+        if (!menuCategoryExists)
+        {
+            _logger.LogWarning("Категория меню {MenuCategoryId} не найдена.", request.MenuCategoryId);
+            throw new NotFoundException(nameof(MenuCategory), request.MenuCategoryId.ToString());
         }
 
         var dish = _mapper.Map<Dish>(request) ?? throw new InvalidOperationException("Ошибка маппинга блюда.");
@@ -66,26 +74,6 @@ public class DishService : IDishService
         _logger.LogInformation("Блюдо {Name} успешно создано.", createdDish.Name);
 
         return _mapper.Map<DishViewModel>(createdDish);
-    }
-
-    public bool CheckMenuCategoryExists(Ulid menuCategoryId)
-    {
-        if (menuCategoryId == Ulid.Empty)
-        {
-            throw new ArgumentException(nameof(menuCategoryId), "MenuCategoryId is empty.");
-        }
-
-        return _dishRepository.CheckMenuCategoryExists(menuCategoryId);
-    }
-
-    public bool CheckSupplierExists(Ulid supplierId)
-    {
-        if (supplierId == Ulid.Empty)
-        {
-            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
-        }
-
-        return _dishRepository.CheckSupplierExists(supplierId);
     }
 
     public async Task<bool> ToggleDishStateAsync(Ulid dishId)
@@ -137,29 +125,22 @@ public class DishService : IDishService
     {
         if (dishId == Ulid.Empty)
         {
-            _logger.LogWarning("Параметр dishId не должен быть пустым. Значение: {DishId}", dishId);
-            throw new ArgumentNullException(nameof(dishId), "DishId is empty.");
+            _logger.LogWarning("DishId не должен быть пустым.");
+            throw new ArgumentException(nameof(dishId), "DishId is empty.");
         }
 
-        _logger.LogInformation("Получение блюда с Id = {DishId}", dishId);
+        _logger.LogInformation("Получен запрос на блюдо {DishId}.", dishId);
 
         var dish = await _dishRepository.GetByIdAsync(dishId);
         if (dish is null)
         {
-            _logger.LogWarning("Блюдо с Id = {DishId} не было найдено.", dishId);
-            return null;
+            _logger.LogWarning("Блюдо {DishId} не найдено.", dishId);
+            throw new NotFoundException(nameof(Dish), dishId.ToString());
         }
 
-        var mappedDish = _mapper.Map<DishViewModel>(dish);
-        if (mappedDish is null)
-        {
-            _logger.LogWarning("Ошибка маппинга DishViewModel для блюда с Id = {DishId}.", dishId);
-            throw new InvalidOperationException("Failed to map DishViewModel.");
-        }
+        _logger.LogInformation("Блюдо {Name} с Id {Id} успешно получено.", dish.Name, dish.Id);
 
-        _logger.LogInformation("Получено блюдо {Name}.", mappedDish.Name);
-
-        return mappedDish;
+        return _mapper.Map<DishViewModel>(dish) ?? throw new InvalidOperationException("DishViewModel mapping failed.");
     }
 
     //protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
