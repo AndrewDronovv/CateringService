@@ -59,7 +59,7 @@ public class MenuCategoryService : IMenuCategoryService
         if (createdMenuCategory is null)
         {
             _logger.LogWarning("Ошибка получения категории меню {MenuCategoryId}.", menuCategoryId);
-            throw new NotFoundException(nameof(createdMenuCategory), menuCategoryId.ToString());
+            throw new NotFoundException(nameof(MenuCategory), menuCategoryId.ToString());
         }
 
         _logger.LogInformation("Категория меню {Name} успешно создана.", createdMenuCategory.Name);

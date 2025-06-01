@@ -3,6 +3,7 @@ using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
@@ -26,26 +27,29 @@ public class TenantService : ITenantService
 
     public async Task<TenantViewModel> BlockTenantAsync(Ulid tenantId, string blockReason)
     {
+        if (tenantId == Ulid.Empty)
+        {
+            _logger.LogWarning("TenantId не должен быть пустым.");
+            throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
+        }
+
         var tenant = await _tenantRepository.GetByIdAsync(tenantId);
         if (tenant is null)
         {
-            throw new KeyNotFoundException($"Арендатор с Id = {tenantId} не найден.");
+            _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);
+            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
-        return await _tenantRepository.BlockAsync(tenantId, blockReason).ContinueWith(t =>
+        await _tenantRepository.BlockAsync(tenantId, blockReason);
+        _logger.LogInformation("Арендатор {TenantId} успешно заблокирован по причине {BlockReason}.", tenantId, blockReason);
+
+        return new TenantViewModel
         {
-            if (t.IsFaulted)
-            {
-                throw new Exception($"Не удалось заблокировать арендатора с Id = {tenantId}.", t.Exception);
-            }
-            return new TenantViewModel
-            {
-                Id = tenantId,
-                Name = tenant.Name,
-                IsActive = false,
-                //BlockReason = blockReason
-            };
-        });
+            Id = tenantId,
+            Name = tenant.Name,
+            IsActive = false,
+            BlockReason = blockReason
+        };
     }
 
     public async Task<TenantViewModel> UnblockTenantAsync(Ulid tenantId)
@@ -72,15 +76,27 @@ public class TenantService : ITenantService
         });
     }
 
-    public async Task DeleteAsync(Ulid tenantId)
+    public async Task DeleteTenantAsync(Ulid tenantId)
     {
-        var tenant = await _tenantRepository.GetByIdAsync(tenantId);
-        if (tenant is null)
+        if (tenantId == Ulid.Empty)
         {
-            throw new KeyNotFoundException($"Арендатор с Id = {tenantId} не найден.");
+            _logger.LogWarning("TenantId не должен быть пустым.");
+            throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
         }
-        _tenantRepository.Delete(tenant);
+
+        _logger.LogInformation("Получен запрос на удаление арендатора {TenantId}.", tenantId);
+
+        var tenantExists = await _tenantRepository.CheckTenantExists(tenantId);
+        if (!tenantExists)
+        {
+            _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);
+            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
+        }
+
+        await _tenantRepository.DeleteAsync(tenantId);
         await _unitOfWorkRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Арендатор {TenantId} успешно удален.", tenantId);
     }
 
     public async Task<TenantViewModel> GetTenantByIdAsync(Ulid tenantId)
@@ -161,7 +177,7 @@ public class TenantService : ITenantService
         if (createdTenant is null)
         {
             _logger.LogWarning("Ошибка получения арендатора {TenantId}.", tenantId);
-            throw new NotFoundException(nameof(createdTenant), tenantId.ToString());
+            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
         _logger.LogInformation("Арендатор {CreatedTenant.Name} с Id {TenantId} успешно создан.", createdTenant.Name, tenantId);

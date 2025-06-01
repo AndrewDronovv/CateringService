@@ -28,6 +28,7 @@ public class TenantsController : ControllerBase
 
     [HttpGet(ApiEndPoints.Tenants.Get, Name = "GetTenantById")]
     [ProducesResponseType(typeof(TenantViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantViewModel>> GetTenantAsync(Ulid tenantId)
     {
@@ -49,10 +50,12 @@ public class TenantsController : ControllerBase
 
     [HttpDelete(ApiEndPoints.Tenants.Delete)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteTenantAsync(Ulid tenantId)
     {
+        await _tenantService.DeleteTenantAsync(tenantId);
+
         return NoContent();
     }
 
@@ -64,13 +67,16 @@ public class TenantsController : ControllerBase
     {
         return Ok();
     }
-    [HttpPut(ApiEndPoints.Tenants.Block)]
-    public async Task<ActionResult<TenantViewModel>> BlockTenantAsync([FromBody] BlockTenantRequest input)
+
+    [HttpPatch(ApiEndPoints.Tenants.Block)]
+    [ProducesResponseType(typeof(TenantViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<TenantViewModel>> BlockTenantAsync([FromBody] BlockTenantRequest request)
     {
+        var blockedTenant = await _tenantService.BlockTenantAsync(request.Id, request.BlockReason ?? string.Empty);
 
-        var blockedTenant = await _tenantService.BlockTenantAsync(input.Id, input.BlockReason ?? string.Empty);
-
-        return Ok();
+        return Ok(blockedTenant);
     }
 
     [HttpPut(ApiEndPoints.Tenants.Unblock)]

@@ -9,7 +9,7 @@ public interface ITenantService
     Task<List<TenantViewModel>> GetTenantsAsync();
     Task<TenantViewModel> GetTenantByIdAsync(Ulid tenantId);
     Task<TenantViewModel?> CreateTenantAsync(AddTenantRequest request);
-    Task DeleteAsync(Ulid tenantId);
+    Task DeleteTenantAsync(Ulid tenantId);
     Task<Tenant> UpdateTenantAsync(Ulid tenantId, Tenant tenant);
     Task<TenantViewModel> BlockTenantAsync(Ulid tenantId, string blockReason);
     Task<TenantViewModel> UnblockTenantAsync(Ulid tenantId);

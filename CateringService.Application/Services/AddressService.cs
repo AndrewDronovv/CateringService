@@ -59,7 +59,7 @@ public class AddressService : IAddressService
         if (createdAddress is null)
         {
             _logger.LogWarning("Ошибка получения адреса {AddressId}.", addressId);
-            throw new NotFoundException(nameof(createdAddress), addressId.ToString());
+            throw new NotFoundException(nameof(Address), addressId.ToString());
         }
 
         _logger.LogInformation("Адрес успешно создан, страна = {Country}, город = {City}, Zip код = {Zip}.", createdAddress.Country, createdAddress.City, createdAddress.Zip);

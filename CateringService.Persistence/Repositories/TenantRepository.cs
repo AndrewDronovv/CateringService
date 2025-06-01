@@ -1,4 +1,5 @@
 ﻿using CateringService.Domain.Entities;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,10 +22,16 @@ public class TenantRepository : ITenantRepository
 
     public async Task BlockAsync(Ulid tenantId, string blockReason)
     {
-        await _context.Tenants
+        int updatedRows = await _context.Tenants
             .Where(t => t.Id == tenantId)
-            .ExecuteUpdateAsync(t => t.SetProperty(x => x.IsActive, false)
-            .SetProperty(t => t.BlockReason, blockReason));
+            .ExecuteUpdateAsync(t => t
+                .SetProperty(x => x.IsActive, false)
+                .SetProperty(t => t.BlockReason, blockReason));
+
+        if (updatedRows == 0)
+        {
+            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
+        }
     }
     public async Task UnblockAsync(Ulid tenantId)
     {
@@ -32,11 +39,6 @@ public class TenantRepository : ITenantRepository
             .Where(t => t.Id == tenantId)
             .ExecuteUpdateAsync(t => t.SetProperty(x => x.IsActive, true)
             .SetProperty(t => t.BlockReason, string.Empty));
-    }
-
-    public void Delete(Tenant tenant)
-    {
-        _context.Tenants.Remove(tenant);
     }
 
     public async Task<IEnumerable<Tenant>> GetAllAsync()
@@ -49,7 +51,6 @@ public class TenantRepository : ITenantRepository
         return await _context.Tenants
             .FindAsync(tenantId);
     }
-
 
     public async Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false)
     {
@@ -66,5 +67,18 @@ public class TenantRepository : ITenantRepository
     {
         return await _context.Tenants
             .AnyAsync(t => t.Id == tenantId);
+    }
+
+    public async Task DeleteAsync(Ulid tenantId)
+    {
+        var entity = await _context.Tenants
+            .FirstOrDefaultAsync(t => t.Id == tenantId);
+
+        _context.Tenants.Remove(entity);
+    }
+
+    public Task<bool> HasRelatedDataAsync(Ulid tenantId)
+    {
+        throw new NotImplementedException();
     }
 }
