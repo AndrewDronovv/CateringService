@@ -40,6 +40,12 @@ public class TenantService : ITenantService
             throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
+        if (!tenant.IsActive)
+        {
+            _logger.LogWarning("Арендатор {TenantId} уже заблокирован.", tenantId);
+            throw new ArgumentException(nameof(tenant), $"Арендатор {tenant.Name} уже заблокирован.");
+        }
+
         await _tenantRepository.BlockAsync(tenantId, blockReason);
         _logger.LogInformation("Арендатор {TenantId} успешно заблокирован по причине {BlockReason}.", tenantId, blockReason);
 
@@ -54,26 +60,35 @@ public class TenantService : ITenantService
 
     public async Task<TenantViewModel> UnblockTenantAsync(Ulid tenantId)
     {
+        if (tenantId == Ulid.Empty)
+        {
+            _logger.LogWarning("TenantId не должен быть пустым.");
+            throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
+        }
+
         var tenant = await _tenantRepository.GetByIdAsync(tenantId);
         if (tenant is null)
         {
-            throw new KeyNotFoundException($"Арендатор с Id = {tenantId} не найден.");
+            _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);
+            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
-        return await _tenantRepository.UnblockAsync(tenantId).ContinueWith(t =>
+        if (tenant.IsActive)
         {
-            if (t.IsFaulted)
-            {
-                throw new Exception($"Не удалось разблокировать арендатора с Id = {tenantId}.", t.Exception);
-            }
-            return new TenantViewModel
-            {
-                Id = tenantId,
-                Name = tenant.Name,
-                IsActive = true,
-                //BlockReason = string.Empty
-            };
-        });
+            _logger.LogWarning("Арендатор {TenantId} не заблокирован.", tenantId);
+            throw new ArgumentException(nameof(tenant), $"Арендатор {tenant.Name} не заблокирован.");
+        }
+
+        await _tenantRepository.UnblockAsync(tenantId);
+        _logger.LogInformation("Арендатор {TenantId} успешно разблокирован.", tenantId);
+
+        return new TenantViewModel
+        {
+            Id = tenantId,
+            Name = tenant.Name,
+            IsActive = true,
+            BlockReason = string.Empty
+        };
     }
 
     public async Task DeleteTenantAsync(Ulid tenantId)

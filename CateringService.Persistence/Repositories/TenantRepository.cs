@@ -1,5 +1,4 @@
 ﻿using CateringService.Domain.Entities;
-using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,24 +21,20 @@ public class TenantRepository : ITenantRepository
 
     public async Task BlockAsync(Ulid tenantId, string blockReason)
     {
-        int updatedRows = await _context.Tenants
+        await _context.Tenants
             .Where(t => t.Id == tenantId)
             .ExecuteUpdateAsync(t => t
                 .SetProperty(x => x.IsActive, false)
                 .SetProperty(t => t.BlockReason, blockReason));
-
-        if (updatedRows == 0)
-        {
-            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
-        }
     }
     public async Task UnblockAsync(Ulid tenantId)
     {
         await _context.Tenants
             .Where(t => t.Id == tenantId)
-            .ExecuteUpdateAsync(t => t.SetProperty(x => x.IsActive, true)
-            .SetProperty(t => t.BlockReason, string.Empty));
-    }
+            .ExecuteUpdateAsync(t => t
+                .SetProperty(x => x.IsActive, true)
+                .SetProperty(t => t.BlockReason, string.Empty));
+        }
 
     public async Task<IEnumerable<Tenant>> GetAllAsync()
     {
@@ -49,7 +44,7 @@ public class TenantRepository : ITenantRepository
     public async Task<Tenant?> GetByIdAsync(Ulid tenantId)
     {
         return await _context.Tenants
-            .FindAsync(tenantId);
+            .FirstOrDefaultAsync(t => t.Id == tenantId);
     }
 
     public async Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false)

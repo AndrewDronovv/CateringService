@@ -68,7 +68,7 @@ public class TenantsController : ControllerBase
         return Ok();
     }
 
-    [HttpPatch(ApiEndPoints.Tenants.Block)]
+    [HttpPost(ApiEndPoints.Tenants.Block)]
     [ProducesResponseType(typeof(TenantViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
@@ -79,11 +79,14 @@ public class TenantsController : ControllerBase
         return Ok(blockedTenant);
     }
 
-    [HttpPut(ApiEndPoints.Tenants.Unblock)]
+    [HttpPost(ApiEndPoints.Tenants.Unblock)]
+    [ProducesResponseType(typeof(TenantViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TenantViewModel>> UnblockTenansAsync([FromRoute] Ulid tenantId)
     {
         var unblockedTenant = await _tenantService.UnblockTenantAsync(tenantId);
 
-        return Ok();
+        return Ok(unblockedTenant);
     }
 }

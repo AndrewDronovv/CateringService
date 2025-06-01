@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CateringService.Application.DataTransferObjects.Requests;
+﻿using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Filters;
