@@ -12,7 +12,7 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
 
     public async Task<IEnumerable<Address>> SearchByZipAsync(Ulid? tenantId, string zip)
     {
-        var query = _context.Addresses.AsNoTracking();
+        IQueryable<Address> query = _context.Addresses.AsNoTracking();
 
         if (tenantId.HasValue)
         {
