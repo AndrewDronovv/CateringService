@@ -24,3 +24,7 @@ var app = builder.Build();
 
 app.ConfigurePipeline();
 app.Run();
+
+// Не работает эндпоинт для создания MenuCategories;
+// Не работает обновление арендатора в Tenants;
+// BlockTenant разобраться с передачей параметров и маршрутизацией;

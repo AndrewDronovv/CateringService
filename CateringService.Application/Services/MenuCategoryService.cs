@@ -29,16 +29,16 @@ public class MenuCategoryService : IMenuCategoryService
 
     public async Task<MenuCategoryViewModel?> CreateMenuCategoryAsync(Ulid supplierId, AddMenuCategoryRequest request)
     {
-        if (request is null)
-        {
-            _logger.LogWarning("Входные данные не указаны.");
-            throw new ArgumentNullException(nameof(request), "MenuCategory request is null.");
-        }
-
         if (supplierId == Ulid.Empty)
         {
             _logger.LogWarning("SupplierId не должен быть пустым.");
             throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
+        }
+
+        if (request is null)
+        {
+            _logger.LogWarning("Входные данные не указаны.");
+            throw new ArgumentNullException(nameof(request), "MenuCategory request is null.");
         }
 
         _logger.LogInformation("Создание категории меню. Поставщик {SupplierId}, Название {Name}.", supplierId, request?.Name);
@@ -128,7 +128,7 @@ public class MenuCategoryService : IMenuCategoryService
         if (menuCategoryCurrent is null)
         {
             _logger.LogWarning("Категория меню {MenuCategoryId} не найдена.", menuCategoryId);
-            throw new NotFoundException(nameof(Supplier), supplierId.ToString());
+            throw new NotFoundException(nameof(MenuCategory), menuCategoryId.ToString());
         }
 
         var menuCategory = await _menuCategoryRepository.GetMenuCategoryBySupplierIdAsync(menuCategoryId, supplierId);

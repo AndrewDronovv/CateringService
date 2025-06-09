@@ -89,6 +89,19 @@ public class AddressService : IAddressService
         return _mapper.Map<AddressViewModel>(address) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
     }
 
+    public async Task<IEnumerable<AddressViewModel>> SearchAddressesByZipAsync(SearchByZipViewModel request)
+    {
+        if (request is null)
+        {
+            _logger.LogWarning("Входные данные не указаны.");
+            throw new ArgumentNullException(nameof(request), "Address request is null.");
+        }
+
+        var zipCodes = await _addressRepository.SearchByZipAsync(request.TenantId, request.Zip);
+
+        return _mapper.Map<IEnumerable<AddressViewModel>>(zipCodes);
+    }
+
     public async Task<AddressViewModel> UpdateAddressAsync(Ulid addressId, Ulid tenantId, UpdateAddressRequest request)
     {
         if (addressId == Ulid.Empty)
@@ -116,7 +129,7 @@ public class AddressService : IAddressService
             _logger.LogWarning("Адрес {AddressId} не найден.", addressId);
             throw new NotFoundException(nameof(Address), addressId.ToString());
         }
-        
+
         _mapper.Map(request, addressCurrent);
 
         _addressRepository.Update(addressCurrent, true);

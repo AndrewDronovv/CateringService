@@ -42,9 +42,18 @@ public class AddressesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateAddressAsync(Ulid addressId, UpdateAddressRequest request)
     {
-        Ulid tenantId = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP");
+        Ulid tenantId = Ulid.Parse("01JXB6X43RXSAFY1G6DAT2CJWB");
         var viewModel = await _addressService.UpdateAddressAsync(addressId, tenantId, request);
 
         return Ok(viewModel);
     }
+
+    //[HttpPost(ApiEndPoints.Addresses.Zip)]
+    //[ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    //public async Task<ActionResult<List<AddressViewModel>>> SearchAddressesByZipAsync([FromQuery] Ulid tenantId, [FromQuery] string Zip)
+    //{
+    //    //return await _addressService.SearchAddressesByZipAsync();
+    //}
 }
