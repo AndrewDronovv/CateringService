@@ -67,6 +67,11 @@ public class AddressService : IAddressService
         return _mapper.Map<AddressViewModel>(createdAddress);
     }
 
+    public Task DeleteAddressAsync(Ulid addressId, Ulid requestingUserId)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<AddressViewModel?> GetByIdAsync(Ulid addressId)
     {
         if (addressId == Ulid.Empty)

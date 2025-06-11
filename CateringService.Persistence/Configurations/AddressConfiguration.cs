@@ -30,7 +30,8 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
 
         builder.Property(a => a.Zip)
             .IsRequired()
-            .HasMaxLength(6);
+            .HasMaxLength(6)
+            .HasColumnType("char(6)");
 
         builder.Property(a => a.City)
             .IsRequired()

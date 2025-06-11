@@ -16,4 +16,7 @@ public sealed class Order : UlidEntity
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public Ulid DeliveryId { get; set; }
     public Delivery Delivery { get; set; }
+
+    //public int AddressId { get; set; }
+    //public Address Address { get; set; }
 }

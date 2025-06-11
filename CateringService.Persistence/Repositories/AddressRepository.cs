@@ -10,6 +10,16 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
     {
     }
 
+    public Task DeleteAsync(Ulid addressId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> HasActiveOrdersAsync(Ulid addressId)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<IEnumerable<Address>> SearchByZipAsync(Ulid? tenantId, string zip)
     {
         IQueryable<Address> query = _context.Addresses.AsNoTracking();
