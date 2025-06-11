@@ -62,4 +62,13 @@ public class AddressesController : ControllerBase
 
         return Ok(addresses);
     }
+
+    [HttpGet("api/addresses/search")]
+    [ProducesResponseType(typeof(IEnumerable<AddressViewModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<AddressViewModel>>> SearchAddressesByTextAsync([FromQuery] string query)
+    {
+        var addresses = await _addressService.SearchAddressesByTextAsync(query);
+
+        return Ok(addresses);
+    }
 }

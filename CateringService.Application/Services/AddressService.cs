@@ -94,6 +94,13 @@ public class AddressService : IAddressService
         return _mapper.Map<AddressViewModel>(address) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
     }
 
+    public async Task<IEnumerable<AddressViewModel>> SearchAddressesByTextAsync(string query)
+    {
+        var addresses = await _addressRepository.SearchByTextAsync(query);
+
+        return _mapper.Map<IEnumerable<AddressViewModel>>(addresses);
+    }
+
     public async Task<IEnumerable<AddressViewModel>> SearchAddressesByZipAsync(SearchByZipViewModel request)
     {
         if (request is null)
