@@ -12,6 +12,10 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
 
         builder.HasKey(a => a.Id);
 
+        builder.HasIndex(a => new { a.City, a.StreetAndBuilding })
+            .HasMethod("GIN")
+            .IsTsVectorExpressionIndex("english");
+
         builder.Property(a => a.Id)
             .HasColumnName("AddressId")
             .IsRequired()

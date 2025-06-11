@@ -20,6 +20,20 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
         throw new NotImplementedException();
     }
 
+    public async Task<IEnumerable<Address>> SearchByTextAsync(string query)
+    {
+        query = query.ToLower();
+
+        return await _context.Addresses
+            .AsNoTracking()
+            .Where(a =>
+                EF.Functions.ToTsVector("english", a.City + " " + a.StreetAndBuilding)
+                    .Matches(EF.Functions.PhraseToTsQuery("english", query)))
+            .OrderByDescending(a => EF.Functions.ToTsVector("english", a.City + " " + a.StreetAndBuilding)
+                .Rank(EF.Functions.PhraseToTsQuery("english", query)))
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<Address>> SearchByZipAsync(Ulid? tenantId, string zip)
     {
         IQueryable<Address> query = _context.Addresses.AsNoTracking();
