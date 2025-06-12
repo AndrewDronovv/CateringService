@@ -27,12 +27,12 @@ public class MenuCategoryService : IMenuCategoryService
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<MenuCategoryViewModel?> CreateMenuCategoryAsync(Ulid supplierId, AddMenuCategoryRequest request)
+    public async Task<MenuCategoryViewModel?> CreateMenuCategoryAsync(AddMenuCategoryRequest request)
     {
-        if (supplierId == Ulid.Empty)
+        if (request.SupplierId == Ulid.Empty)
         {
             _logger.LogWarning("SupplierId не должен быть пустым.");
-            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
+            throw new ArgumentException(nameof(request.SupplierId), "SupplierId is empty.");
         }
 
         if (request is null)
@@ -41,13 +41,13 @@ public class MenuCategoryService : IMenuCategoryService
             throw new ArgumentNullException(nameof(request), "MenuCategory request is null.");
         }
 
-        _logger.LogInformation("Создание категории меню. Поставщик {SupplierId}, Название {Name}.", supplierId, request?.Name);
+        _logger.LogInformation("Создание категории меню. Поставщик {SupplierId}, Название {Name}.", request.SupplierId, request?.Name);
 
-        var supplierExists = await _supplierRepository.CheckSupplierExists(supplierId);
+        var supplierExists = await _supplierRepository.CheckSupplierExists(request.SupplierId);
         if (!supplierExists)
         {
-            _logger.LogWarning("Поставщик {SupplierId} не найден.", supplierId);
-            throw new NotFoundException(nameof(Supplier), supplierId.ToString());
+            _logger.LogWarning("Поставщик {SupplierId} не найден.", request.SupplierId);
+            throw new NotFoundException(nameof(Supplier), request.SupplierId.ToString());
         }
 
         var menuCategory = _mapper.Map<MenuCategory>(request) ?? throw new InvalidOperationException("MenuCategory mapping failed.");

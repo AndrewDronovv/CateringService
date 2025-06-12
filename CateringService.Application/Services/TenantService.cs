@@ -3,7 +3,6 @@ using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities;
-using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
@@ -149,7 +148,7 @@ public class TenantService : ITenantService
         return _mapper.Map<List<TenantViewModel>>(tenants);
     }
 
-    public async Task<Tenant?> UpdateTenantAsync(Ulid tenantId, Tenant tenant)
+    public async Task<TenantViewModel?> UpdateTenantAsync(Ulid tenantId, UpdateTenantRequest request)
     {
         var oldTenant = await _tenantRepository.GetByIdAsync(tenantId);
 
@@ -158,11 +157,12 @@ public class TenantService : ITenantService
             throw new Exception($"Сущность с ключом {tenantId} не найдена");
         }
 
-        UpdateTenant(oldTenant, tenant);
+        _mapper.Map(request, oldTenant);
 
-        var updatedTenant = _tenantRepository.UpdateAsync(tenant);
+        var updatedTenant = await _tenantRepository.UpdateAsync(oldTenant);
         await _unitOfWorkRepository.SaveChangesAsync();
-        return await updatedTenant;
+
+        return _mapper.Map<TenantViewModel>(updatedTenant);
     }
 
     private void UpdateTenant(Tenant oldTenant, Tenant newTenant)
