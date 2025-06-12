@@ -77,7 +77,7 @@ namespace CateringService.Persistence.Migrations
                 {
                     TenantId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
                     Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     BlockReason = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
@@ -199,6 +199,33 @@ namespace CateringService.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    AddressId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
+                    Country = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    StreetAndBuilding = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    Zip = table.Column<string>(type: "char(6)", maxLength: 6, nullable: false),
+                    City = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
+                    Region = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
+                    Comment = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Description = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    TenantId = table.Column<string>(type: "character varying(26)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.AddressId);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "TenantId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Incidents",
                 columns: table => new
                 {
@@ -217,42 +244,6 @@ namespace CateringService.Persistence.Migrations
                         principalTable: "Deliveries",
                         principalColumn: "DeliveryId",
                         onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    OrderId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DeliveryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    CustomerId = table.Column<string>(type: "character varying(26)", nullable: false),
-                    SupplierId = table.Column<string>(type: "character varying(26)", nullable: false),
-                    DeliveryId = table.Column<string>(type: "character varying(26)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.OrderId);
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "CustomerId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_Deliveries_DeliveryId",
-                        column: x => x.DeliveryId,
-                        principalTable: "Deliveries",
-                        principalColumn: "DeliveryId",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Orders_Suppliers_SupplierId",
-                        column: x => x.SupplierId,
-                        principalTable: "Suppliers",
-                        principalColumn: "SupplierId",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -288,6 +279,48 @@ namespace CateringService.Persistence.Migrations
                         principalTable: "Suppliers",
                         principalColumn: "SupplierId",
                         onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    OrderId = table.Column<string>(type: "character varying(26)", maxLength: 26, nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DeliveryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CustomerId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    SupplierId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    DeliveryId = table.Column<string>(type: "character varying(26)", nullable: false),
+                    AddressId = table.Column<string>(type: "character varying(26)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "AddressId");
+                    table.ForeignKey(
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "CustomerId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Deliveries_DeliveryId",
+                        column: x => x.DeliveryId,
+                        principalTable: "Deliveries",
+                        principalColumn: "DeliveryId",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Orders_Suppliers_SupplierId",
+                        column: x => x.SupplierId,
+                        principalTable: "Suppliers",
+                        principalColumn: "SupplierId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -368,6 +401,16 @@ namespace CateringService.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Addresses",
+                columns: new[] { "AddressId", "City", "Comment", "Country", "CreatedAt", "Description", "Region", "StreetAndBuilding", "TenantId", "Zip" },
+                values: new object[,]
+                {
+                    { "01H5QJ8KTMVRFZT58GQX902JD1", "New York", "Office address", "USA", new DateTime(2025, 4, 21, 8, 30, 0, 0, DateTimeKind.Unspecified), "Main headquarters", "NY", "123 Main St", "01H5PY6RF4WKFCR9VCMY2QNFGP", "100001" },
+                    { "01H5QJ8RTMVRFZT58GQX902JD2", "Berlin", "Warehouse", "Germany", new DateTime(2025, 4, 22, 12, 15, 0, 0, DateTimeKind.Unspecified), "Storage facility", "Berlin", "45 Berliner Str.", "01H5QJ6PVB8FYN4QXMR3T7JC9A", "200002" },
+                    { "01H5QJ9ZTMVRFZT58GQX902JD3", "Tokyo", "Retail store", "Japan", new DateTime(2025, 4, 23, 9, 0, 0, 0, DateTimeKind.Unspecified), "Flagship location", "Kanto", "7-2 Shibuya", "01H5QJ7XQZKTYZ9QW8VRCMND5B", "300003" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Deliveries",
                 columns: new[] { "DeliveryId", "DeliveryPersonId", "Status" },
                 values: new object[,]
@@ -439,12 +482,12 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Orders",
-                columns: new[] { "OrderId", "CustomerId", "DeliveryDate", "DeliveryId", "OrderDate", "Status", "SupplierId", "TotalPrice" },
+                columns: new[] { "OrderId", "AddressId", "CustomerId", "DeliveryDate", "DeliveryId", "OrderDate", "Status", "SupplierId", "TotalPrice" },
                 values: new object[,]
                 {
-                    { "01H5QJ3DZP8N3A1EQNHQZK7GTT", "01H5QJ37V03WH5TXE2N1AW3JF9", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ399WTKN11Z9FMB02WT62", new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "01H5QJ6PTMVRFZT58GQX902JC4", 250.00m },
-                    { "01H5QJ3E1TZPGJ82MMZ20WX44Z", "01H5QJ38KGWM2N56TFH99WQZ03", new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ39VRZ2AN3YC94PM5FMPA", new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "01H5QJ6PVB8FYN4QXMR3T7JC9A", 150.75m },
-                    { "01H5QJ3E3P7D4X8KVT4X30PKKQ", "01H5QJ391M8PVG6ZWPK4GTN0D8", new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ3A8D7V2GPF2K4K3WH5C4", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cancelled", "01H5QJ6PX4FTQY8KZVW9JMBT96", 300.50m }
+                    { "01H5QJ3DZP8N3A1EQNHQZK7GTT", null, "01H5QJ37V03WH5TXE2N1AW3JF9", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ399WTKN11Z9FMB02WT62", new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "01H5QJ6PTMVRFZT58GQX902JC4", 250.00m },
+                    { "01H5QJ3E1TZPGJ82MMZ20WX44Z", null, "01H5QJ38KGWM2N56TFH99WQZ03", new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ39VRZ2AN3YC94PM5FMPA", new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "01H5QJ6PVB8FYN4QXMR3T7JC9A", 150.75m },
+                    { "01H5QJ3E3P7D4X8KVT4X30PKKQ", null, "01H5QJ391M8PVG6ZWPK4GTN0D8", new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ3A8D7V2GPF2K4K3WH5C4", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cancelled", "01H5QJ6PX4FTQY8KZVW9JMBT96", 300.50m }
                 });
 
             migrationBuilder.InsertData(
@@ -456,6 +499,18 @@ namespace CateringService.Persistence.Migrations
                     { "01H5QJ3E72PFV0T3XN92K4W59V", "01GRQX9AYRHCA5Y5X3GPKPZ93Q", "01H5QJ3E1TZPGJ82MMZ20WX44Z", 15.50m, 1 },
                     { "01H5QJ6P1YKRV9FX54Z0W3PJAY", "01H5PY6RF4WKFCR9VCMY2QNFGP", "01H5QJ3E3P7D4X8KVT4X30PKKQ", 45.75m, 3 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_City_StreetAndBuilding",
+                table: "Addresses",
+                columns: new[] { "City", "StreetAndBuilding" })
+                .Annotation("Npgsql:IndexMethod", "GIN")
+                .Annotation("Npgsql:TsVectorConfig", "english");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_TenantId",
+                table: "Addresses",
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Deliveries_DeliveryPersonId",
@@ -508,6 +563,11 @@ namespace CateringService.Persistence.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_AddressId",
+                table: "Orders",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
@@ -552,9 +612,6 @@ namespace CateringService.Persistence.Migrations
                 name: "Reports");
 
             migrationBuilder.DropTable(
-                name: "Tenants");
-
-            migrationBuilder.DropTable(
                 name: "Dishes");
 
             migrationBuilder.DropTable(
@@ -567,6 +624,9 @@ namespace CateringService.Persistence.Migrations
                 name: "MenuCategories");
 
             migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
@@ -574,6 +634,9 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Suppliers");
+
+            migrationBuilder.DropTable(
+                name: "Tenants");
 
             migrationBuilder.DropTable(
                 name: "DeliveryPersons");

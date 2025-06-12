@@ -52,9 +52,6 @@ namespace CateringService.Persistence.Migrations
                         .HasMaxLength(512)
                         .HasColumnType("character varying(512)");
 
-                    b.Property<float?>("Rank")
-                        .HasColumnType("real");
-
                     b.Property<string>("Region")
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
@@ -619,6 +616,9 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(26)")
                         .HasColumnName("OrderId");
 
+                    b.Property<string>("AddressId")
+                        .HasColumnType("character varying(26)");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("character varying(26)");
@@ -646,6 +646,8 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CustomerId");
 
@@ -1079,6 +1081,10 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Order", b =>
                 {
+                    b.HasOne("CateringService.Domain.Entities.Approved.Address", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("AddressId");
+
                     b.HasOne("CateringService.Domain.Entities.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
@@ -1143,6 +1149,11 @@ namespace CateringService.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Broker");
+                });
+
+            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Address", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.MenuCategory", b =>

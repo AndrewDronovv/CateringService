@@ -4,8 +4,6 @@ namespace CateringService.Domain.Entities.Approved;
 
 public sealed class Address : UlidEntity
 {
-    public Ulid TenantId { get; set; }
-    public Tenant Tenant { get; set; }
     public string Country { get; set; } = string.Empty;
     public string StreetAndBuilding { get; set; } = string.Empty;
     public string Zip { get; set; } = string.Empty;
@@ -16,5 +14,7 @@ public sealed class Address : UlidEntity
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
 
-    //public ICollection<Order> Orders { get; set; } = new List<Order>();
+    public Ulid TenantId { get; set; }
+    public Tenant Tenant { get; set; }
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
 }

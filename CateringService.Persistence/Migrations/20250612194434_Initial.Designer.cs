@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250611130558_AddMethodGin")]
-    partial class AddMethodGin
+    [Migration("20250612194434_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -619,6 +619,9 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(26)")
                         .HasColumnName("OrderId");
 
+                    b.Property<string>("AddressId")
+                        .HasColumnType("character varying(26)");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("character varying(26)");
@@ -646,6 +649,8 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CustomerId");
 
@@ -1079,6 +1084,10 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Order", b =>
                 {
+                    b.HasOne("CateringService.Domain.Entities.Approved.Address", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("AddressId");
+
                     b.HasOne("CateringService.Domain.Entities.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
@@ -1143,6 +1152,11 @@ namespace CateringService.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Broker");
+                });
+
+            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Address", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.MenuCategory", b =>

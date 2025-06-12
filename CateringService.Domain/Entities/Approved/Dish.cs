@@ -16,8 +16,8 @@ public sealed class Dish : UlidEntity
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public Ulid SupplierId { get; set; }
-    public Supplier Supplier { get; set; }
+    public Supplier? Supplier { get; set; }
 
     public Ulid MenuCategoryId { get; set; }
-    public MenuCategory MenuCategory { get; set; }
+    public MenuCategory? MenuCategory { get; set; }
 }

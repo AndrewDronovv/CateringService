@@ -4,13 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
-public class TenantRepository : ITenantRepository
+public class TenantRepository : GenericRepository<Tenant, Ulid>, ITenantRepository
 {
-    private readonly AppDbContext _context;
-
-    public TenantRepository(AppDbContext context)
+    public TenantRepository(AppDbContext context) : base(context)
     {
-        _context = context;
     }
 
     public Ulid Add(Tenant input)
@@ -34,7 +31,7 @@ public class TenantRepository : ITenantRepository
             .ExecuteUpdateAsync(t => t
                 .SetProperty(x => x.IsActive, true)
                 .SetProperty(t => t.BlockReason, string.Empty));
-        }
+    }
 
     public async Task<IEnumerable<Tenant>> GetAllAsync()
     {

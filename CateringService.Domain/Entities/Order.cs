@@ -1,4 +1,5 @@
 ﻿using CateringService.Domain.Common;
+using CateringService.Domain.Entities.Approved;
 
 namespace CateringService.Domain.Entities;
 
