@@ -1,6 +1,7 @@
 ﻿using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers;
@@ -70,5 +71,16 @@ public class AddressesController : ControllerBase
         var addresses = await _addressService.SearchAddressesByTextAsync(query);
 
         return Ok(addresses);
+    }
+
+    [HttpDelete("api/addresses/{addressId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteTenantAsync(Ulid addressId)
+    {
+        await _addressService.DeleteAddressAsync(addressId);
+
+        return NoContent();
     }
 }

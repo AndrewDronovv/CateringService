@@ -9,6 +9,6 @@ public interface IAddressService
     Task<AddressViewModel> GetByIdAsync(Ulid addresId);
     Task<AddressViewModel> UpdateAddressAsync(Ulid addressId, Ulid tenantId, UpdateAddressRequest request);
     Task<IEnumerable<AddressViewModel>> SearchAddressesByZipAsync(SearchByZipViewModel request);
-    Task DeleteAddressAsync(Ulid addressId, Ulid requestingUserId);
+    Task DeleteAddressAsync(Ulid addressId);
     Task<IEnumerable<AddressViewModel>> SearchAddressesByTextAsync(string request);
 }

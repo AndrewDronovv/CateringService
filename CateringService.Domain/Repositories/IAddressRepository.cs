@@ -8,4 +8,5 @@ public interface IAddressRepository : IGenericRepository<Address, Ulid>
     Task<bool> HasActiveOrdersAsync(Ulid addressId);
     Task DeleteAsync(Ulid addressId);
     Task<IEnumerable<Address>> SearchByTextAsync(string query);
+    Task<bool> CheckAddressExistsAsync(Ulid addressId);
 }

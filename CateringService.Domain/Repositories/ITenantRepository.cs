@@ -11,6 +11,6 @@ public interface ITenantRepository
     Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false);
     Task BlockAsync(Ulid tenantId, string blockReason);
     Task UnblockAsync(Ulid tenantId);
-    Task<bool> CheckTenantExists(Ulid tenantId);
+    Task<bool> CheckTenantExistsAsync(Ulid tenantId);
     Task<bool> HasRelatedDataAsync(Ulid tenantId);
 }

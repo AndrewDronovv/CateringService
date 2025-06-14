@@ -10,6 +10,12 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
     {
     }
 
+    public async Task<bool> CheckAddressExistsAsync(Ulid addressId)
+    {
+        return await _context.Addresses
+            .AnyAsync(a => a.Id == addressId);
+    }
+
     public async Task DeleteAsync(Ulid addressId)
     {
         var entity = await _context.Addresses

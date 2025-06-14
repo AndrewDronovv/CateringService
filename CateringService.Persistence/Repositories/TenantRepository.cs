@@ -55,7 +55,7 @@ public class TenantRepository : GenericRepository<Tenant, Ulid>, ITenantReposito
         return tenant;
     }
 
-    public async Task<bool> CheckTenantExists(Ulid tenantId)
+    public async Task<bool> CheckTenantExistsAsync(Ulid tenantId)
     {
         return await _context.Tenants
             .AnyAsync(t => t.Id == tenantId);

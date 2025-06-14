@@ -100,7 +100,7 @@ public class TenantService : ITenantService
 
         _logger.LogInformation("Получен запрос на удаление арендатора {TenantId}.", tenantId);
 
-        var tenantExists = await _tenantRepository.CheckTenantExists(tenantId);
+        var tenantExists = await _tenantRepository.CheckTenantExistsAsync(tenantId);
         if (!tenantExists)
         {
             _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);

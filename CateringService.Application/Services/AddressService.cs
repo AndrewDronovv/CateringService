@@ -67,9 +67,34 @@ public class AddressService : IAddressService
         return _mapper.Map<AddressViewModel>(createdAddress);
     }
 
-    public Task DeleteAddressAsync(Ulid addressId, Ulid requestingUserId)
+    //TODO: добавить в параметры метода Ulid requestingUserId из задания.
+    public async Task DeleteAddressAsync(Ulid addressId)
     {
-        throw new NotImplementedException();
+        if (addressId == Ulid.Empty)
+        {
+            _logger.LogWarning("AddressId не должен быть пустым.");
+            throw new ArgumentException(nameof(addressId), "AddressId is empty.");
+        }
+
+        _logger.LogInformation("Получен запрос на удаление адреса {AddressId}.", addressId);
+
+        var addressExists = await _addressRepository.CheckAddressExistsAsync(addressId);
+        if (!addressExists)
+        {
+            _logger.LogWarning("Адрес {AddressId} не найден.", addressId);
+            throw new NotFoundException(nameof(Address), addressId.ToString());
+        }
+
+        if (await _addressRepository.HasActiveOrdersAsync(addressId))
+        {
+            _logger.LogWarning("Нельзя удалить адрес {AddressId} так как по нему есть активные заказы.", addressId);
+            throw new ArgumentException($"Нельзя удалить адрес так как по нему есть активные заказы.");
+        }
+
+        await _addressRepository.DeleteAsync(addressId);
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Адрес {AddressId} успешно удален.", addressId);
     }
 
     public async Task<AddressViewModel?> GetByIdAsync(Ulid addressId)
@@ -128,7 +153,7 @@ public class AddressService : IAddressService
             throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
         }
 
-        var tenantExists = await _tenantRepository.CheckTenantExists(tenantId);
+        var tenantExists = await _tenantRepository.CheckTenantExistsAsync(tenantId);
         if (!tenantExists)
         {
             _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);
