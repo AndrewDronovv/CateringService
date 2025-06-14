@@ -10,14 +10,20 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
     {
     }
 
-    public Task DeleteAsync(Ulid addressId)
+    public async Task DeleteAsync(Ulid addressId)
     {
-        throw new NotImplementedException();
+        var entity = await _context.Addresses
+            .FirstOrDefaultAsync(a => a.Id == addressId);
+
+        _context.Addresses.Remove(entity);
     }
 
-    public Task<bool> HasActiveOrdersAsync(Ulid addressId)
+    public async Task<bool> HasActiveOrdersAsync(Ulid addressId)
     {
-        throw new NotImplementedException();
+        return await _context.Addresses
+            .Where(a => a.Id == addressId)
+            .SelectMany(a => a.Orders)
+            .AnyAsync(o => o.IsActive == true);
     }
 
     // TODO: Доделать метод, необходимо добавить параметр tenantId.

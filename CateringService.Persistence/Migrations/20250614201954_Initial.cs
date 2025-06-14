@@ -289,11 +289,11 @@ namespace CateringService.Persistence.Migrations
                     OrderDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     DeliveryDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", maxLength: 50, nullable: false),
                     CustomerId = table.Column<string>(type: "character varying(26)", nullable: false),
                     SupplierId = table.Column<string>(type: "character varying(26)", nullable: false),
                     DeliveryId = table.Column<string>(type: "character varying(26)", nullable: false),
-                    AddressId = table.Column<string>(type: "character varying(26)", nullable: true)
+                    AddressId = table.Column<string>(type: "character varying(26)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -302,7 +302,8 @@ namespace CateringService.Persistence.Migrations
                         name: "FK_Orders_Addresses_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Addresses",
-                        principalColumn: "AddressId");
+                        principalColumn: "AddressId",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Orders_Customers_CustomerId",
                         column: x => x.CustomerId,
@@ -482,12 +483,12 @@ namespace CateringService.Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "Orders",
-                columns: new[] { "OrderId", "AddressId", "CustomerId", "DeliveryDate", "DeliveryId", "OrderDate", "Status", "SupplierId", "TotalPrice" },
+                columns: new[] { "OrderId", "AddressId", "CustomerId", "DeliveryDate", "DeliveryId", "IsActive", "OrderDate", "SupplierId", "TotalPrice" },
                 values: new object[,]
                 {
-                    { "01H5QJ3DZP8N3A1EQNHQZK7GTT", null, "01H5QJ37V03WH5TXE2N1AW3JF9", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ399WTKN11Z9FMB02WT62", new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "01H5QJ6PTMVRFZT58GQX902JC4", 250.00m },
-                    { "01H5QJ3E1TZPGJ82MMZ20WX44Z", null, "01H5QJ38KGWM2N56TFH99WQZ03", new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ39VRZ2AN3YC94PM5FMPA", new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "01H5QJ6PVB8FYN4QXMR3T7JC9A", 150.75m },
-                    { "01H5QJ3E3P7D4X8KVT4X30PKKQ", null, "01H5QJ391M8PVG6ZWPK4GTN0D8", new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ3A8D7V2GPF2K4K3WH5C4", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cancelled", "01H5QJ6PX4FTQY8KZVW9JMBT96", 300.50m }
+                    { "01H5QJ3DZP8N3A1EQNHQZK7GTT", "01H5QJ8KTMVRFZT58GQX902JD1", "01H5QJ37V03WH5TXE2N1AW3JF9", new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ399WTKN11Z9FMB02WT62", true, new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ6PTMVRFZT58GQX902JC4", 250.00m },
+                    { "01H5QJ3E1TZPGJ82MMZ20WX44Z", "01H5QJ8RTMVRFZT58GQX902JD2", "01H5QJ38KGWM2N56TFH99WQZ03", new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ39VRZ2AN3YC94PM5FMPA", true, new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ6PVB8FYN4QXMR3T7JC9A", 150.75m },
+                    { "01H5QJ3E3P7D4X8KVT4X30PKKQ", "01H5QJ9ZTMVRFZT58GQX902JD3", "01H5QJ391M8PVG6ZWPK4GTN0D8", new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ3A8D7V2GPF2K4K3WH5C4", false, new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "01H5QJ6PX4FTQY8KZVW9JMBT96", 300.50m }
                 });
 
             migrationBuilder.InsertData(

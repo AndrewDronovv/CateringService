@@ -164,7 +164,6 @@ public class DishServiceTests
         Assert.Contains(nameof(MenuCategory), exception.Message);
         Assert.Contains(request.MenuCategoryId.ToString(), exception.Message);
     }
-    #endregion
 
     [Fact]
     public async Task CreateDishAsync_RequestNull_ArgumentNullException()
@@ -177,6 +176,18 @@ public class DishServiceTests
         var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _dishService.CreateDishAsync(supplierId, request));
         Assert.Contains(nameof(request), exception.Message);
     }
+    [Fact]
+    public async Task CreateDishAsync_SupplierIdIsEmpty_ArgumentException()
+    {
+        //Arrange
+        var supplierId = Ulid.Empty;
+        AddDishRequest? request = new AddDishRequest();
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _dishService.CreateDishAsync(supplierId, request));
+        Assert.Contains(nameof(supplierId), exception.Message);
+    }
+    #endregion
 
     #region Тесты получения сущности по Id
     [Fact]

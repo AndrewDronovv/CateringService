@@ -31,7 +31,7 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnType("decimal(18,2)")
             .IsRequired();
 
-        builder.Property(o => o.Status)
+        builder.Property(o => o.IsActive)
             .IsRequired()
             .HasMaxLength(50);
 
@@ -55,6 +55,11 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasForeignKey(oi => oi.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasOne(o => o.Address)
+            .WithMany(a => a.Orders)
+            .HasForeignKey(o => o.AddressId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         builder.HasData
         (
             new Order
@@ -63,10 +68,11 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
                 OrderDate = new DateTime(2025, 4, 10),
                 DeliveryDate = new DateTime(2025, 4, 12),
                 TotalPrice = 250.00m,
-                Status = "Completed",
+                IsActive = true,
                 CustomerId = Ulid.Parse("01H5QJ37V03WH5TXE2N1AW3JF9"),
                 SupplierId = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4"),
-                DeliveryId = Ulid.Parse("01H5QJ399WTKN11Z9FMB02WT62")
+                DeliveryId = Ulid.Parse("01H5QJ399WTKN11Z9FMB02WT62"),
+                AddressId = Ulid.Parse("01H5QJ8KTMVRFZT58GQX902JD1")
             },
             new Order
             {
@@ -74,10 +80,11 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
                 OrderDate = new DateTime(2025, 4, 11),
                 DeliveryDate = new DateTime(2025, 4, 13),
                 TotalPrice = 150.75m,
-                Status = "Pending",
+                IsActive = true,
                 CustomerId = Ulid.Parse("01H5QJ38KGWM2N56TFH99WQZ03"),
                 SupplierId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
-                DeliveryId = Ulid.Parse("01H5QJ39VRZ2AN3YC94PM5FMPA")
+                DeliveryId = Ulid.Parse("01H5QJ39VRZ2AN3YC94PM5FMPA"),
+                AddressId = Ulid.Parse("01H5QJ8RTMVRFZT58GQX902JD2")
             },
             new Order
             {
@@ -85,10 +92,11 @@ public sealed class OrderConfiguration : IEntityTypeConfiguration<Order>
                 OrderDate = new DateTime(2025, 4, 12),
                 DeliveryDate = new DateTime(2025, 4, 14),
                 TotalPrice = 300.50m,
-                Status = "Cancelled",
+                IsActive = false,
                 CustomerId = Ulid.Parse("01H5QJ391M8PVG6ZWPK4GTN0D8"),
                 SupplierId = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96"),
-                DeliveryId = Ulid.Parse("01H5QJ3A8D7V2GPF2K4K3WH5C4")
+                DeliveryId = Ulid.Parse("01H5QJ3A8D7V2GPF2K4K3WH5C4"),
+                AddressId = Ulid.Parse("01H5QJ8UTMVRFZT58GQX902JD3")
             }
         );
     }

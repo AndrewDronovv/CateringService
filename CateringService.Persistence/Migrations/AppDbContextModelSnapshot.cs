@@ -617,6 +617,7 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnName("OrderId");
 
                     b.Property<string>("AddressId")
+                        .IsRequired()
                         .HasColumnType("character varying(26)");
 
                     b.Property<string>("CustomerId")
@@ -630,13 +631,12 @@ namespace CateringService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(26)");
 
+                    b.Property<bool>("IsActive")
+                        .HasMaxLength(50)
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("SupplierId")
                         .IsRequired()
@@ -661,33 +661,36 @@ namespace CateringService.Persistence.Migrations
                         new
                         {
                             Id = "01H5QJ3DZP8N3A1EQNHQZK7GTT",
+                            AddressId = "01H5QJ8KTMVRFZT58GQX902JD1",
                             CustomerId = "01H5QJ37V03WH5TXE2N1AW3JF9",
                             DeliveryDate = new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DeliveryId = "01H5QJ399WTKN11Z9FMB02WT62",
+                            IsActive = true,
                             OrderDate = new DateTime(2025, 4, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Completed",
                             SupplierId = "01H5QJ6PTMVRFZT58GQX902JC4",
                             TotalPrice = 250.00m
                         },
                         new
                         {
                             Id = "01H5QJ3E1TZPGJ82MMZ20WX44Z",
+                            AddressId = "01H5QJ8RTMVRFZT58GQX902JD2",
                             CustomerId = "01H5QJ38KGWM2N56TFH99WQZ03",
                             DeliveryDate = new DateTime(2025, 4, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DeliveryId = "01H5QJ39VRZ2AN3YC94PM5FMPA",
+                            IsActive = true,
                             OrderDate = new DateTime(2025, 4, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Pending",
                             SupplierId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
                             TotalPrice = 150.75m
                         },
                         new
                         {
                             Id = "01H5QJ3E3P7D4X8KVT4X30PKKQ",
+                            AddressId = "01H5QJ9ZTMVRFZT58GQX902JD3",
                             CustomerId = "01H5QJ391M8PVG6ZWPK4GTN0D8",
                             DeliveryDate = new DateTime(2025, 4, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DeliveryId = "01H5QJ3A8D7V2GPF2K4K3WH5C4",
+                            IsActive = false,
                             OrderDate = new DateTime(2025, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Cancelled",
                             SupplierId = "01H5QJ6PX4FTQY8KZVW9JMBT96",
                             TotalPrice = 300.50m
                         });
@@ -1081,9 +1084,11 @@ namespace CateringService.Persistence.Migrations
 
             modelBuilder.Entity("CateringService.Domain.Entities.Order", b =>
                 {
-                    b.HasOne("CateringService.Domain.Entities.Approved.Address", null)
+                    b.HasOne("CateringService.Domain.Entities.Approved.Address", "Address")
                         .WithMany("Orders")
-                        .HasForeignKey("AddressId");
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
 
                     b.HasOne("CateringService.Domain.Entities.Customer", "Customer")
                         .WithMany("Orders")
@@ -1102,6 +1107,8 @@ namespace CateringService.Persistence.Migrations
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Address");
 
                     b.Navigation("Customer");
 
