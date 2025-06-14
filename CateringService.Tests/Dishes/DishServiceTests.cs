@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Castle.Core.Logging;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Application.Services;
 using CateringService.Domain.Abstractions;
+using CateringService.Domain.Entities;
 using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
@@ -87,29 +87,137 @@ public class DishServiceTests
 
     #region Тесты добавления
     [Fact]
-    public async Task AddAsync_NewDish_ReturnsDish()
+    public async Task CreateDishAsync_NewDish_ReturnsDish()
     {
         //Arrange
         Ulid supplierId = Ulid.NewUlid();
-        AddDishRequest request = new AddDishRequest { Name = "Test Dish", MenuCategoryId = Ulid.NewUlid(), SupplierId = supplierId };
-        Dish dish = new Dish { Id = Ulid.NewUlid(), Name = request.Name, SupplierId = supplierId };
+        Ulid dishId = Ulid.NewUlid();
+        AddDishRequest request = new AddDishRequest
+        {
+            Name = "Test Dish",
+            MenuCategoryId = Ulid.NewUlid(),
+            SupplierId = supplierId
+        };
+        Dish dish = new Dish { Id = dishId, Name = request.Name, SupplierId = supplierId };
+        var viewModel = new DishViewModel { Id = dishId, Name = request.Name };
 
         _supplierRepositoryMock.CheckSupplierExists(supplierId).Returns(true);
         _menuCategoryRepositoryMock.ChechMenuCategoryExists(request.MenuCategoryId).Returns(true);
 
         _mapper.Map<Dish>(request).Returns(dish);
-        _dishRepositoryMock.Add(Arg.Any<Dish>()).Returns(dish.Id);
+        _dishRepositoryMock.Add(dish).Returns(dish.Id);
         _dishRepositoryMock.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(dish));
+        _mapper.Map<DishViewModel>(dish).Returns(viewModel);
 
         //Act
         var result = await _dishService.CreateDishAsync(supplierId, request);
 
         //Assert
         Assert.NotNull(result);
-        Assert.NotEqual(Ulid.Empty, result?.Id);
-        Assert.Equal(dish.Id, result?.Id);
+        Assert.NotEqual(Ulid.Empty, result.Id);
+        Assert.Equal(dishId, result.Id);
+        Assert.Equal("Test Dish", result.Name);
         _dishRepositoryMock.Received(1).Add(Arg.Any<Dish>());
         await _unitOfWorkMock.Received(1).SaveChangesAsync();
+        _mapper.Received(1).Map<DishViewModel>(dish);
+    }
+
+    [Fact]
+    public async Task CreateDishAsync_SupplierDoesNotExist_ThrowsNotFoundException()
+    {
+        //Arrange
+        var supplierId = Ulid.NewUlid();
+        var request = new AddDishRequest
+        {
+            Name = "Test Dish",
+            MenuCategoryId = Ulid.NewUlid(),
+            SupplierId = supplierId
+        };
+
+        _supplierRepositoryMock.CheckSupplierExists(supplierId).Returns(false);
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _dishService.CreateDishAsync(supplierId, request));
+
+        Assert.Contains(nameof(Supplier), exception.Message);
+        Assert.Contains(supplierId.ToString(), exception.Message);
+    }
+
+    [Fact]
+    public async Task CreateDishAsync_MenuCategoryDoesNotExist_ThrowsNotFoundException()
+    {
+        //Arrange
+        var supplierId = Ulid.NewUlid();
+        var request = new AddDishRequest
+        {
+            Name = "Test Dish",
+            MenuCategoryId = Ulid.NewUlid(),
+            SupplierId = supplierId
+        };
+
+        _supplierRepositoryMock.CheckSupplierExists(supplierId).Returns(true);
+        _menuCategoryRepositoryMock.ChechMenuCategoryExists(request.MenuCategoryId).Returns(false);
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _dishService.CreateDishAsync(supplierId, request));
+
+        Assert.Contains(nameof(MenuCategory), exception.Message);
+        Assert.Contains(request.MenuCategoryId.ToString(), exception.Message);
+    }
+    #endregion
+
+    [Fact]
+    public async Task CreateDishAsync_RequestNull_ArgumentNullException()
+    {
+        //Arrange
+        var supplierId = Ulid.NewUlid();
+        AddDishRequest? request = null;
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _dishService.CreateDishAsync(supplierId, request));
+        Assert.Contains(nameof(request), exception.Message);
+    }
+
+    #region Тесты получения сущности по Id
+    [Fact]
+    public async Task GetByIdAsync_ExistingDish_ReturnsDish()
+    {
+        //Arrange
+        Ulid dishId = Ulid.NewUlid();
+        Dish dish = new Dish { Id = dishId, Name = "Pizza" };
+        DishViewModel dishViewModel = new DishViewModel { Id = dishId, Name = "Pizza" };
+
+        _dishRepositoryMock
+            .GetByIdAsync(dishId)
+            .Returns(Task.FromResult<Dish?>(dish));
+
+        _mapper
+            .Map<DishViewModel>(dish)
+            .Returns(dishViewModel);
+
+        //Act
+        var result = await _dishService.GetByIdAsync(dishId);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.Equal(dishId, result.Id);
+        Assert.Equal("Pizza", result.Name);
+
+        await _dishRepositoryMock.Received(1).GetByIdAsync(dishId);
+        _mapper.Received(1).Map<DishViewModel>(dish);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_NotExistingDish_ThrowsNotFoundException()
+    {
+        //Arrange
+        Dish dish = new Dish { Id = Ulid.NewUlid() };
+        _dishRepositoryMock.GetByIdAsync(dish.Id).Returns(Task.FromResult<Dish?>(null));
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _dishService.GetByIdAsync(dish.Id));
+        Assert.Contains(nameof(Dish), exception.Message);
+        Assert.Contains(dish.Id.ToString(), exception.Message);
     }
     #endregion
 
@@ -142,36 +250,7 @@ public class DishServiceTests
     //}
     //#endregion
 
-    //#region Тесты получения сущности по Id
-    //[Fact]
-    //public async Task GetByIdAsync_ExistingDish_ReturnsDish()
-    //{
-    //    //Arrange
-    //    Dish dish = new Dish { Id = Ulid.NewUlid() };
-    //    _dishRepositoryMock.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(dish));
 
-    //    //Act
-    //    var result = await _dishService.GetByIdAsync(dish.Id);
-
-    //    //Assert
-    //    Assert.NotNull(result);
-    //    Assert.Equal(dish.Id, result.Id);
-    //    await _dishRepositoryMock.Received(1).GetByIdAsync(dish.Id, false);
-    //}
-
-    //[Fact]
-    //public async Task GetByIdAsync_NotExistingDish_ThrowsNotFoundException()
-    //{
-    //    //Arrange
-    //    Dish dish = new Dish { Id = Ulid.NewUlid() };
-    //    _dishRepositoryMock.GetByIdAsync(dish.Id, false).Returns(Task.FromResult<Dish?>(null));
-
-    //    //Act & Assert
-    //    var exception = await Assert.ThrowsAsync<NotFoundException>(() => _dishService.GetByIdAsync(dish.Id));
-    //    Assert.Contains(typeof(Dish).Name, exception.Message);
-    //    Assert.Contains(dish.Id.ToString(), exception.Message);
-    //}
-    //#endregion
 
     //#region Тесты получения всех сущностей
     //[Fact]

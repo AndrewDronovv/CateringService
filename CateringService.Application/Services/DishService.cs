@@ -92,6 +92,28 @@ public class DishService : IDishService
         return result;
     }
 
+    public async Task<DishViewModel?> GetByIdAsync(Ulid dishId)
+    {
+        if (dishId == Ulid.Empty)
+        {
+            _logger.LogWarning("DishId не должен быть пустым.");
+            throw new ArgumentException(nameof(dishId), "DishId is empty.");
+        }
+
+        _logger.LogInformation("Получен запрос на блюдо {DishId}.", dishId);
+
+        var dish = await _dishRepository.GetByIdAsync(dishId);
+        if (dish is null)
+        {
+            _logger.LogWarning("Блюдо {DishId} не найдено.", dishId);
+            throw new NotFoundException(nameof(Dish), dishId.ToString());
+        }
+
+        _logger.LogInformation("Блюдо {Name} с Id {Id} успешно получено.", dish.Name, dish.Id);
+
+        return _mapper.Map<DishViewModel>(dish) ?? throw new InvalidOperationException("DishViewModel mapping failed.");
+    }
+
     //public async Task<List<DishViewModel?>> GetAllByIdAsync(Ulid supplierId)
     //{
     //    if (supplierId == Ulid.Empty)
@@ -120,28 +142,6 @@ public class DishService : IDishService
 
     //    return mappedDish ?? Enumerable.Empty<DishViewModel>().ToList();
     //}
-
-    public async Task<DishViewModel?> GetByIdAsync(Ulid dishId)
-    {
-        if (dishId == Ulid.Empty)
-        {
-            _logger.LogWarning("DishId не должен быть пустым.");
-            throw new ArgumentException(nameof(dishId), "DishId is empty.");
-        }
-
-        _logger.LogInformation("Получен запрос на блюдо {DishId}.", dishId);
-
-        var dish = await _dishRepository.GetByIdAsync(dishId);
-        if (dish is null)
-        {
-            _logger.LogWarning("Блюдо {DishId} не найдено.", dishId);
-            throw new NotFoundException(nameof(Dish), dishId.ToString());
-        }
-
-        _logger.LogInformation("Блюдо {Name} с Id {Id} успешно получено.", dish.Name, dish.Id);
-
-        return _mapper.Map<DishViewModel>(dish) ?? throw new InvalidOperationException("DishViewModel mapping failed.");
-    }
 
     //protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
     //{
