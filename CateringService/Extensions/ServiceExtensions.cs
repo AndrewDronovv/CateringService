@@ -5,6 +5,7 @@ using CateringService.Application.Services;
 using CateringService.Application.Validators.Dish;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Repositories;
+using CateringService.ModelBinders.MenuCategories;
 using CateringService.Persistence;
 using CateringService.Persistence.Repositories;
 using FluentValidation;
@@ -68,8 +69,12 @@ public static class ServiceExtensions
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IAddressService, AddressService>();
 
-
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
+
+        services.AddControllers(options =>
+        {
+            options.ModelBinderProviders.Insert(0, new AddMenuCategoryRequestModelBinderProvider());
+        });
     }
 
     public static void ApplicationServiceExtensions(this IServiceCollection services)

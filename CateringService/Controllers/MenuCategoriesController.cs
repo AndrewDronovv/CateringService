@@ -2,6 +2,7 @@
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Filters;
+using CateringService.ModelBinders.MenuCategories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers;
@@ -43,12 +44,11 @@ public class MenuCategoriesController : ControllerBase
     [ProducesResponseType(typeof(MenuCategoryViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<MenuCategoryViewModel>> CreateMenuCategoryAsync([FromBody] AddMenuCategoryRequest request, Ulid supplierId)
+    public async Task<ActionResult<MenuCategoryViewModel>> CreateMenuCategoryAsync(AddMenuCategoryRequest request)
     {
-        request.SupplierId = supplierId;
         var createdMenuCategory = await _menuCategoryService.CreateMenuCategoryAsync(request);
 
-        return CreatedAtRoute("GetMenuCategoryById", new { menuCategoryId = createdMenuCategory.Id, supplierId = supplierId }, createdMenuCategory);
+        return CreatedAtRoute("GetMenuCategoryById", new { menuCategoryId = createdMenuCategory.Id, supplierId = request.SupplierId }, createdMenuCategory);
     }
 
     [HttpDelete(ApiEndPoints.MenuCategories.Delete)]

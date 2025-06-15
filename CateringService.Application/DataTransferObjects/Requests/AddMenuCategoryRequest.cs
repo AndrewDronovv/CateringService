@@ -1,8 +1,10 @@
-﻿namespace CateringService.Application.DataTransferObjects.Requests;
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace CateringService.Application.DataTransferObjects.Requests;
 
 public sealed class AddMenuCategoryRequest
 {
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
     public Ulid SupplierId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; } = string.Empty;
 }
