@@ -36,42 +36,42 @@ public class DishServiceTests
 
     #region Тесты конструктора
     [Fact]
-    public void Ctor_DishRepositoryNull_ThrowsArgumentNullException()
+    public void Ctor_DishRepositoryNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new DishService(null, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock));
         Assert.Contains("dishRepository", exception.Message);
     }
 
     [Fact]
-    public void Ctor_SupplierRepositoryNull_ThrowsArgumentNullException()
+    public void Ctor_SupplierRepositoryNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, null, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock));
         Assert.Contains("supplierRepository", exception.Message);
     }
 
     [Fact]
-    public void Ctor_UnitOfWorkNull_ThrowsArgumentNullException()
+    public void Ctor_UnitOfWorkNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, null, _mapper, _logger, _menuCategoryRepositoryMock));
         Assert.Contains("unitOfWorkRepository", exception.Message);
     }
 
     [Fact]
-    public void Ctor_MapperNull_ThrowsArgumentNullException()
+    public void Ctor_MapperNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, null, _logger, _menuCategoryRepositoryMock));
         Assert.Contains("mapper", exception.Message);
     }
 
     [Fact]
-    public void Ctor_LoggerNull_ThrowsArgumentNullException()
+    public void Ctor_LoggerNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, null, _menuCategoryRepositoryMock));
         Assert.Contains("logger", exception.Message);
     }
 
     [Fact]
-    public void Ctor_MenuCategoryRepositoryNull_ThrowsArgumentNullException()
+    public void Ctor_MenuCategoryRepositoryNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, null));
         Assert.Contains("menuCategoryRepository", exception.Message);
@@ -123,7 +123,7 @@ public class DishServiceTests
     }
 
     [Fact]
-    public async Task CreateDishAsync_SupplierDoesNotExist_ThrowsNotFoundException()
+    public async Task CreateDishAsync_SupplierDoesNotExist_ShouldThrowNotFoundException()
     {
         //Arrange
         var supplierId = Ulid.NewUlid();
@@ -144,7 +144,7 @@ public class DishServiceTests
     }
 
     [Fact]
-    public async Task CreateDishAsync_MenuCategoryDoesNotExist_ThrowsNotFoundException()
+    public async Task CreateDishAsync_MenuCategoryDoesNotExist_ShouldThrowNotFoundException()
     {
         //Arrange
         var supplierId = Ulid.NewUlid();
@@ -166,7 +166,7 @@ public class DishServiceTests
     }
 
     [Fact]
-    public async Task CreateDishAsync_RequestNull_ArgumentNullException()
+    public async Task CreateDishAsync_WhenAddDishRequestIsNull_ShouldThrowArgumentNullException()
     {
         //Arrange
         var supplierId = Ulid.NewUlid();
@@ -177,11 +177,11 @@ public class DishServiceTests
         Assert.Contains(nameof(request), exception.Message);
     }
     [Fact]
-    public async Task CreateDishAsync_SupplierIdIsEmpty_ArgumentException()
+    public async Task CreateDishAsync_WhenSupplierIdIsEmpty_ShouldThrowArgumentException()
     {
         //Arrange
         var supplierId = Ulid.Empty;
-        AddDishRequest? request = new AddDishRequest();
+        AddDishRequest request = new AddDishRequest();
 
         //Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _dishService.CreateDishAsync(supplierId, request));
@@ -191,7 +191,7 @@ public class DishServiceTests
 
     #region Тесты получения сущности по Id
     [Fact]
-    public async Task GetByIdAsync_ExistingDish_ReturnsDish()
+    public async Task GetByIdAsync_DishExists_ReturnsDish()
     {
         //Arrange
         Ulid dishId = Ulid.NewUlid();
@@ -219,7 +219,7 @@ public class DishServiceTests
     }
 
     [Fact]
-    public async Task GetByIdAsync_NotExistingDish_ThrowsNotFoundException()
+    public async Task GetByIdAsync_DishDoesNotExist_ShouldThrowNotFoundException()
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid() };
