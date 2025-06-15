@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Application.Services;
 using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -46,7 +49,7 @@ public class AddressServiceTests
     {
         //Arrange
         var tenantId = Ulid.Empty;
-        AddAddressRequest request = new AddAddressRequest();
+        var request = new AddAddressRequest();
 
         //Act && Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _addressService.CreateAddressAsync(tenantId, request));
@@ -54,70 +57,136 @@ public class AddressServiceTests
     }
 
     [Fact]
-    public async Task CreateAddressAsync_ShouldReturnNull_WhenTenantIsNull()
+    public async Task CreateAddressAsync_WhenTenantNotFound_ShouldThrowNotFoundException()
     {
         //Arrange
         var tenantId = Ulid.NewUlid();
-        AddAddressRequest request = new AddAddressRequest();
-        _tenantRepositoryMock.GetByIdAsync(request.TenantId).Returns(Task.FromResult<Tenant?>(null));
+        var request = new AddAddressRequest { TenantId = tenantId };
+
+        _tenantRepositoryMock.GetByIdAsync(tenantId).Returns(Task.FromResult<Tenant?>(null));
+
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _addressService.CreateAddressAsync(tenantId, request));
+        Assert.Contains(nameof(Tenant), exception.Message);
+        Assert.Equal(tenantId.ToString(), exception.Id);
+        await _tenantRepositoryMock.Received(1).GetByIdAsync(tenantId);
+    }
+
+    [Fact]
+    public async Task CreateAddressAsync_WhenTenantIsNotActive_ShouldThrowNotFoundException()
+    {
+        //Arrange
+        var tenantId = Ulid.NewUlid();
+        var request = new AddAddressRequest { TenantId = tenantId };
+        var inactiveTenant = new Tenant { Id = tenantId, IsActive = false };
+
+        _tenantRepositoryMock.GetByIdAsync(tenantId).Returns(Task.FromResult<Tenant?>(inactiveTenant));
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _addressService.CreateAddressAsync(tenantId, request));
+        Assert.Contains(nameof(Tenant), exception.Message);
+        Assert.Equal(tenantId.ToString(), exception.Id);
+        await _tenantRepositoryMock.Received(1).GetByIdAsync(tenantId);
+    }
+
+    [Fact]
+    public async Task CreateAddressAsync_NewAddress_ReturnsAddress()
+    {
+        //Arrange
+        var tenantId = Ulid.NewUlid();
+        var addressId = Ulid.NewUlid();
+        var request = new AddAddressRequest
+        {
+            TenantId = tenantId,
+            Country = "Test Country"
+        };
+        var tenant = new Tenant { Id = tenantId, IsActive = true };
+        var address = new Address { Id = addressId, TenantId = tenantId, Country = "Test Country" };
+        var viewModel = new AddressViewModel { Id = addressId, Country = "Test Country" };
+
+        _tenantRepositoryMock.GetByIdAsync(tenantId).Returns(tenant);
+        _mapper.Map<Address>(request).Returns(address);
+        _addressRepositoryMock.Add(address).Returns(addressId);
+        _addressRepositoryMock.GetByIdAsync(addressId).Returns(address);
+        _mapper.Map<AddressViewModel>(address).Returns(viewModel);
 
         //Act
         var result = await _addressService.CreateAddressAsync(tenantId, request);
 
         //Assert
-        Assert.Null(result);
-        await _tenantRepositoryMock.Received(1).GetByIdAsync(request.TenantId);
+        Assert.NotNull(result);
+        Assert.IsType<AddressViewModel>(result);
+        Assert.Equal(addressId, result.Id);
+        Assert.Equal("Test Country", result.Country);
+
+        _tenantRepositoryMock.Received(1).GetByIdAsync(tenantId);
+        _addressRepositoryMock.Received(1).Add(Arg.Any<Address>());
+        _addressRepositoryMock.Received(1).GetByIdAsync(addressId);
+        await _unitOfWorkMock.Received(1).SaveChangesAsync();
+        _mapper.Received(1).Map<AddressViewModel>(address);
     }
 
-    //[Fact]
-    //public async Task CreateAddressAsync_ShouldReturnNull_WhenTenantIsNotActive()
-    //{
-    //    //Arrange
-    //    AddAddressRequest request = new AddAddressRequest
-    //    {
-    //        TenantId = Ulid.NewUlid(),
-    //        Country = "USA",
-    //        City = "New York",
-    //        Zip = "10001"
-    //    };
-    //    Tenant inActiveTenant = new Tenant { IsActive = false };
-    //    _tenantRepositoryMock.GetByIdAsync(request.TenantId).Returns(Task.FromResult(inActiveTenant));
+    [Fact]
+    public async Task CreateAddressAsync_WhenCreatedAddressIsNull_ShouldThrowNotFoundException()
+    {
+        //Arrange
+        var tenantId = Ulid.NewUlid();
+        var addressId = Ulid.NewUlid();
+        var request = new AddAddressRequest
+        {
+            TenantId = tenantId,
+            Country = "Test Country"
+        };
+        var tenant = new Tenant { Id = tenantId, IsActive = true };
+        var address = new Address { Id = addressId, TenantId = tenantId, Country = request.Country };
 
-    //    //Act
-    //    var result = await _addressService.CreateAddressAsync(request, request.TenantId);
+        _tenantRepositoryMock.GetByIdAsync(tenantId).Returns(tenant);
+        _mapper.Map<Address>(request).Returns(address);
+        _addressRepositoryMock.Add(address).Returns(addressId);
 
-    //    //Assert
-    //    Assert.Null(result);
-    //    await _tenantRepositoryMock.Received(1).GetByIdAsync(request.TenantId);
-    //}
+        _addressRepositoryMock.GetByIdAsync(addressId).Returns(Task.FromResult<Address?>(null));
 
-    //[Fact]
-    //public async Task GetAddressAsync_ExistingAddress_ReturnsAddress()
-    //{
-    //    //Arrange
-    //    Address address = new Address { Id = Ulid.NewUlid() };
-    //    DishViewModel mappedAddress = new DishViewModel
-    //    {
-    //        Id = address.Id,
-    //        Country = "Russia",
-    //        City = "Moscow",
-    //        Zip = "832823"
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _addressService.CreateAddressAsync(tenantId, request));
+        Assert.Contains(nameof(Address), exception.Message);
+        _addressRepositoryMock.Received(1).GetByIdAsync(addressId);
+        await _unitOfWorkMock.Received(1).SaveChangesAsync();
+    }
 
-    //    };
-    //    _addressRepositoryMock.GetByIdAsync(address.Id).Returns(Task.FromResult<Address?>(address));
-    //    _mapper.Map<DishViewModel>(address).Returns(mappedAddress);
+    [Fact]
+    public async Task GetAddressAsync_ExistingAddress_ReturnsAddress()
+    {
+        //Arrange
+        var addressId = Ulid.NewUlid();
+        var address = new Address
+        {
+            Id = addressId,
+            Country = "Test Country",
+            City = "Test City",
+            Zip = "832823"
+        };
+        var viewModel = new AddressViewModel
+        {
+            Id = addressId,
+            Country = address.Country,
+            City = address.City,
+            Zip = address.Zip
+        };
 
-    //    //Act
-    //    var result = await _addressService.GetByIdAsync(address.Id);
+        _addressRepositoryMock.GetByIdAsync(addressId).Returns(address);
+        _mapper.Map<AddressViewModel>(address).Returns(viewModel);
 
-    //    //Assert
-    //    Assert.NotNull(result);
-    //    Assert.Equal(mappedAddress.Id, result.Id);
-    //    Assert.Equal("Russia", result.Country);
-    //    Assert.Equal("Moscow", result.City);
-    //    Assert.Equal("832823", result.Zip);
+        //Act
+        var result = await _addressService.GetByIdAsync(addressId);
 
-    //    await _addressRepositoryMock.Received(1).GetByIdAsync(address.Id);
-    //    _mapper.Received(1).Map<DishViewModel>(address);
-    //}
+        //Assert
+        Assert.NotNull(result);
+        Assert.IsType<AddressViewModel>(result);
+        Assert.Equal(addressId, result.Id);
+        Assert.Equal("Test Country", result.Country);
+        Assert.Equal("Test City", result.City);
+        Assert.Equal("832823", result.Zip);
+
+        await _addressRepositoryMock.Received(1).GetByIdAsync(addressId);
+        _mapper.Received(1).Map<AddressViewModel>(address);
+    }
 }

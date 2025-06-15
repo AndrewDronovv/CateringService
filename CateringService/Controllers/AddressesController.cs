@@ -1,7 +1,6 @@
 ﻿using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
-using CateringService.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers;

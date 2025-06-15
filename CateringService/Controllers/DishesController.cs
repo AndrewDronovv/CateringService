@@ -16,38 +16,6 @@ public class DishesController : ControllerBase
         _dishService = dishAppService ?? throw new ArgumentNullException(nameof(dishAppService));
     }
 
-    //[HttpGet(ApiEndPoints.Dishes.GetAll)]
-    //[ProducesResponseType(typeof(IEnumerable<DishViewModel>), StatusCodes.Status200OK)]
-    //public async Task<ActionResult<IEnumerable<DishViewModel>>> GetDishesAsync()
-    //{
-    //    var dishes = await _dishService.GetAllAsync();
-    //    if (dishes is null || !dishes.Any())
-    //    {
-    //        _logger.LogInformation("Список блюд пуст.");
-    //        return Ok(Enumerable.Empty<DishViewModel>());
-    //    }
-
-    //    var dishesDto = _mapper.Map<IEnumerable<DishViewModel>>(dishes);
-    //    _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishesDto.Count()} блюд.");
-    //    return Ok(dishesDto);
-    //}
-
-    //[HttpGet(ApiEndPoints.Dishes.GetDishes)]
-    //[ProducesResponseType(typeof(IEnumerable<DishViewModel>), StatusCodes.Status200OK)]
-    //public async Task<ActionResult<IEnumerable<DishViewModel>>> GetDishesBySupplierIdAsync(Ulid supplierId)
-    //{
-    //    var dishes = await _dishService.GetAllByIdAsync(supplierId);
-    //    if (dishes is null || !dishes.Any())
-    //    {
-    //        _logger.LogInformation("Список блюд пуст.");
-    //        return Ok(Enumerable.Empty<DishViewModel>());
-    //    }
-
-    //    var dishesDto = _mapper.Map<IEnumerable<DishViewModel>>(dishes);
-    //    _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishesDto.Count()} блюд.");
-    //    return Ok(dishesDto);
-    //}
-
     [HttpGet(ApiEndPoints.Dishes.Get, Name = "GetDishById")]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -69,6 +37,31 @@ public class DishesController : ControllerBase
 
         return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
     }
+
+    [HttpGet("api/dishes")]
+    [ProducesResponseType(typeof(List<DishViewModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<DishViewModel>>> GetDishesAsync()
+    {
+        var dishes = await _dishService.GetDishesAsync();
+
+        return dishes;
+    }
+
+    //[HttpGet(ApiEndPoints.Dishes.GetDishes)]
+    //[ProducesResponseType(typeof(IEnumerable<DishViewModel>), StatusCodes.Status200OK)]
+    //public async Task<ActionResult<IEnumerable<DishViewModel>>> GetDishesBySupplierIdAsync(Ulid supplierId)
+    //{
+    //    var dishes = await _dishService.GetAllByIdAsync(supplierId);
+    //    if (dishes is null || !dishes.Any())
+    //    {
+    //        _logger.LogInformation("Список блюд пуст.");
+    //        return Ok(Enumerable.Empty<DishViewModel>());
+    //    }
+
+    //    var dishesDto = _mapper.Map<IEnumerable<DishViewModel>>(dishes);
+    //    _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishesDto.Count()} блюд.");
+    //    return Ok(dishesDto);
+    //}
 
     //[HttpDelete(ApiEndPoints.Dishes.Delete)]
     //[ProducesResponseType(StatusCodes.Status200OK)]

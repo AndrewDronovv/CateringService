@@ -8,4 +8,5 @@ public interface IDishService
     Task<DishViewModel> CreateDishAsync(Ulid supplierId, AddDishRequest request);
     Task<DishViewModel> GetByIdAsync(Ulid dishId);
     Task<bool> ToggleDishStateAsync(Ulid dishId);
+    Task<List<DishViewModel>> GetDishesAsync();
 }

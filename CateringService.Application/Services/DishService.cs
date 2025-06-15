@@ -114,34 +114,20 @@ public class DishService : IDishService
         return _mapper.Map<DishViewModel>(dish) ?? throw new InvalidOperationException("DishViewModel mapping failed.");
     }
 
-    //public async Task<List<DishViewModel?>> GetAllByIdAsync(Ulid supplierId)
-    //{
-    //    if (supplierId == Ulid.Empty)
-    //    {
-    //        _logger.LogWarning("Параметр supplierId не должен быть пустым. Значение: {SupplierId}", supplierId);
-    //        throw new ArgumentNullException(nameof(supplierId), "SupplierId is empty.");
-    //    }
+    public async Task<List<DishViewModel>> GetDishesAsync()
+    {
+        var dishes = await _dishRepository.GetAllAsync();
 
-    //    _logger.LogInformation("Получение блюда у поставщика с Id = {SupplierId}", supplierId);
-    //    var dish = await _dishRepository.GetByIdAsync(supplierId);
+        if (!dishes.Any())
+        {
+            _logger.LogWarning("Список блюд пуст.");
+            return new List<DishViewModel>();
+        }
 
-    //    if (dish is null)
-    //    {
-    //        _logger.LogWarning("Блюдо у поставщика с Id = {SupplierId} не было найдено.", supplierId);
-    //        return null;
-    //    }
+        _logger.LogInformation("Получено {Count} блюд.", dishes.ToList().Count);
 
-    //    var mappedDish = _mapper.Map<List<DishViewModel>>(dish);
-    //    if (mappedDish is null)
-    //    {
-    //        _logger.LogWarning("Ошибка маппинга DishViewModel для поставщика с Id = {SupplierId}", supplierId);
-    //        throw new InvalidOperationException("Failed to map AddressViewModel");
-    //    }
-
-    //    _logger.LogInformation("Получено {Count} блюд.", mappedDish.Count);
-
-    //    return mappedDish ?? Enumerable.Empty<DishViewModel>().ToList();
-    //}
+        return _mapper.Map<List<DishViewModel>>(dishes);
+    }
 
     //protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
     //{
