@@ -42,7 +42,7 @@ public class AddressesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateAddressAsync(Ulid addressId, UpdateAddressRequest request)
     {
-        Ulid tenantId = Ulid.Parse("01JXB6X43RXSAFY1G6DAT2CJWB");
+        Ulid tenantId = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP");
         var viewModel = await _addressService.UpdateAddressAsync(addressId, tenantId, request);
 
         return Ok(viewModel);

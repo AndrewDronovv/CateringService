@@ -66,6 +66,7 @@ public class TenantsController : ControllerBase
     public async Task<IActionResult> UpdateTenantAsync(Ulid tenantId, UpdateTenantRequest input)
     {
         var viewModel = await _tenantService.UpdateTenantAsync(tenantId, input);
+
         return Ok();
     }
 

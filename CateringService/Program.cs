@@ -12,6 +12,7 @@ builder.Services.ConfigureCors();
 builder.Services.ApplicationServiceExtensions();
 builder.Services.AddJwt(builder.Configuration);
 builder.Services.AddPersistence();
+builder.Services.AddControllers(options => options.AddCustomModelBinders());
 builder.Services.AddPresentationServices();
 
 var app = builder.Build();

@@ -6,11 +6,13 @@ using CateringService.Application.Validators.Dish;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Repositories;
 using CateringService.ModelBinders.MenuCategories;
+using CateringService.ModelBinders.Tenants;
 using CateringService.Persistence;
 using CateringService.Persistence.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -70,11 +72,12 @@ public static class ServiceExtensions
         services.AddScoped<IAddressService, AddressService>();
 
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
+    }
 
-        services.AddControllers(options =>
-        {
-            options.ModelBinderProviders.Insert(0, new AddMenuCategoryRequestModelBinderProvider());
-        });
+    public static void AddCustomModelBinders(this MvcOptions options)
+    {
+        options.ModelBinderProviders.Insert(0, new AddMenuCategoryRequestModelBinderProvider());
+        options.ModelBinderProviders.Insert(0, new BlockTenantRequestModelBinderProvider());
     }
 
     public static void ApplicationServiceExtensions(this IServiceCollection services)

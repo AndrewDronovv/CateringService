@@ -2,7 +2,6 @@
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Filters;
-using CateringService.ModelBinders.MenuCategories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers;
