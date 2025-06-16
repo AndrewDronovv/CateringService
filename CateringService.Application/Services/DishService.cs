@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
@@ -18,8 +19,10 @@ public class DishService : IDishService
     private readonly IUnitOfWorkRepository _unitOfWorkRepository;
     private readonly IMapper _mapper;
     private readonly ILogger<DishService> _logger;
+    private readonly ISlugService _slugService;
 
-    public DishService(IDishRepository dishRepository, ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<DishService> logger, IMenuCategoryRepository menuCategoryRepository)
+    public DishService(IDishRepository dishRepository, ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWorkRepository,
+        IMapper mapper, ILogger<DishService> logger, IMenuCategoryRepository menuCategoryRepository, ISlugService slugService)
     {
         _dishRepository = dishRepository ?? throw new ArgumentNullException(nameof(dishRepository));
         _supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
@@ -27,6 +30,7 @@ public class DishService : IDishService
         _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _slugService = slugService ?? throw new ArgumentNullException(nameof(slugService));
     }
 
     public async Task<DishViewModel?> CreateDishAsync(Ulid supplierId, AddDishRequest request)
@@ -58,6 +62,8 @@ public class DishService : IDishService
             _logger.LogWarning("Категория меню {MenuCategoryId} не найдена.", request.MenuCategoryId);
             throw new NotFoundException(nameof(MenuCategory), request.MenuCategoryId.ToString());
         }
+
+        request.Slug = _slugService.GenerateSlug(request.Name);
 
         var dish = _mapper.Map<Dish>(request) ?? throw new InvalidOperationException("Ошибка маппинга блюда.");
 
@@ -110,6 +116,27 @@ public class DishService : IDishService
         }
 
         _logger.LogInformation("Блюдо {Name} с Id {Id} успешно получено.", dish.Name, dish.Id);
+
+        return _mapper.Map<DishViewModel>(dish) ?? throw new InvalidOperationException("DishViewModel mapping failed.");
+    }
+
+    public async Task<DishViewModel> GetBySlugAsync(string slug)
+    {
+        if (string.IsNullOrWhiteSpace(slug))
+        {
+            _logger.LogWarning("Slug не должен быть пустым.");
+            throw new ArgumentException(nameof(slug), "Slug is empty.");
+        }
+
+        var normalized = _slugService.GenerateSlug(slug);
+        _logger.LogInformation("Поиск блюда по slug {Normalized}", normalized);
+
+        var dish = await _dishRepository.GetBySlugAsync(normalized);
+        if (dish is null)
+        {
+            _logger.LogWarning("Блюдо со slug {Normalized} не найдено.", normalized);
+            throw new NotFoundException(nameof(Dish), normalized);
+        }
 
         return _mapper.Map<DishViewModel>(dish) ?? throw new InvalidOperationException("DishViewModel mapping failed.");
     }

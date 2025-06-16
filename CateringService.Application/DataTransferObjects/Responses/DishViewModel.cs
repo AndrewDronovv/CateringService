@@ -15,4 +15,5 @@ public sealed class DishViewModel
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public Ulid SupplierId { get; set; }
     public Ulid MenuCategoryId { get; set; }
+    public string? Slug { get; set; }
 }

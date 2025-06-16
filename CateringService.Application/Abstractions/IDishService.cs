@@ -9,4 +9,5 @@ public interface IDishService
     Task<DishViewModel> GetByIdAsync(Ulid dishId);
     Task<bool> ToggleDishStateAsync(Ulid dishId);
     Task<List<DishViewModel>> GetDishesAsync();
+    Task<DishViewModel> GetBySlugAsync(string slug);
 }

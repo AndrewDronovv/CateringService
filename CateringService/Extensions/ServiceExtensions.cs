@@ -72,6 +72,8 @@ public static class ServiceExtensions
         services.AddScoped<IAddressService, AddressService>();
 
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
+
+        services.AddScoped<ISlugService, SlugService>();
     }
 
     public static void AddCustomModelBinders(this MvcOptions options)
@@ -94,7 +96,7 @@ public static class ServiceExtensions
         services.AddSwaggerGen();
     }
 
-    public static IServiceCollection AddJwt(this IServiceCollection services, IConfiguration configuration)
+    public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSettings = configuration.GetSection("Jwt:AccessToken");
         var key = jwtSettings["Key"];
@@ -118,7 +120,5 @@ public static class ServiceExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!))
                 };
             });
-
-        return services;
     }
 }

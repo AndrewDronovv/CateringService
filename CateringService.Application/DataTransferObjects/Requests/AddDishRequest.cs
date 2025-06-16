@@ -13,4 +13,5 @@ public sealed class AddDishRequest
     public string? PortionSize { get; set; }
     public Ulid SupplierId { get; set; }
     public Ulid MenuCategoryId { get; set; }
+    public string? Slug { get; set; }
 }

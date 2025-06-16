@@ -9,7 +9,7 @@ public class MenuCategoryRepository : GenericRepository<MenuCategory, Ulid>, IMe
     public MenuCategoryRepository(AppDbContext context) : base(context)
     {
     }
-    public async Task<MenuCategory> GetMenuCategoryBySupplierIdAsync(Ulid menuCategoryId, Ulid supplierId)
+    public async Task<MenuCategory?> GetMenuCategoryBySupplierIdAsync(Ulid menuCategoryId, Ulid supplierId)
     {
         return await _context.MenuCategories
             .Where(mc => mc.SupplierId == supplierId && mc.Id == menuCategoryId)

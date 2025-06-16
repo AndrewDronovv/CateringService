@@ -14,6 +14,7 @@ public sealed class Dish : UlidEntity
     public string? Allergens { get; set; } = string.Empty;
     public string? PortionSize { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public string? Slug { get; set; }
 
     public Ulid SupplierId { get; set; }
     public Supplier? Supplier { get; set; }

@@ -16,13 +16,25 @@ public class DishesController : ControllerBase
         _dishService = dishAppService ?? throw new ArgumentNullException(nameof(dishAppService));
     }
 
-    [HttpGet(ApiEndPoints.Dishes.Get, Name = "GetDishById")]
+    //[HttpGet(ApiEndPoints.Dishes.Get, Name = "GetDishById")]
+    [HttpGet("api/dishes/by-id/{dishId}", Name = "GetDishById")]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DishViewModel>> GetDishAsync(Ulid dishId)
+    public async Task<ActionResult<DishViewModel>> GetDishByIdAsync(Ulid dishId)
     {
         var dish = await _dishService.GetByIdAsync(dishId);
+
+        return Ok(dish);
+    }
+
+    [HttpGet("api/dishes/by-slug/{slug}")]
+    [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<DishViewModel>> GetDishBySlugAsync(string slug)
+    {
+        var dish = await _dishService.GetBySlugAsync(slug);
 
         return Ok(dish);
     }

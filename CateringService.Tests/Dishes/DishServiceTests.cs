@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Application.Services;
@@ -21,6 +22,7 @@ public class DishServiceTests
     private readonly IMapper _mapper;
     private readonly ILogger<DishService> _logger;
     private readonly IDishService _dishService;
+    private readonly ISlugService _slugService;
 
     public DishServiceTests()
     {
@@ -30,57 +32,58 @@ public class DishServiceTests
         _unitOfWorkMock = Substitute.For<IUnitOfWorkRepository>();
         _mapper = Substitute.For<IMapper>();
         _logger = Substitute.For<ILogger<DishService>>();
+        _slugService = Substitute.For<ISlugService>();
 
-        _dishService = new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock);
+        _dishService = new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService);
     }
 
     #region Тесты конструктора
     [Fact]
     public void Ctor_DishRepositoryNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(null, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(null, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("dishRepository", exception.Message);
     }
 
     [Fact]
     public void Ctor_SupplierRepositoryNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, null, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, null, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("supplierRepository", exception.Message);
     }
 
     [Fact]
     public void Ctor_UnitOfWorkNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, null, _mapper, _logger, _menuCategoryRepositoryMock));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, null, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("unitOfWorkRepository", exception.Message);
     }
 
     [Fact]
     public void Ctor_MapperNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, null, _logger, _menuCategoryRepositoryMock));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, null, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("mapper", exception.Message);
     }
 
     [Fact]
     public void Ctor_LoggerNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, null, _menuCategoryRepositoryMock));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, null, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("logger", exception.Message);
     }
 
     [Fact]
     public void Ctor_MenuCategoryRepositoryNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, null));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, null, _slugService));
         Assert.Contains("menuCategoryRepository", exception.Message);
     }
 
     [Fact]
     public void Ctor_AllParameters_CreatesNewInstance()
     {
-        var dishService = new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock);
+        var dishService = new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService);
         Assert.NotNull(_dishService);
     }
     #endregion

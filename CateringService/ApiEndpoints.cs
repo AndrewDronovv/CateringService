@@ -12,6 +12,7 @@ public static class ApiEndPoints
 
         public const string GetAll = Base;
         public const string Get = $"api/dishes/{{dishId}}";
+        public const string GetBySlug = $"api/dishes/{{slug}}";
         public const string Create = $"{Base}/dishes";
         public const string Update = $"{Base}/{{dishId}}";
         public const string Delete = $"{Base}/{{dishId}}";
