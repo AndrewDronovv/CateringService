@@ -1,28 +1,19 @@
-﻿//using CateringService.Domain.Entities;
-//using CateringService.Domain.Repositories;
-//using Microsoft.EntityFrameworkCore;
+﻿using CateringService.Domain.Entities;
+using CateringService.Domain.Repositories;
 
-//namespace CateringService.Persistence.Repositories;
+namespace CateringService.Persistence.Repositories;
 
-//public class UserRepository(AppDbContext context) : IUserRepository
-//{
-//    public readonly AppDbContext _context = context ??
-//        throw new ArgumentNullException(nameof(context));
+public class UserRepository : IUserRepository
+{
+    private readonly AppDbContext _context;
 
-//    public async Task AddAsync(User user)
-//    {
-//        await _context.Users.AddAsync(user);
-//    }
+    public UserRepository(AppDbContext context)
+    {
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
-//    public async Task<User> GetByEmailAsync(string email)
-//    {
-//        var userByEmail = await _context.Users
-//            .FirstOrDefaultAsync(u => u.Email == email);
-//        if (userByEmail is null)
-//        {
-//            throw new Exception("Пользователя с указанным email не существует");
-//        }
+    public async Task<User> GetByLoginAsync(string login)
+    {
 
-//        return userByEmail;
-//    }
-//}
+    }
+}

@@ -16,7 +16,7 @@ public class UserService : IUserService
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
     }
 
-    public Task<bool> RegisterAsync(UserRegister input)
+    public async Task<bool> RegisterAsync(UserRegister input)
     {
         throw new NotImplementedException();
     }
