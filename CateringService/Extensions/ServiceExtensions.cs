@@ -71,6 +71,9 @@ public static class ServiceExtensions
         services.AddScoped<IAddressRepository, AddressRepository>();
         services.AddScoped<IAddressService, AddressService>();
 
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserService, UserService>();
+
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
 
         services.AddScoped<ISlugService, SlugService>();

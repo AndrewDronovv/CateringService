@@ -1,5 +1,6 @@
 ﻿using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
@@ -12,8 +13,14 @@ public class UserRepository : IUserRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<User> GetByLoginAsync(string login)
+    public async Task AddAsync(User user)
     {
+        await _context.AddAsync(user);
+    }
 
+    public async Task<User?> GetByLoginAsync(string login)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.Login == login);
     }
 }

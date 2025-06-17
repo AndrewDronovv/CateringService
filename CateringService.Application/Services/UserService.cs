@@ -18,6 +18,21 @@ public class UserService : IUserService
 
     public async Task<bool> RegisterAsync(UserRegister input)
     {
-        throw new NotImplementedException();
+        var existingUser = await _userRepository.GetByLoginAsync(input.Login);
+
+        if (existingUser != null)
+        {
+            return false;
+        }
+
+        var user = new User
+        {
+            Login = input.Login,
+            Password = BCrypt.Net.BCrypt.HashPassword(input.Password)
+        };
+
+        await _userRepository.AddAsync(user);
+
+        return true;
     }
 }
