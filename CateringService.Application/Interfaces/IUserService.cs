@@ -4,5 +4,5 @@ namespace CateringService.Application.Abstractions;
 
 public interface IUserService
 {
-    Task<bool> RegisterAsync(UserRegister input);
+    //Task<bool> RegisterAsync(UserRegister input);
 }

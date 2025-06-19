@@ -13,7 +13,7 @@ public sealed class DishConfiguration : IEntityTypeConfiguration<Dish>
         builder.HasKey(d => d.Id);
 
         builder.Property(d => d.Id)
-            .HasColumnName("DishId")
+            .HasColumnName("Id")
             .IsRequired()
             .HasMaxLength(26)
             .HasConversion(
@@ -55,68 +55,11 @@ public sealed class DishConfiguration : IEntityTypeConfiguration<Dish>
             .ValueGeneratedOnAdd()
             .IsRequired();
 
-        builder.HasOne(d => d.Supplier)
-            .WithMany(s => s.Dishes)
-            .HasForeignKey(d => d.SupplierId)
-            .OnDelete(DeleteBehavior.SetNull);
-
         builder.HasOne(d => d.MenuCategory)
             .WithMany(ms => ms.Dishes)
             .HasForeignKey(d => d.MenuCategoryId)
             .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasIndex(d => d.Id);
-
-        builder.HasData
-        (
-            new Dish
-            {
-                Id = Ulid.Parse("01GRQX9AYRHCA5Y5X3GPKPZ92P"),
-                Name = "Grilled Chicken",
-                Description = "Juicy grilled chicken with spices",
-                Price = 12.99m,
-                Ingredients = "Chicken, spices, olive oil",
-                Weight = 250,
-                ImageUrl = $"/images/GrilledChicken.webp",
-                IsAvailable = true,
-                Allergens = "None",
-                PortionSize = "Large",
-                CreatedAt = new DateTime(2025, 04, 20, 10, 0, 0),
-                SupplierId = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4"),
-                MenuCategoryId = Ulid.Parse("01H5QJ3DHBM8J6AW04FKPJP5VV")
-            },
-            new Dish
-            {
-                Id = Ulid.Parse("01GRQX9AYRHCA5Y5X3GPKPZ93Q"),
-                Name = "Vegetable Salad",
-                Description = "Fresh seasonal vegetables with olive oil",
-                Price = 8.50m,
-                Ingredients = "Lettuce, tomatoes, cucumber, olive oil",
-                Weight = 150,
-                ImageUrl = $"/images/VegetableSalad.jpg",
-                IsAvailable = true,
-                Allergens = "None",
-                PortionSize = "Medium",
-                CreatedAt = new DateTime(2025, 04, 20, 12, 0, 0),
-                SupplierId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
-                MenuCategoryId = Ulid.Parse("01H5QJ3DJ22VXVG28Q0RYMNQEY")
-            },
-            new Dish
-            {
-                Id = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP"),
-                Name = "Chocolate Cake",
-                Description = "Rich and creamy chocolate cake",
-                Price = 5.99m,
-                Ingredients = "Chocolate, flour, sugar, eggs, butter",
-                Weight = 300,
-                ImageUrl = $"/images/ChocolateCake.jpg",
-                IsAvailable = false,
-                Allergens = "Eggs, Milk",
-                PortionSize = "Small",
-                CreatedAt = new DateTime(2025, 04, 20, 14, 0, 0),
-                SupplierId = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96"),
-                MenuCategoryId = Ulid.Parse("01H5QJ3DR6R35WTKTPGFPJ89JC")
-            }
-        );
     }
 }

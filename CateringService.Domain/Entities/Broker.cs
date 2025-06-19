@@ -1,12 +1,8 @@
-﻿using CateringService.Domain.Common;
+﻿using CateringService.Domain.Enums;
 
-namespace CateringService.Domain.Entities;
+namespace CateringService.Domain.Entities.Approved;
 
-public sealed class Broker : UlidEntity
+public sealed class Broker : User
 {
-    public string Name { get; set; } = string.Empty;
-    public string ContactInfo { get; set; } = string.Empty;
-
-    public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
-    public ICollection<Report> Reports { get; set; } = new List<Report>();
+    public BrokerRole Role { get; set; }
 }

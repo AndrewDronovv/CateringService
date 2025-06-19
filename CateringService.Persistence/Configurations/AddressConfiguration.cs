@@ -17,7 +17,7 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
             .IsTsVectorExpressionIndex("english");
 
         builder.Property(a => a.Id)
-            .HasColumnName("AddressId")
+            .HasColumnName("Id")
             .IsRequired()
             .HasMaxLength(26)
             .HasConversion(
@@ -61,50 +61,7 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
 
         builder.HasIndex(a => a.TenantId);
 
-        builder.HasData
-        (
-            new Address
-            {
-                Id = Ulid.Parse("01H5QJ8KTMVRFZT58GQX902JD1"),
-                TenantId = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP"),
-                Country = "USA",
-                StreetAndBuilding = "123 Main St",
-                Zip = "100001",
-                City = "New York",
-                Region = "NY",
-                Comment = "Office address",
-                Description = "Main headquarters",
-                CreatedAt = new DateTime(2025, 04, 21, 08, 30, 0),
-                UpdatedAt = null
-            },
-            new Address
-            {
-                Id = Ulid.Parse("01H5QJ8RTMVRFZT58GQX902JD2"),
-                TenantId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
-                Country = "Germany",
-                StreetAndBuilding = "45 Berliner Str.",
-                Zip = "200002",
-                City = "Berlin",
-                Region = "Berlin",
-                Comment = "Warehouse",
-                Description = "Storage facility",
-                CreatedAt = new DateTime(2025, 04, 22, 12, 15, 0),
-                UpdatedAt = new DateTime(2025, 05, 01, 14, 45, 0)
-            },
-            new Address
-            {
-                Id = Ulid.Parse("01H5QJ8UTMVRFZT58GQX902JD3"),
-                TenantId = Ulid.Parse("01H5QJ7XPLKTYZ9QW8VRCMND5B"),
-                Country = "Japan",
-                StreetAndBuilding = "7-2 Shibuya",
-                Zip = "300003",
-                City = "Tokyo",
-                Region = "Kanto",
-                Comment = "Retail store",
-                Description = "Flagship location",
-                CreatedAt = new DateTime(2025, 04, 23, 09, 00, 0),
-                UpdatedAt = new DateTime(2025, 05, 02, 10, 30, 0)
-            }
-        );
+        builder.HasIndex(a => a.Zip)
+            .IsUnique();
     }
 }

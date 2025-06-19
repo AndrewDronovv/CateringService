@@ -11,4 +11,5 @@ public sealed class Tenant : UlidEntity
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
     public ICollection<Address> Addresses { get; set; } = new List<Address>();
+    public ICollection<User> Users { get; set; } = new List<User>();
 }

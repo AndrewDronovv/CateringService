@@ -47,7 +47,7 @@ public class ErrorHandlingMiddleware
         {
             NotFoundException => exception.Message,
             ArgumentException => exception.Message,
-            _ => "Внутренняя ошибка сервера.",
+            _ => "Internal server error.",
         };
     }
 

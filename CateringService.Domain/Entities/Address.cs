@@ -16,5 +16,4 @@ public sealed class Address : UlidEntity
 
     public Ulid TenantId { get; set; }
     public Tenant Tenant { get; set; }
-    public ICollection<Order> Orders { get; set; } = new List<Order>();
 }

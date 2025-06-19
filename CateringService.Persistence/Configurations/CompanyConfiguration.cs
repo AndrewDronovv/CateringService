@@ -4,15 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CateringService.Persistence.Configurations;
 
-public sealed class SupplierConfiguration : IEntityTypeConfiguration<Supplier>
+public sealed class CompanyConfiguration : IEntityTypeConfiguration<Company>
 {
-    public void Configure(EntityTypeBuilder<Supplier> builder)
+    public void Configure(EntityTypeBuilder<Company> builder)
     {
-        builder.Property(s => s.Position)
-            .HasMaxLength(100);
+        builder.ToTable("Companies");
 
-        builder.Property(s => s.CompanyId)
+        builder.Property(c => c.Id)
+            .HasColumnName("Id")
             .IsRequired()
+            .HasMaxLength(26)
             .HasConversion(
                 id => id.ToString(),
                 id => Ulid.Parse(id)

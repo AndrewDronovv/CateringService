@@ -13,7 +13,7 @@ public sealed class TenantConfiguration : IEntityTypeConfiguration<Tenant>
         builder.HasKey(t => t.Id);
 
         builder.Property(t => t.Id)
-            .HasColumnName("TenantId")
+            .HasColumnName("Id")
             .IsRequired()
             .HasMaxLength(26)
             .HasConversion(
@@ -35,28 +35,7 @@ public sealed class TenantConfiguration : IEntityTypeConfiguration<Tenant>
             .ValueGeneratedOnAdd()
             .IsRequired();
 
-        builder.HasData(
-            new Tenant
-            {
-                Id = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP"),
-                Name = "First tenant",
-                IsActive = true,
-                CreatedAt = new DateTime(2025, 04, 20, 10, 0, 0)
-            },
-            new Tenant
-            {
-                Id = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
-                Name = "Second tenant",
-                IsActive = true,
-                CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0)
-            },
-            new Tenant
-            {
-                Id = Ulid.Parse("01H5QJ7XPLKTYZ9QW8VRCMND5B"),
-                Name = "Third tenant",
-                IsActive = true,
-                CreatedAt = new DateTime(2025, 04, 22, 14, 15, 0)
-            }
-        );
+        builder.HasIndex(t => t.Name)
+            .IsUnique();
     }
 }
