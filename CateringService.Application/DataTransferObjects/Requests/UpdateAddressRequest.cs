@@ -1,6 +1,4 @@
-﻿using CateringService.Domain.Entities;
-
-namespace CateringService.Application.DataTransferObjects.Requests;
+﻿namespace CateringService.Application.DataTransferObjects.Requests;
 
 public sealed class UpdateAddressRequest
 {

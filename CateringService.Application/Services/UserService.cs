@@ -1,38 +1,24 @@
-﻿//using CateringService.Application.Abstractions;
-//using CateringService.Domain.Entities;
-//using CateringService.Domain.Repositories;
-//using Microsoft.Extensions.Configuration;
+﻿using CateringService.Application.Abstractions;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Domain.Repositories;
+using Microsoft.Extensions.Configuration;
 
-//namespace CateringService.Application.Services;
+namespace CateringService.Application.Services;
 
-//public class UserService : IUserService
-//{
-//    private readonly IUserRepository _userRepository;
-//    private readonly IConfiguration _configuration;
+public class UserService : IUserService
+{
+    private readonly IUserRepository _userRepository;
+    private readonly IConfiguration _configuration;
 
-//    public UserService(IUserRepository userRepository, IConfiguration configuration)
-//    {
-//        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-//        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-//    }
+    public UserService(IUserRepository userRepository, IConfiguration configuration)
+    {
+        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
 
-//    public async Task<bool> RegisterAsync(UserRegister input)
-//    {
-//        var existingUser = await _userRepository.GetByLoginAsync(input.Login);
-
-//        if (existingUser != null)
-//        {
-//            return false;
-//        }
-
-//        //var user = new User
-//        //{
-//        //    Login = input.Login,
-//        //    Password = BCrypt.Net.BCrypt.HashPassword(input.Password)
-//        //};
-
-//        //await _userRepository.AddAsync(user);
-
-//        return true;
-//    }
-//}
+    public Task<UserViewModel> CreateUserAsync(AddUserRequest request)
+    {
+        throw new NotImplementedException();
+    }
+}

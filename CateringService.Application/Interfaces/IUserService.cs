@@ -1,8 +1,9 @@
-﻿using CateringService.Domain.Entities;
+﻿using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 
 namespace CateringService.Application.Abstractions;
 
 public interface IUserService
 {
-    //Task<bool> RegisterAsync(UserRegister input);
+    Task<UserViewModel> CreateUserAsync(AddUserRequest request);
 }

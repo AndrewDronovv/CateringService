@@ -1,9 +1,8 @@
-﻿using CateringService.Domain.Entities;
+﻿using CateringService.Domain.Entities.Approved;
 
 namespace CateringService.Domain.Repositories;
 
-//public interface IUserRepository
-//{
-//    //Task<User?> GetByLoginAsync(string login);
-//    //Task AddAsync(User user);
-//}
+public interface IUserRepository
+{
+    Task AddAsync(User user);
+}
