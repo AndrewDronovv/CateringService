@@ -23,17 +23,17 @@ public sealed class CompanyConfiguration : IEntityTypeConfiguration<Company>
             new Company
             {
                 Id = Ulid.Parse("01HY5K3D15E8BC6X9J9ZKBPNSM"),
-                Name = "Test1",
+                Name = "Company one",
             },
             new Company
             {
                 Id = Ulid.Parse("01HY5K3NCA4D8RYYWRZZ1RZD1X"),
-                Name = "Test2",
+                Name = "Company two",
             },
             new Company
             {
                 Id = Ulid.Parse("01HY5K3SH4XNFQ6MTFD1EZRAZB"),
-                Name = "Test3",
+                Name = "Company three",
             }
         );
     }

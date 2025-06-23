@@ -11,9 +11,8 @@ public sealed class Address : UlidEntity
     public string? Region { get; set; } = string.Empty;
     public string? Comment { get; set; } = string.Empty;
     public string? Description { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-
     public Ulid TenantId { get; set; }
     public Tenant Tenant { get; set; }
 }

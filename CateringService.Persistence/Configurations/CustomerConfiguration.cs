@@ -1,8 +1,6 @@
 ﻿using CateringService.Domain.Entities.Approved;
-using CateringService.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CateringService.Persistence.Configurations;
 
@@ -14,7 +12,7 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .IsRequired();
 
         builder.Property(c => c.CompanyId)
-            .IsRequired(false)
+            .IsRequired()
             .HasConversion(
                 id => id.ToString(),
                 id => Ulid.Parse(id));
@@ -24,5 +22,11 @@ public sealed class CustomerConfiguration : IEntityTypeConfiguration<Customer>
             .HasConversion(
                 id => id.ToString(),
                 id => Ulid.Parse(id));
+
+        builder.HasIndex(c => c.CompanyId)
+            .IsUnique();
+
+        builder.HasIndex(c => c.AddressId)
+            .IsUnique();
     }
 }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250623074709_Initial")]
+    [Migration("20250623190536_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -70,7 +70,8 @@ namespace CateringService.Persistence.Migrations
 
                     b.Property<DateTime?>("UpdatedAt")
                         .ValueGeneratedOnUpdate()
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NULL");
 
                     b.Property<string>("Zip")
                         .IsRequired()
@@ -90,6 +91,79 @@ namespace CateringService.Persistence.Migrations
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("City", "StreetAndBuilding"), "GIN");
 
                     b.ToTable("Addresses", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01H5QJ8KTMVRFZT58GQX902JD1",
+                            City = "New York",
+                            Comment = "Office address",
+                            Country = "USA",
+                            CreatedAt = new DateTime(2025, 4, 21, 8, 30, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Main headquarters",
+                            Region = "NY",
+                            StreetAndBuilding = "123 Main St",
+                            TenantId = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            Zip = "100001"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ8RTMVRFZT58GQX902JD2",
+                            City = "Berlin",
+                            Comment = "Warehouse",
+                            Country = "Germany",
+                            CreatedAt = new DateTime(2025, 4, 22, 12, 15, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Storage facility",
+                            Region = "Berlin",
+                            StreetAndBuilding = "45 Berliner Str.",
+                            TenantId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
+                            Zip = "200002"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ9ZTMVRFZT58GQX902JD3",
+                            City = "Tokyo",
+                            Comment = "Retail store",
+                            Country = "Japan",
+                            CreatedAt = new DateTime(2025, 4, 23, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Flagship location",
+                            Region = "Kanto",
+                            StreetAndBuilding = "7-2 Shibuya",
+                            TenantId = "01H5QJ7XQZKTYZ9QW8VRCMND5B",
+                            Zip = "300003"
+                        });
+                });
+
+            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Company", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasMaxLength(26)
+                        .HasColumnType("character varying(26)")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companies", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01HY5K3D15E8BC6X9J9ZKBPNSM",
+                            Name = "Company one"
+                        },
+                        new
+                        {
+                            Id = "01HY5K3NCA4D8RYYWRZZ1RZD1X",
+                            Name = "Company two"
+                        },
+                        new
+                        {
+                            Id = "01HY5K3SH4XNFQ6MTFD1EZRAZB",
+                            Name = "Company three"
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.Dish", b =>
@@ -152,6 +226,53 @@ namespace CateringService.Persistence.Migrations
                     b.HasIndex("MenuCategoryId");
 
                     b.ToTable("Dishes", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01GRQX9AYRHCA5Y5X3GPKPZ92P",
+                            Allergens = "None",
+                            CreatedAt = new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Juicy grilled chicken with spices",
+                            ImageUrl = "/images/GrilledChicken.webp",
+                            Ingredients = "Chicken, spices, olive oil",
+                            IsAvailable = true,
+                            MenuCategoryId = "01H5QJ3DHBM8J6AW04FKPJP5VV",
+                            Name = "Grilled Chicken",
+                            PortionSize = "Large",
+                            Price = 12.99m,
+                            Weight = 250.0
+                        },
+                        new
+                        {
+                            Id = "01GRQX9AYRHCA5Y5X3GPKPZ93Q",
+                            Allergens = "None",
+                            CreatedAt = new DateTime(2025, 4, 20, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Fresh seasonal vegetables with olive oil",
+                            ImageUrl = "/images/VegetableSalad.jpg",
+                            Ingredients = "Lettuce, tomatoes, cucumber, olive oil",
+                            IsAvailable = true,
+                            MenuCategoryId = "01H5QJ3DJ22VXVG28Q0RYMNQEY",
+                            Name = "Vegetable Salad",
+                            PortionSize = "Medium",
+                            Price = 8.50m,
+                            Weight = 150.0
+                        },
+                        new
+                        {
+                            Id = "01H5PY6RCAKEQ7VNK35P6XZ48Z",
+                            Allergens = "Eggs, Milk",
+                            CreatedAt = new DateTime(2025, 4, 20, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Rich and creamy chocolate cake",
+                            ImageUrl = "/images/ChocolateCake.jpg",
+                            Ingredients = "Chocolate, flour, sugar, eggs, butter",
+                            IsAvailable = false,
+                            MenuCategoryId = "01H5QJ3DR6R35WTKTPGFPJ89JC",
+                            Name = "Chocolate Cake",
+                            PortionSize = "Small",
+                            Price = 5.99m,
+                            Weight = 300.0
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.MenuCategory", b =>
@@ -184,6 +305,32 @@ namespace CateringService.Persistence.Migrations
                     b.HasIndex("SupplierId");
 
                     b.ToTable("MenuCategories", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01H5QJ3DHBM8J6AW04FKPJP5VV",
+                            CreatedAt = new DateTime(2025, 4, 20, 10, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Start your meal with our delightful appetizers.",
+                            Name = "Appetizers",
+                            SupplierId = "01HY5Q0RPNMXCA2W6JXDMVVZ7B"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ3DJ22VXVG28Q0RYMNQEY",
+                            CreatedAt = new DateTime(2025, 4, 20, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Delicious main courses to satisfy your hunger.",
+                            Name = "Main Courses",
+                            SupplierId = "01HY5Q0RPNMXCA2W6JXDMVVZ7B"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ3DR6R35WTKTPGFPJ89JC",
+                            CreatedAt = new DateTime(2025, 4, 20, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "End your meal with our sweet desserts.",
+                            Name = "Desserts",
+                            SupplierId = "01HY5Q0WRK6VFYHT9BA3H8RK3V"
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.User", b =>
@@ -245,8 +392,7 @@ namespace CateringService.Persistence.Migrations
 
                     b.Property<string>("UserType")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -330,6 +476,22 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.HasDiscriminator().HasValue("Broker");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01HY5Q13CZD9FXT78GR1XWA2XB",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "dsorokin@brokeragepro.ru",
+                            FirstName = "Dmitry",
+                            IsBlocked = false,
+                            LastName = "Sorokin",
+                            MiddleName = "Petrovich",
+                            PasswordHash = "hashed_secure_password",
+                            Phone = "+7 (495) 987-65-43",
+                            TenantId = "01H5QJ7XQZKTYZ9QW8VRCMND5B",
+                            Role = "Accountant"
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.Customer", b =>
@@ -352,6 +514,23 @@ namespace CateringService.Persistence.Migrations
                         });
 
                     b.HasDiscriminator().HasValue("Customer");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01HYZZZX7TS6AXK9R29X3PXJPX",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "osmirnova@cateringservice.ru",
+                            FirstName = "Olga",
+                            IsBlocked = false,
+                            LastName = "Smirnova",
+                            MiddleName = "Ivanovna",
+                            PasswordHash = "hashed_customer_password",
+                            Phone = "+7 (495) 000-11-22",
+                            TenantId = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            CompanyId = "01HY5K3D15E8BC6X9J9ZKBPNSM",
+                            TaxNumber = 123456789
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.Supplier", b =>
@@ -367,6 +546,40 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasDiscriminator().HasValue("Supplier");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01HY5Q0RPNMXCA2W6JXDMVVZ7B",
+                            BlockReason = "",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ikulikova@cateringservice.ru",
+                            FirstName = "Irina",
+                            IsBlocked = false,
+                            LastName = "Kulikova",
+                            MiddleName = "Alekseyevna",
+                            PasswordHash = "hashed_password_here",
+                            Phone = "+7 (495) 123-45-67",
+                            TenantId = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            CompanyId = "01HY5K3D15E8BC6X9J9ZKBPNSM",
+                            Position = "Supply Manager"
+                        },
+                        new
+                        {
+                            Id = "01HY5Q0WRK6VFYHT9BA3H8RK3V",
+                            BlockReason = "",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ivanov@cateringservice.ru",
+                            FirstName = "Ivan",
+                            IsBlocked = false,
+                            LastName = "Ivanov",
+                            MiddleName = "Ivanovich",
+                            PasswordHash = "new_hashed_password",
+                            Phone = "+7 (495) 155-55-67",
+                            TenantId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
+                            CompanyId = "01HY5K3NCA4D8RYYWRZZ1RZD1X",
+                            Position = "Sales Manager"
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.Address", b =>

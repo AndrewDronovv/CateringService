@@ -44,7 +44,7 @@ public sealed class TenantConfiguration : IEntityTypeConfiguration<Tenant>
                 Id = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP"),
                 Name = "First tenant",
                 IsActive = true,
-                CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0)
+                CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0),
             },
             new Tenant
             {

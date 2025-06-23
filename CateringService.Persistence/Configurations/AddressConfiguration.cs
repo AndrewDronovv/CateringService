@@ -1,5 +1,4 @@
-﻿using CateringService.Domain.Entities;
-using CateringService.Domain.Entities.Approved;
+﻿using CateringService.Domain.Entities.Approved;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -57,7 +56,7 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
             .IsRequired();
 
         builder.Property(a => a.UpdatedAt)
-            .HasDefaultValue(null)
+            .HasDefaultValueSql("NULL")
             .ValueGeneratedOnUpdate();
 
         builder.HasIndex(a => a.TenantId);
@@ -79,7 +78,6 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
                 Comment = "Office address",
                 Description = "Main headquarters",
                 CreatedAt = new DateTime(2025, 04, 21, 08, 30, 0),
-                UpdatedAt = null
             },
             new Address
             {
@@ -93,7 +91,6 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
                 Comment = "Warehouse",
                 Description = "Storage facility",
                 CreatedAt = new DateTime(2025, 04, 22, 12, 15, 0),
-                UpdatedAt = new DateTime(2025, 05, 01, 14, 45, 0)
             },
             new Address
             {
@@ -107,7 +104,6 @@ public sealed class AddressConfiguration : IEntityTypeConfiguration<Address>
                 Comment = "Retail store",
                 Description = "Flagship location",
                 CreatedAt = new DateTime(2025, 04, 23, 09, 00, 0),
-                UpdatedAt = new DateTime(2025, 05, 02, 10, 30, 0)
             }
         );
     }

@@ -13,15 +13,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<Company> Companies { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.ApplyConfiguration(new AddressConfiguration());
         modelBuilder.ApplyConfiguration(new BrokerConfiguration());
+        modelBuilder.ApplyConfiguration(new CompanyConfiguration());
         modelBuilder.ApplyConfiguration(new CustomerConfiguration());
         modelBuilder.ApplyConfiguration(new DishConfiguration());
         modelBuilder.ApplyConfiguration(new MenuCategoryConfiguration());
         modelBuilder.ApplyConfiguration(new SupplierConfiguration());
         modelBuilder.ApplyConfiguration(new TenantConfiguration());
-        modelBuilder.ApplyConfiguration(new AddressConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
 
         modelBuilder.Entity<Supplier>().HasData(
@@ -72,6 +74,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0),
                 TenantId = Ulid.Parse("01H5QJ7XPLKTYZ9QW8VRCMND5B"),
                 Role = BrokerRole.Accountant
+            }
+        );
+
+        modelBuilder.Entity<Customer>().HasData(
+            new Customer
+            {
+                Id = Ulid.Parse("01HYZZZX7TS6AXK9R29X3PXJPX"),
+                FirstName = "Olga",
+                LastName = "Smirnova",
+                MiddleName = "Ivanovna",
+                Email = "osmirnova@cateringservice.ru",
+                Phone = "+7 (495) 000-11-22",
+                PasswordHash = "hashed_customer_password",
+                IsBlocked = false,
+                BlockReason = null,
+                CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0),
+                TaxNumber = 123456789,
+                CompanyId = Ulid.Parse("01HY5K3D15E8BC6X9J9ZKBPNSM"),
+                TenantId = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP")
             }
         );
     }

@@ -1,4 +1,5 @@
 ﻿using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -22,28 +23,30 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
             );
 
         builder.Property(u => u.FirstName)
-            .HasMaxLength(100);
+            .IsRequired()
+            .HasMaxLength(128);
 
         builder.Property(u => u.LastName)
-            .HasMaxLength(100);
+            .IsRequired()
+            .HasMaxLength(128);
 
         builder.Property(u => u.MiddleName)
-            .HasMaxLength(100);
+            .HasMaxLength(128);
 
         builder.Property(u => u.Email)
-            .HasMaxLength(200);
-
-        builder.Property(u => u.Phone)
             .HasMaxLength(100);
 
+        builder.Property(u => u.Phone)
+            .HasMaxLength(20);
+
         builder.Property(u => u.PasswordHash)
-            .HasMaxLength(256);
+            .IsRequired();
 
         builder.Property(u => u.IsBlocked)
             .HasDefaultValue(false);
 
         builder.Property(u => u.BlockReason)
-            .HasMaxLength(256);
+            .HasMaxLength(512);
 
         builder.Property(u => u.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -52,17 +55,22 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.UpdatedAt);
 
+        builder.HasIndex(u => u.Email)
+            .IsUnique();
+
         builder.HasOne(u => u.Tenant)
             .WithMany(t => t.Users)
             .HasForeignKey(u => u.TenantId);
 
         builder
-            .HasDiscriminator<string>("UserType")
-            .HasValue<Customer>("Customer")
-            .HasValue<Supplier>("Supplier")
-            .HasValue<Broker>("Broker");
+            .HasDiscriminator<UserType>("UserType")
+            .HasValue<User>(UserType.User)
+            .HasValue<Customer>(UserType.Customer)
+            .HasValue<Supplier>(UserType.Supplier)
+            .HasValue<Broker>(UserType.Broker);
 
-        builder.HasIndex(u => u.Email)
-            .IsUnique();
+        builder
+            .Property(nameof(UserType))
+            .HasConversion<string>();
     }
 }

@@ -12,7 +12,7 @@ public class User : UlidEntity
     public string PasswordHash { get; set; } = string.Empty;
     public bool IsBlocked { get; set; } = false;
     public string? BlockReason { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public Ulid TenantId { get; set; }
     public Tenant Tenant { get; set; }
