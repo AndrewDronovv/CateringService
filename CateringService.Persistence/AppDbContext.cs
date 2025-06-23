@@ -1,5 +1,6 @@
 ﻿using CateringService.Domain.Entities;
 using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Enums;
 using CateringService.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,18 +13,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<User> Users { get; set; }
-    //public DbSet<Delivery> Deliveries { get; set; }
-    //public DbSet<DeliveryPerson> DeliveryPersons { get; set; }
-    //public DbSet<Incident> Incidents { get; set; }
-    //public DbSet<Invoice> Invoices { get; set; }
-    //public DbSet<Order> Orders { get; set; }
-    //public DbSet<OrderItem> OrderItems { get; set; }
-    //public DbSet<Promotion> Promotions { get; set; }
-    //public DbSet<Report> Reports { get; set; }
-    //public DbSet<Broker> Brokers { get; set; }
-    //public DbSet<Customer> Customers { get; set; }
-    //public DbSet<Supplier> Suppliers { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new BrokerConfiguration());
@@ -34,6 +23,57 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         modelBuilder.ApplyConfiguration(new TenantConfiguration());
         modelBuilder.ApplyConfiguration(new AddressConfiguration());
         modelBuilder.ApplyConfiguration(new UserConfiguration());
+
+        modelBuilder.Entity<Supplier>().HasData(
+            new Supplier
+            {
+                Id = Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B"),
+                FirstName = "Irina",
+                LastName = "Kulikova",
+                MiddleName = "Alekseyevna",
+                Email = "ikulikova@cateringservice.ru",
+                Phone = "+7 (495) 123-45-67",
+                PasswordHash = "hashed_password_here",
+                IsBlocked = false,
+                CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0),
+                TenantId = Ulid.Parse("01H5PY6RF4WKFCR9VCMY2QNFGP"),
+                Position = "Supply Manager",
+                CompanyId = Ulid.Parse("01HY5K3D15E8BC6X9J9ZKBPNSM")
+            },
+            new Supplier
+            {
+                Id = Ulid.Parse("01HY5Q0WRK6VFYHT9BA3H8RK3V"),
+                FirstName = "Ivan",
+                LastName = "Ivanov",
+                MiddleName = "Ivanovich",
+                Email = "ivanov@cateringservice.ru",
+                Phone = "+7 (495) 155-55-67",
+                PasswordHash = "new_hashed_password",
+                IsBlocked = false,
+                CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0),
+                TenantId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A"),
+                Position = "Sales Manager",
+                CompanyId = Ulid.Parse("01HY5K3NCA4D8RYYWRZZ1RZD1X")
+            }
+        );
+
+        modelBuilder.Entity<Broker>().HasData(
+            new Broker
+            {
+                Id = Ulid.Parse("01HY5Q13CZD9FXT78GR1XWA2XB"),
+                FirstName = "Dmitry",
+                LastName = "Sorokin",
+                MiddleName = "Petrovich",
+                Email = "dsorokin@brokeragepro.ru",
+                Phone = "+7 (495) 987-65-43",
+                PasswordHash = "hashed_secure_password",
+                IsBlocked = false,
+                BlockReason = null,
+                CreatedAt = new DateTime(2025, 04, 21, 12, 30, 0),
+                TenantId = Ulid.Parse("01H5QJ7XPLKTYZ9QW8VRCMND5B"),
+                Role = BrokerRole.Accountant
+            }
+        );
     }
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {

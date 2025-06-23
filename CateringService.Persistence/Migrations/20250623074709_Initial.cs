@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace CateringService.Persistence.Migrations
 {
     /// <inheritdoc />
@@ -136,6 +138,16 @@ namespace CateringService.Persistence.Migrations
                         principalTable: "MenuCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tenants",
+                columns: new[] { "Id", "BlockReason", "CreatedAt", "IsActive", "Name" },
+                values: new object[,]
+                {
+                    { "01H5PY6RF4WKFCR9VCMY2QNFGP", "", new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified), true, "First tenant" },
+                    { "01H5QJ6PVB8FYN4QXMR3T7JC9A", "", new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified), true, "Second tenant" },
+                    { "01H5QJ7XQZKTYZ9QW8VRCMND5B", "", new DateTime(2025, 4, 22, 14, 15, 0, 0, DateTimeKind.Unspecified), true, "Third tenant" }
                 });
 
             migrationBuilder.CreateIndex(

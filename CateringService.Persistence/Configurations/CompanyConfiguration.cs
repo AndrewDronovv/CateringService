@@ -18,5 +18,23 @@ public sealed class CompanyConfiguration : IEntityTypeConfiguration<Company>
                 id => id.ToString(),
                 id => Ulid.Parse(id)
             );
+
+        builder.HasData(
+            new Company
+            {
+                Id = Ulid.Parse("01HY5K3D15E8BC6X9J9ZKBPNSM"),
+                Name = "Test1",
+            },
+            new Company
+            {
+                Id = Ulid.Parse("01HY5K3NCA4D8RYYWRZZ1RZD1X"),
+                Name = "Test2",
+            },
+            new Company
+            {
+                Id = Ulid.Parse("01HY5K3SH4XNFQ6MTFD1EZRAZB"),
+                Name = "Test3",
+            }
+        );
     }
 }
