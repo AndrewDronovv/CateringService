@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250619140007_Initial")]
-    partial class Initial
+    [Migration("20250623074758_AddSeedDataForUsers")]
+    partial class AddSeedDataForUsers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -292,6 +292,32 @@ namespace CateringService.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Tenants", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            BlockReason = "",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "First tenant"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
+                            BlockReason = "",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "Second tenant"
+                        },
+                        new
+                        {
+                            Id = "01H5QJ7XQZKTYZ9QW8VRCMND5B",
+                            BlockReason = "",
+                            CreatedAt = new DateTime(2025, 4, 22, 14, 15, 0, 0, DateTimeKind.Unspecified),
+                            IsActive = true,
+                            Name = "Third tenant"
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.Broker", b =>
@@ -304,6 +330,22 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.HasDiscriminator().HasValue("Broker");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01HY5Q13CZD9FXT78GR1XWA2XB",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "dsorokin@brokeragepro.ru",
+                            FirstName = "Dmitry",
+                            IsBlocked = false,
+                            LastName = "Sorokin",
+                            MiddleName = "Petrovich",
+                            PasswordHash = "hashed_secure_password",
+                            Phone = "+7 (495) 987-65-43",
+                            TenantId = "01H5QJ7XQZKTYZ9QW8VRCMND5B",
+                            Role = "Accountant"
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.Customer", b =>
@@ -341,6 +383,40 @@ namespace CateringService.Persistence.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.HasDiscriminator().HasValue("Supplier");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "01HY5Q0RPNMXCA2W6JXDMVVZ7B",
+                            BlockReason = "",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ikulikova@cateringservice.ru",
+                            FirstName = "Irina",
+                            IsBlocked = false,
+                            LastName = "Kulikova",
+                            MiddleName = "Alekseyevna",
+                            PasswordHash = "hashed_password_here",
+                            Phone = "+7 (495) 123-45-67",
+                            TenantId = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            CompanyId = "01HY5K3D15E8BC6X9J9ZKBPNSM",
+                            Position = "Supply Manager"
+                        },
+                        new
+                        {
+                            Id = "01HY5Q0WRK6VFYHT9BA3H8RK3V",
+                            BlockReason = "",
+                            CreatedAt = new DateTime(2025, 4, 21, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "ivanov@cateringservice.ru",
+                            FirstName = "Ivan",
+                            IsBlocked = false,
+                            LastName = "Ivanov",
+                            MiddleName = "Ivanovich",
+                            PasswordHash = "new_hashed_password",
+                            Phone = "+7 (495) 155-55-67",
+                            TenantId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
+                            CompanyId = "01HY5K3NCA4D8RYYWRZZ1RZD1X",
+                            Position = "Sales Manager"
+                        });
                 });
 
             modelBuilder.Entity("CateringService.Domain.Entities.Approved.Address", b =>
