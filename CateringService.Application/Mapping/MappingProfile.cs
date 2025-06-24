@@ -25,5 +25,12 @@ public sealed class MappingProfile : Profile
         CreateMap<AddAddressRequest, Address>().ReverseMap();
         CreateMap<Address, AddressViewModel>().ReverseMap();
         CreateMap<UpdateAddressRequest, Address>().ReverseMap();
+
+        CreateMap<User, AddAddressRequest>().ReverseMap();
+        CreateMap<User, UserViewModel>().ReverseMap();
+
+        CreateMap<AddUserRequest, Customer>().ReverseMap();
+        CreateMap<AddUserRequest, Supplier>().ReverseMap();
+        CreateMap<AddUserRequest, Broker>().ReverseMap();
     }
 }

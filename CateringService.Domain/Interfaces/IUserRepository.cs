@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Repositories;
 
-public interface IUserRepository
+public interface IUserRepository : IGenericRepository<User, Ulid>
 {
-    Task AddAsync(User user);
+    Task<Ulid> AddAsync(User user);
 }

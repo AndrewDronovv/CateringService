@@ -55,8 +55,8 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.UpdatedAt);
 
-        builder.HasIndex(u => u.Email)
-            .IsUnique();
+        //builder.HasIndex(u => u.Email)
+        //    .IsUnique();
 
         builder.HasOne(u => u.Tenant)
             .WithMany(t => t.Users)

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace CateringService;
+﻿namespace CateringService;
 
 public static class ApiEndPoints
 {

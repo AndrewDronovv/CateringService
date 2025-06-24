@@ -5,5 +5,5 @@ namespace CateringService.Application.Abstractions;
 
 public interface IUserService
 {
-    Task<UserViewModel> CreateUserAsync(AddUserRequest request);
+    Task<UserViewModel?> CreateUserAsync(AddUserRequest request);
 }

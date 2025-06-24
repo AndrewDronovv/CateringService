@@ -3,17 +3,15 @@ using CateringService.Domain.Repositories;
 
 namespace CateringService.Persistence.Repositories;
 
-public class UserRepository : IUserRepository
+public class UserRepository : GenericRepository<User, Ulid>, IUserRepository
 {
-    private readonly AppDbContext _context;
-
-    public UserRepository(AppDbContext context)
+    public UserRepository(AppDbContext context) : base(context)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public Task AddAsync(User user)
+    public async Task<Ulid> AddAsync(User user)
     {
-        throw new NotImplementedException();
+        await _context.Users.AddAsync(user);
+        return user.Id;
     }
 }

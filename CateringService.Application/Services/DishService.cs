@@ -154,24 +154,4 @@ public class DishService : IDishService
 
         return _mapper.Map<List<DishViewModel>>(dishes);
     }
-
-    //protected override void UpdateEntity(Dish oldEntity, Dish newEntity)
-    //{
-    //    if (!string.Equals(oldEntity.Name, newEntity.Name, StringComparison.Ordinal))
-    //    {
-    //        oldEntity.Name = newEntity.Name;
-    //    }
-    //    if (!string.Equals(oldEntity.Description, newEntity.Description, StringComparison.Ordinal))
-    //    {
-    //        oldEntity.Description = newEntity.Description;
-    //    }
-    //    if (oldEntity.Price != newEntity.Price)
-    //    {
-    //        oldEntity.Price = newEntity.Price;
-    //    }
-    //    if (!string.Equals(oldEntity.ImageUrl, newEntity.ImageUrl, StringComparison.Ordinal))
-    //    {
-    //        oldEntity.ImageUrl = newEntity.ImageUrl;
-    //    }
-    //}
 }
