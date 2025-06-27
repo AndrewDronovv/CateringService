@@ -25,6 +25,17 @@ public class CompaniesController : ControllerBase
     {
         var createdCompany = await _companyService.CreateCompanyAsync(request, Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B"));
 
-        return Ok(createdCompany);
+        return CreatedAtRoute("GetCompanyById", new { companyId = createdCompany.Id }, createdCompany);
+    }
+
+    [HttpGet("api/companies/{companyId}", Name = "GetCompanyById")]
+    [ProducesResponseType(typeof(CompanyViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CompanyViewModel>> GetCompanyAsync(Ulid companyId, Ulid userId)
+    {
+        var company = await _companyService.GetCompanyByIdAsync(companyId, userId);
+
+        return Ok(company);
     }
 }

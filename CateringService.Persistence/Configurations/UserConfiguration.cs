@@ -55,7 +55,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.UpdatedAt);
 
-        //TODO : Add or not index in email property.
+        //TODO: Добавить индекс в поле Email.
         //builder.HasIndex(u => u.Email)
         //    .IsUnique();
 

@@ -1,5 +1,6 @@
 ﻿using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
@@ -13,5 +14,12 @@ public class CompanyRepository : GenericRepository<Company, Ulid>, ICompanyRepos
     {
         await _context.Companies.AddAsync(company);
         return company.Id;
+    }
+
+    public async Task<Company?> GetByIdAsync(Ulid companyId)
+    {
+        return await _context.Companies
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == companyId);
     }
 }

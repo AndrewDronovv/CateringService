@@ -67,7 +67,7 @@ public class AddressService : IAddressService
         return _mapper.Map<AddressViewModel>(createdAddress);
     }
 
-    //TODO: добавить в параметры метода Ulid requestingUserId из задания.
+    //TODO: Добавить в параметры метода Ulid requestingUserId из задания.
     public async Task DeleteAddressAsync(Ulid addressId)
     {
         if (addressId == Ulid.Empty)

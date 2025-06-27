@@ -70,4 +70,26 @@ public class CompanyService : ICompanyService
 
         return _mapper.Map<CompanyViewModel>(createdCompany);
     }
+    //TODO: Добавить логику с userId.
+    public async Task<CompanyViewModel?> GetCompanyByIdAsync(Ulid companyId, Ulid userId)
+    {
+        if (companyId == Ulid.Empty)
+        {
+            _logger.LogWarning("CompanyId не должен быть пустым.");
+            throw new ArgumentException(nameof(companyId), "CompanyId is empty.");
+        }
+
+        _logger.LogInformation("Получен запрос на компанию {CompanyId}.", companyId);
+
+        var company = await _companyRepository.GetByIdAsync(companyId);
+        if (company is null)
+        {
+            _logger.LogWarning("Компания {CompanyId} не найдена.", companyId);
+            throw new NotFoundException(nameof(Company), companyId.ToString());
+        }
+
+        _logger.LogInformation("Компания {CompanyId} успешно получена.", companyId);
+
+        return _mapper.Map<CompanyViewModel?>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
+    }
 }

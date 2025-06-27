@@ -23,7 +23,7 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
 
         _context.Addresses.Remove(entity);
     }
-
+    //TODO: Реализовать метод после добавления сущности Order
     public Task<bool> HasActiveOrdersAsync(Ulid addressId)
     {
         return Task.FromResult(true);
@@ -33,7 +33,7 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
         //    .AnyAsync(o => o.IsActive == true);
     }
 
-    // TODO: Доделать метод, необходимо добавить параметр tenantId.
+    //TODO: Доделать метод, необходимо добавить параметр tenantId.
     public async Task<IEnumerable<Address>> SearchByTextAsync(string query)
     {
         query = query.ToLower();
