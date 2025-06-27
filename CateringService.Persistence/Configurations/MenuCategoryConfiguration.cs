@@ -13,7 +13,7 @@ public sealed class MenuCategoryConfiguration : IEntityTypeConfiguration<MenuCat
         builder.HasKey(mc => mc.Id);
 
         builder.Property(mc => mc.Id)
-            .HasColumnName("MenuCategoryId")
+            .HasColumnName("Id")
             .IsRequired()
             .HasMaxLength(26)
             .HasConversion(
@@ -33,15 +33,16 @@ public sealed class MenuCategoryConfiguration : IEntityTypeConfiguration<MenuCat
             .ValueGeneratedOnAdd()
             .IsRequired();
 
-        builder.HasOne(mc => mc.Supplier)
-            .WithMany(s => s.MenuCategories)
-            .HasForeignKey(mc => mc.SupplierId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.HasMany(mc => mc.Dishes)
             .WithOne(d => d.MenuCategory)
             .HasForeignKey(d => d.MenuCategoryId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Property(mc => mc.SupplierId)
+            .HasConversion(
+                id => id.ToString(),
+                id => Ulid.Parse(id)
+            );
 
         builder.HasData
         (
@@ -51,7 +52,7 @@ public sealed class MenuCategoryConfiguration : IEntityTypeConfiguration<MenuCat
                 Name = "Appetizers",
                 Description = "Start your meal with our delightful appetizers.",
                 CreatedAt = new DateTime(2025, 04, 20, 10, 0, 0),
-                SupplierId = Ulid.Parse("01H5QJ6PTMVRFZT58GQX902JC4")
+                SupplierId = Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B")
             },
             new MenuCategory
             {
@@ -59,7 +60,7 @@ public sealed class MenuCategoryConfiguration : IEntityTypeConfiguration<MenuCat
                 Name = "Main Courses",
                 Description = "Delicious main courses to satisfy your hunger.",
                 CreatedAt = new DateTime(2025, 04, 20, 12, 0, 0),
-                SupplierId = Ulid.Parse("01H5QJ6PVB8FYN4QXMR3T7JC9A")
+                SupplierId = Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B")
             },
             new MenuCategory
             {
@@ -67,7 +68,7 @@ public sealed class MenuCategoryConfiguration : IEntityTypeConfiguration<MenuCat
                 Name = "Desserts",
                 Description = "End your meal with our sweet desserts.",
                 CreatedAt = new DateTime(2025, 04, 20, 14, 0, 0),
-                SupplierId = Ulid.Parse("01H5QJ6PX4FTQY8KZVW9JMBT96")
+                SupplierId = Ulid.Parse("01HY5Q0WRK6VFYHT9BA3H8RK3V")
             }
         );
     }

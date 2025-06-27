@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace CateringService;
+﻿namespace CateringService;
 
 public static class ApiEndPoints
 {
@@ -50,6 +48,5 @@ public static class ApiEndPoints
         public const string Create = $"{Base}";
         public const string Get = $"{Base}/{{addressId}}";
         public const string Update = $"{Base}/{{addressId}}";
-        //public const string Zip = $"{Base}/search-by-zip/{{tenantId}}/{{zip}}";
     }
 }

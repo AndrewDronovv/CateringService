@@ -13,12 +13,11 @@ public sealed class Dish : UlidEntity
     public bool IsAvailable { get; set; } = true;
     public string? Allergens { get; set; } = string.Empty;
     public string? PortionSize { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime CreatedAt { get; set; }
     public string? Slug { get; set; }
 
-    public Ulid SupplierId { get; set; }
-    public Supplier? Supplier { get; set; }
-
+    //public Ulid SupplierId { get; set; }
+    //public Company? Supplier { get; set; }
     public Ulid MenuCategoryId { get; set; }
     public MenuCategory? MenuCategory { get; set; }
 }

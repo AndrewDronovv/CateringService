@@ -1,8 +1,8 @@
-﻿using CateringService.Domain.Common;
+﻿using CateringService.Domain.Entities;
 
-namespace CateringService.Domain.Entities.Approved;
+namespace CateringService.Application.DataTransferObjects.Responses;
 
-public class User : UlidEntity
+public sealed class UserViewModel
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;

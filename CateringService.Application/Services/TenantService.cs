@@ -165,14 +165,6 @@ public class TenantService : ITenantService
         return _mapper.Map<TenantViewModel>(updatedTenant);
     }
 
-    private void UpdateTenant(Tenant oldTenant, Tenant newTenant)
-    {
-        if (!oldTenant.Name.Equals(newTenant.Name, StringComparison.Ordinal))
-        {
-            oldTenant.Name = newTenant.Name;
-        }
-    }
-
     public async Task<TenantViewModel?> CreateTenantAsync(AddTenantRequest request)
     {
         if (request is null)

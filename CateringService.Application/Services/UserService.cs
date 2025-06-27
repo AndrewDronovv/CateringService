@@ -1,38 +1,62 @@
-﻿using CateringService.Application.Abstractions;
-using CateringService.Domain.Entities;
+﻿using AutoMapper;
+using CateringService.Application.Abstractions;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace CateringService.Application.Services;
 
 public class UserService : IUserService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IConfiguration _configuration;
+    private readonly IUnitOfWorkRepository _unitOfWorkRepository;
+    private readonly IMapper _mapper;
+    private readonly ILogger<UserService> _logger;
 
-    public UserService(IUserRepository userRepository, IConfiguration configuration)
+    public UserService(IUserRepository userRepository, IUnitOfWorkRepository unitOfWorkRepository, IMapper mapper, ILogger<UserService> logger)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<bool> RegisterAsync(UserRegister input)
+    public async Task<UserViewModel?> CreateUserAsync(AddUserRequest request)
     {
-        var existingUser = await _userRepository.GetByLoginAsync(input.Login);
-
-        if (existingUser != null)
+        if (request is null)
         {
-            return false;
+            _logger.LogWarning("Входные данные не указаны.");
+            throw new ArgumentNullException(nameof(request), "User request is null.");
         }
 
-        var user = new User
+        _logger.LogInformation("Получен запрос на создание пользователя.");
+
+        User user = new User();
+
+        user = request.UserType.ToLower() switch
         {
-            Login = input.Login,
-            Password = BCrypt.Net.BCrypt.HashPassword(input.Password)
+            "customer" => _mapper.Map<Customer>(request) ?? throw new InvalidOperationException("Customer mapping failed."),
+            "supplier" => _mapper.Map<Supplier>(request) ?? throw new InvalidOperationException("Supplier mapping failed."),
+            "broker" => _mapper.Map<Broker>(request) ?? throw new InvalidOperationException("Broker mapping failed."),
+            _ => throw new ArgumentOutOfRangeException(nameof(request.UserType), $"Unknown user's type {request.UserType}")
         };
 
-        await _userRepository.AddAsync(user);
 
-        return true;
+        var userId = await _userRepository.AddAsync(user);
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        var createdUser = await _userRepository.GetByIdAsync(userId);
+        if (createdUser is null)
+        {
+            _logger.LogWarning("Ошибка получения пользователя {UserId}.", userId);
+            throw new NotFoundException(nameof(User), userId.ToString());
+        }
+
+        _logger.LogInformation("Пользователь {CreatedUser.Name} с Id {UserId} успешно создан.", createdUser.LastName, userId);
+
+        return _mapper.Map<UserViewModel>(createdUser);
     }
 }

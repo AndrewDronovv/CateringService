@@ -24,12 +24,13 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
         _context.Addresses.Remove(entity);
     }
 
-    public async Task<bool> HasActiveOrdersAsync(Ulid addressId)
+    public Task<bool> HasActiveOrdersAsync(Ulid addressId)
     {
-        return await _context.Addresses
-            .Where(a => a.Id == addressId)
-            .SelectMany(a => a.Orders)
-            .AnyAsync(o => o.IsActive == true);
+        return Task.FromResult(true);
+        //return await _context.Addresses
+        //    .Where(a => a.Id == addressId)
+        //    .SelectMany(a => a.Orders)
+        //    .AnyAsync(o => o.IsActive == true);
     }
 
     // TODO: Доделать метод, необходимо добавить параметр tenantId.

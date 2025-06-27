@@ -1,5 +1,4 @@
-﻿using System.Text;
-using CateringService.Application.Abstractions;
+﻿using CateringService.Application.Abstractions;
 using CateringService.Application.Mapping;
 using CateringService.Application.Services;
 using CateringService.Application.Validators.Dish;
@@ -16,6 +15,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CateringService.Extensions;
 
@@ -95,7 +97,12 @@ public static class ServiceExtensions
 
     public static void AddPresentationServices(this IServiceCollection services)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters
+                    .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
+            });
         services.AddSwaggerGen();
     }
 

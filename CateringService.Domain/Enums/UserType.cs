@@ -1,8 +1,9 @@
 ﻿namespace CateringService.Domain.Enums;
 
-public enum Role
+public enum UserType
 {
-    Supplier,
+    User,
     Customer,
-    Admin
+    Supplier,
+    Broker
 }

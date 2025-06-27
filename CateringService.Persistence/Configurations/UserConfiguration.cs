@@ -1,4 +1,5 @@
-﻿using CateringService.Domain.Entities;
+﻿using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,7 +14,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(u => u.Id);
 
         builder.Property(u => u.Id)
-            .HasColumnName("UserId")
+            .HasColumnName("Id")
             .IsRequired()
             .HasMaxLength(26)
             .HasConversion(
@@ -21,41 +22,55 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
                 id => Ulid.Parse(id)
             );
 
-        builder.Property(u => u.Login)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(u => u.Password)
-            .IsRequired()
-            .HasMaxLength(100);
-
-        builder.Property(u => u.PasswordHash)
-            .HasMaxLength(256);
-
-        builder.Property(u => u.Email)
-            .HasMaxLength(200);
-
         builder.Property(u => u.FirstName)
-            .HasMaxLength(100);
+            .IsRequired()
+            .HasMaxLength(128);
 
         builder.Property(u => u.LastName)
+            .IsRequired()
+            .HasMaxLength(128);
+
+        builder.Property(u => u.MiddleName)
+            .HasMaxLength(128);
+
+        builder.Property(u => u.Email)
             .HasMaxLength(100);
+
+        builder.Property(u => u.Phone)
+            .HasMaxLength(20);
+
+        builder.Property(u => u.PasswordHash)
+            .IsRequired();
 
         builder.Property(u => u.IsBlocked)
             .HasDefaultValue(false);
+
+        builder.Property(u => u.BlockReason)
+            .HasMaxLength(512);
 
         builder.Property(u => u.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .ValueGeneratedOnAdd()
             .IsRequired();
 
-        builder.Property(u => u.Role)
-            .HasConversion<string>()
-            .HasMaxLength(50);
+        builder.Property(u => u.UpdatedAt);
 
-        builder.HasMany(u => u.RefreshTokens)
-            .WithOne(rt => rt.User)
-            .HasForeignKey(rt => rt.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        //builder.HasIndex(u => u.Email)
+        //    .IsUnique();
+
+        builder.HasOne(u => u.Tenant)
+            .WithMany(t => t.Users)
+            .HasForeignKey(u => u.TenantId);
+
+        builder
+            .HasDiscriminator<UserType>("UserType")
+            .HasValue<User>(UserType.User)
+            .HasValue<Customer>(UserType.Customer)
+            .HasValue<Supplier>(UserType.Supplier)
+            .HasValue<Broker>(UserType.Broker);
+
+        builder
+            .Property(nameof(UserType))
+            .HasConversion<string>();
     }
 }

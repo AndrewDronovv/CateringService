@@ -1,5 +1,5 @@
 ﻿using CateringService.Domain.Abstractions;
-using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
 
 namespace CateringService.Application.Abstractions;
 

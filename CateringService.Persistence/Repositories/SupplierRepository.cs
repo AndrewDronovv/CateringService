@@ -1,4 +1,4 @@
-﻿using CateringService.Domain.Entities;
+﻿using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +12,7 @@ public sealed class SupplierRepository : GenericRepository<Supplier, Ulid>, ISup
 
     public async Task<bool> CheckSupplierExists(Ulid suppllierId)
     {
-        return await _context.Suppliers
+        return await _context.Users
             .AnyAsync(s => s.Id == suppllierId);
     }
 }
