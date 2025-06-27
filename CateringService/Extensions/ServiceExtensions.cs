@@ -1,8 +1,10 @@
 ﻿using CateringService.Application.Abstractions;
+using CateringService.Application.Interfaces;
 using CateringService.Application.Mapping;
 using CateringService.Application.Services;
 using CateringService.Application.Validators.Dish;
 using CateringService.Domain.Abstractions;
+using CateringService.Domain.Interfaces;
 using CateringService.Domain.Repositories;
 using CateringService.ModelBinders.MenuCategories;
 using CateringService.ModelBinders.Tenants;
@@ -76,6 +78,9 @@ public static class ServiceExtensions
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserService, UserService>();
 
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
+        services.AddScoped<ICompanyService, CompanyService>();
+
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
 
         services.AddScoped<ISlugService, SlugService>();
@@ -91,7 +96,7 @@ public static class ServiceExtensions
     {
         services.AddAutoMapper(typeof(MappingProfile));
 
-        services.AddValidatorsFromAssembly(typeof(DishCreateDtoValidator).Assembly);
+        services.AddValidatorsFromAssembly(typeof(DishCreateRequestValidator).Assembly);
         services.AddFluentValidationAutoValidation();
     }
 

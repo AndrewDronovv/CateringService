@@ -1,0 +1,73 @@
+﻿using AutoMapper;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Application.Interfaces;
+using CateringService.Domain.Entities;
+using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Exceptions;
+using CateringService.Domain.Interfaces;
+using CateringService.Domain.Repositories;
+using Microsoft.Extensions.Logging;
+
+namespace CateringService.Application.Services;
+
+public class CompanyService : ICompanyService
+{
+    private readonly ICompanyRepository _companyRepository;
+    private readonly IUnitOfWorkRepository _unitOfWorkRepository;
+    private readonly IMapper _mapper;
+    private readonly ILogger<CompanyService> _logger;
+    private readonly ITenantRepository _tenantRepository;
+    private readonly IAddressRepository _addressRepository;
+
+    public CompanyService(ICompanyRepository companyRepository, IUnitOfWorkRepository unitOfWorkRepository,
+        IMapper mapper, ILogger<CompanyService> logger, ITenantRepository tenantRepository, IAddressRepository addressRepository)
+    {
+        _companyRepository = companyRepository;
+        _unitOfWorkRepository = unitOfWorkRepository;
+        _mapper = mapper;
+        _logger = logger;
+        _tenantRepository = tenantRepository;
+        _addressRepository = addressRepository;
+    }
+
+    //TODO: Проверки уникальности TaxNumber.
+    public async Task<CompanyViewModel> CreateCompanyAsync(AddCompanyRequest request, Ulid userId)
+    {
+        if (request is null)
+        {
+            _logger.LogWarning("Входные данные не указаны.");
+            throw new ArgumentNullException(nameof(request), "Company request is null.");
+        }
+
+        if (!await _tenantRepository.CheckActiveTenantExistsAsync(request.TenantId))
+        {
+            _logger.LogWarning("Арендатор {TenantId} не найден или деактивирован.", request.TenantId);
+            throw new NotFoundException(nameof(Tenant), request.TenantId.ToString());
+        }
+
+        if (!await _addressRepository.CheckAddressExistsAsync(request.AddressId))
+        {
+            _logger.LogWarning("Адрес {AddressId} не найден.", request.AddressId);
+            throw new NotFoundException(nameof(Address), request.AddressId.ToString());
+        }
+
+        _logger.LogInformation("Получен запрос на создание компании.");
+
+        var company = _mapper.Map<Company>(request) ?? throw new InvalidOperationException("Company mapping failed");
+
+        var companyId = _companyRepository.Add(company);
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        var createdCompany = await _companyRepository.GetByIdAsync(companyId);
+        if (createdCompany is null)
+        {
+            _logger.LogWarning("Ошибка получения компании {CompanyId}.", companyId);
+            throw new NotFoundException(nameof(Company), companyId.ToString());
+        }
+
+        _logger.LogInformation("Компания {Name} c Id {CompanyId} успешно создана.", createdCompany.Name, companyId);
+
+        return _mapper.Map<CompanyViewModel>(createdCompany);
+    }
+}

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace CateringService.Application.DataTransferObjects.Requests;
+﻿namespace CateringService.Application.DataTransferObjects.Requests;
 
 public sealed class AddMenuCategoryRequest
 {

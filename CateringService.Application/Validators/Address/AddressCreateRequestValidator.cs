@@ -3,14 +3,18 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.Address;
 
-public sealed class AddressUpdateDtoValidator : AbstractValidator<UpdateAddressRequest>
+public sealed class AddressCreateRequestValidator : AbstractValidator<AddAddressRequest>
 {
-    public AddressUpdateDtoValidator()
+    public AddressCreateRequestValidator()
     {
+        RuleFor(x => x.TenantId)
+            .Must(id => id != Ulid.Empty).WithMessage("Идентификатор арендатора не может быть пустым.")
+            .Must(id => Ulid.TryParse(id.ToString(), out _)).WithMessage("Идентификатор арендатора должен быть корректным Ulid.");
+
         RuleFor(x => x.Country)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Название страны не должно быть пустым.")
-            .MinimumLength(2).WithMessage("Название страны должно содержать не менее 4 символов.")
+            .MinimumLength(2).WithMessage("Название страны должно содержать не менее 2 символов.")
             .MaximumLength(64).WithMessage("Название страны не должно превышать 64 символа.");
 
         RuleFor(x => x.StreetAndBuilding)

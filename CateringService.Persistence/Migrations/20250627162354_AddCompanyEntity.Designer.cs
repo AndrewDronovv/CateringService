@@ -3,6 +3,7 @@ using System;
 using CateringService.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CateringService.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250627162354_AddCompanyEntity")]
+    partial class AddCompanyEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,10 +177,8 @@ namespace CateringService.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(26)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnUpdate()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NULL");
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -201,7 +202,8 @@ namespace CateringService.Persistence.Migrations
                             Name = "TechSpace Ltd.",
                             Phone = "+1-555-1234",
                             TaxNumber = "1234567890",
-                            TenantId = "01H5PY6RF4WKFCR9VCMY2QNFGP"
+                            TenantId = "01H5PY6RF4WKFCR9VCMY2QNFGP",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -213,7 +215,8 @@ namespace CateringService.Persistence.Migrations
                             Name = "Greencore Solutions",
                             Phone = "+1-555-6789",
                             TaxNumber = "9876543210",
-                            TenantId = "01H5QJ6PVB8FYN4QXMR3T7JC9A"
+                            TenantId = "01H5QJ6PVB8FYN4QXMR3T7JC9A",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -225,7 +228,8 @@ namespace CateringService.Persistence.Migrations
                             Name = "NovaIndustries Inc.",
                             Phone = "+1-555-4321",
                             TaxNumber = "1122334455",
-                            TenantId = "01H5QJ7XQZKTYZ9QW8VRCMND5B"
+                            TenantId = "01H5QJ7XQZKTYZ9QW8VRCMND5B",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 

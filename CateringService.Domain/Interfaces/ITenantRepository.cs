@@ -2,7 +2,7 @@
 
 namespace CateringService.Domain.Repositories;
 
-public interface ITenantRepository
+public interface ITenantRepository : IGenericRepository<Tenant, Ulid>
 {
     Task<IEnumerable<Tenant>> GetAllAsync();
     Task<Tenant?> GetByIdAsync(Ulid tenantId);
@@ -11,6 +11,5 @@ public interface ITenantRepository
     Task<Tenant> UpdateAsync(Tenant tenant, bool isNotTracked = false);
     Task BlockAsync(Ulid tenantId, string blockReason);
     Task UnblockAsync(Ulid tenantId);
-    Task<bool> CheckTenantExistsAsync(Ulid tenantId);
-    Task<bool> HasRelatedDataAsync(Ulid tenantId);
+    Task<bool> CheckActiveTenantExistsAsync(Ulid tenantId);
 }

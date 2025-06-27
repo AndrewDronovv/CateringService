@@ -1,18 +1,14 @@
-﻿using CateringService.Domain.Common;
+﻿namespace CateringService.Application.DataTransferObjects.Responses;
 
-namespace CateringService.Domain.Entities.Approved;
-
-public sealed class Company : UlidEntity
+public sealed class CompanyViewModel
 {
     public Ulid TenantId { get; set; }
-    public Tenant Tenant { get; set; }
     public string Name { get; set; }
     public string TaxNumber { get; set; }
     public Ulid AddressId { get; set; }
-    public Address Address { get; set; }
     public string? Phone { get; set; }
     public string? Email { get; set; }
     public bool IsBlocked { get; set; } = false;
     public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

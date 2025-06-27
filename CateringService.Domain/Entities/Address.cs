@@ -15,4 +15,5 @@ public sealed class Address : UlidEntity
     public DateTime? UpdatedAt { get; set; }
     public Ulid TenantId { get; set; }
     public Tenant Tenant { get; set; }
+    public ICollection<Company> Companies { get; set; } = new List<Company>();
 }

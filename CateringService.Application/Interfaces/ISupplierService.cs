@@ -1,9 +1,5 @@
-﻿using CateringService.Domain.Abstractions;
-using CateringService.Domain.Entities.Approved;
+﻿namespace CateringService.Application.Abstractions;
 
-namespace CateringService.Application.Abstractions;
-
-public interface ISupplierService : IBaseService<Supplier, Ulid>
+public interface ISupplierService
 {
-    Task<bool> CheckSupplierExists(Ulid supplierId);
 }

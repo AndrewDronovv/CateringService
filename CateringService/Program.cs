@@ -21,8 +21,7 @@ app.ConfigurePipeline();
 app.Run();
 
 
-// TODO:
-// BlockTenant разобратьс€ с передачей параметров и маршрутизацией;
+// TODO: BlockTenant разобратьс€ с передачей параметров и маршрутизацией;
 // –ассмотреть метод контроллера UpdateAddressAsync;
 // ¬опрос про Tenant как дальше его св€зать с другими таблицами в бд;
 // ¬опрос про HasActiveOrdersAsync, возможно его сделать в OrderRepository?

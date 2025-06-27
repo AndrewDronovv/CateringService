@@ -55,10 +55,10 @@ public class TenantRepository : GenericRepository<Tenant, Ulid>, ITenantReposito
         return tenant;
     }
 
-    public async Task<bool> CheckTenantExistsAsync(Ulid tenantId)
+    public async Task<bool> CheckActiveTenantExistsAsync(Ulid tenantId)
     {
         return await _context.Tenants
-            .AnyAsync(t => t.Id == tenantId);
+            .AnyAsync(t => t.Id == tenantId && t.IsActive);
     }
 
     public async Task DeleteAsync(Ulid tenantId)
@@ -67,10 +67,5 @@ public class TenantRepository : GenericRepository<Tenant, Ulid>, ITenantReposito
             .FirstOrDefaultAsync(t => t.Id == tenantId);
 
         _context.Tenants.Remove(entity);
-    }
-
-    public Task<bool> HasRelatedDataAsync(Ulid tenantId)
-    {
-        throw new NotImplementedException();
     }
 }

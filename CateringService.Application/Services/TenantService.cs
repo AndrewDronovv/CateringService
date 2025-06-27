@@ -100,10 +100,10 @@ public class TenantService : ITenantService
 
         _logger.LogInformation("Получен запрос на удаление арендатора {TenantId}.", tenantId);
 
-        var tenantExists = await _tenantRepository.CheckTenantExistsAsync(tenantId);
+        var tenantExists = await _tenantRepository.CheckActiveTenantExistsAsync(tenantId);
         if (!tenantExists)
         {
-            _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);
+            _logger.LogWarning("Арендатор {TenantId} не найден или деактивирован.", tenantId);
             throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
@@ -187,7 +187,7 @@ public class TenantService : ITenantService
             throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
-        _logger.LogInformation("Арендатор {CreatedTenant.Name} с Id {TenantId} успешно создан.", createdTenant.Name, tenantId);
+        _logger.LogInformation("Арендатор {Name} с Id {TenantId} успешно создан.", createdTenant.Name, tenantId);
 
         return _mapper.Map<TenantViewModel>(createdTenant);
     }
