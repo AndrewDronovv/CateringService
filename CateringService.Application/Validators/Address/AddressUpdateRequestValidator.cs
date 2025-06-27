@@ -3,14 +3,10 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.Address;
 
-public sealed class AddressCreateDtoValidator : AbstractValidator<AddAddressRequest>
+public sealed class AddressUpdateRequestValidator : AbstractValidator<UpdateAddressRequest>
 {
-    public AddressCreateDtoValidator()
+    public AddressUpdateRequestValidator()
     {
-        RuleFor(x => x.TenantId)
-            .Must(id => id != Ulid.Empty).WithMessage("Идентификатор арендатора не может быть пустым.")
-            .Must(id => Ulid.TryParse(id.ToString(), out _)).WithMessage("Идентификатор арендатора должен быть корректным Ulid.");
-
         RuleFor(x => x.Country)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Название страны не должно быть пустым.")

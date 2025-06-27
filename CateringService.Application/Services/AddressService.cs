@@ -153,10 +153,10 @@ public class AddressService : IAddressService
             throw new ArgumentException(nameof(tenantId), "TenantId is empty.");
         }
 
-        var tenantExists = await _tenantRepository.CheckTenantExistsAsync(tenantId);
+        var tenantExists = await _tenantRepository.CheckActiveTenantExistsAsync(tenantId);
         if (!tenantExists)
         {
-            _logger.LogWarning("Арендатор {TenantId} не найден.", tenantId);
+            _logger.LogWarning("Арендатор {TenantId} не найден или деактивирован.", tenantId);
             throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 

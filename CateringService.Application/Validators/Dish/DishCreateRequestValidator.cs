@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.Dish;
 
-public sealed class DishCreateDtoValidator : AbstractValidator<AddDishRequest>
+public sealed class DishCreateRequestValidator : AbstractValidator<AddDishRequest>
 {
-    public DishCreateDtoValidator()
+    public DishCreateRequestValidator()
     {
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)
@@ -36,13 +36,13 @@ public sealed class DishCreateDtoValidator : AbstractValidator<AddDishRequest>
             .LessThanOrEqualTo(10000).WithMessage("Вес не может превышать 10.000 грамм.");
 
         RuleFor(x => x.IsAvailable)
-            .NotNull().WithMessage("Поле доступности (IsAvailable) должно быть указано.");
-
-        RuleFor(x => x.PortionSize)
-            .MaximumLength(150).WithMessage("Размер порции не должен превышать 150 символов.");
+            .NotNull().WithMessage("Поле доступности должно быть указано.");
 
         RuleFor(x => x.Allergens)
             .MaximumLength(400).WithMessage("Список аллергенов не должен превышать 400 символов.");
+
+        RuleFor(x => x.PortionSize)
+            .MaximumLength(150).WithMessage("Размер порции не должен превышать 150 символов.");
 
         RuleFor(x => x.SupplierId)
             .Must(id => id != Ulid.Empty).WithMessage("Идентификатор поставщика не может быть пустым.")

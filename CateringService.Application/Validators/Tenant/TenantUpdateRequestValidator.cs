@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.Tenant;
 
-public sealed class TenantCreateDtoValidator : AbstractValidator<AddTenantRequest>
+public sealed class TenantUpdateRequestValidator : AbstractValidator<UpdateTenantRequest>
 {
-    public TenantCreateDtoValidator()
+    public TenantUpdateRequestValidator()
     {
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)

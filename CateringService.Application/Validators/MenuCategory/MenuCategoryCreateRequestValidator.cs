@@ -3,10 +3,14 @@ using FluentValidation;
 
 namespace CateringService.Application.Validators.MenuCategory;
 
-public sealed class MenuCategoryCreateDtoValidator : AbstractValidator<AddMenuCategoryRequest>
+public sealed class MenuCategoryCreateRequestValidator : AbstractValidator<AddMenuCategoryRequest>
 {
-    public MenuCategoryCreateDtoValidator()
+    public MenuCategoryCreateRequestValidator()
     {
+        RuleFor(x => x.SupplierId)
+            .Must(id => id != Ulid.Empty).WithMessage("Идентификатор поставщика не может быть пустым.")
+            .Must(id => Ulid.TryParse(id.ToString(), out _)).WithMessage("Идентификатор поставщика должен быть корректным Ulid.");
+
         RuleFor(x => x.Name)
             .Cascade(CascadeMode.Stop)
             .NotEmpty().WithMessage("Название не должно быть пустым.")

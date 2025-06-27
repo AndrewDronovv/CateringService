@@ -32,5 +32,8 @@ public sealed class MappingProfile : Profile
         CreateMap<AddUserRequest, Customer>().ReverseMap();
         CreateMap<AddUserRequest, Supplier>().ReverseMap();
         CreateMap<AddUserRequest, Broker>().ReverseMap();
+
+        CreateMap<Company, CompanyViewModel>().ReverseMap();
+        CreateMap<Company, AddCompanyRequest>().ReverseMap();
     }
 }

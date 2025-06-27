@@ -29,7 +29,7 @@ public class BaseService<TEntity, TPrimaryKey> : IBaseService<TEntity, TPrimaryK
         var entity = await _repository.GetByIdAsync(id);
         if (entity == null)
         {
-            throw new KeyNotFoundException($"Сущность с Id = {id} не найдена.");
+            throw new KeyNotFoundException($"Сущность с Id {id} не найдена.");
         }
         _repository.Delete(entity);
         await _unitOfWork.SaveChangesAsync();

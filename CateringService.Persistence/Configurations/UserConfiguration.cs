@@ -55,6 +55,7 @@ public sealed class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(u => u.UpdatedAt);
 
+        //TODO : Add or not index in email property.
         //builder.HasIndex(u => u.Email)
         //    .IsUnique();
 
