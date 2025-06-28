@@ -22,4 +22,11 @@ public class CompanyRepository : GenericRepository<Company, Ulid>, ICompanyRepos
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == companyId);
     }
+
+    public async Task<Company?> GetByTaxNumberAsync(string taxNumber)
+    {
+        return await _context.Companies
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.TaxNumber == taxNumber);
+    }
 }

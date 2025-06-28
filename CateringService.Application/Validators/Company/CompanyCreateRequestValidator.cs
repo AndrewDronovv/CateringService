@@ -19,7 +19,8 @@ public sealed class AddCompanyRequestValidator : AbstractValidator<AddCompanyReq
         RuleFor(x => x.TaxNumber)
             .NotEmpty().WithMessage("Налоговый номер компании не должен быть пустым.")
             .MinimumLength(10).WithMessage("Налоговый номер компании должен содержать не менее 10 символов.")
-            .MaximumLength(20).WithMessage("Налоговый номер компании не должен превышать 20 символов.");
+            .MaximumLength(20).WithMessage("Налоговый номер компании не должен превышать 20 символов.")
+            .Matches("^[0-9]+$").WithMessage("Налоговый номер компании должен содержать только цифры.");
 
         RuleFor(x => x.AddressId)
             .NotEqual(Ulid.Empty).WithMessage("Идентификатор адреса не может быть пустым.");
