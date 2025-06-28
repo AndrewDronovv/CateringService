@@ -7,4 +7,5 @@ public interface ICompanyRepository : IGenericRepository<Company, Ulid>
 {
     Task<Ulid> AddAsync(Company company);
     Task<Company?> GetByIdAsync(Ulid companyId);
+    Task<Company?> GetByTaxNumberAsync(string taxNumber);
 }

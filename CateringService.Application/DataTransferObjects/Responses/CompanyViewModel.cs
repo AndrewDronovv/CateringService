@@ -1,4 +1,6 @@
-﻿namespace CateringService.Application.DataTransferObjects.Responses;
+﻿using Newtonsoft.Json;
+
+namespace CateringService.Application.DataTransferObjects.Responses;
 
 public sealed class CompanyViewModel
 {
@@ -11,5 +13,6 @@ public sealed class CompanyViewModel
     public string? Email { get; set; }
     public bool IsBlocked { get; set; } = false;
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+    public DateTime? UpdatedAt { get; set; }
 }

@@ -15,9 +15,8 @@ public sealed class Dish : UlidEntity
     public string? PortionSize { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public string? Slug { get; set; }
-
-    //public Ulid SupplierId { get; set; }
-    //public Company? Supplier { get; set; }
+    public Ulid SupplierId { get; set; }
+    public Supplier? Supplier { get; set; }
     public Ulid MenuCategoryId { get; set; }
     public MenuCategory? MenuCategory { get; set; }
 }

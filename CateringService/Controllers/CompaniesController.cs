@@ -38,4 +38,16 @@ public class CompaniesController : ControllerBase
 
         return Ok(company);
     }
+
+    //TODO: Доделать параметр userId
+    [HttpGet("api/companies/by-tax-number")]
+    [ProducesResponseType(typeof(CompanyViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CompanyViewModel>> GetCompanyByTaxNumberAsync([FromQuery] string taxNumber, [FromQuery] Ulid userId)
+    {
+        var company = await _companyService.GetCompanyByTaxNumberAsync(taxNumber, Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B"));
+
+        return Ok(company);
+    }
 }

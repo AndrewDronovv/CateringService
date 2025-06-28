@@ -1,4 +1,5 @@
 ﻿using CateringService.Domain.Common;
+using Newtonsoft.Json;
 
 namespace CateringService.Domain.Entities.Approved;
 
@@ -14,5 +15,6 @@ public sealed class Company : UlidEntity
     public string? Email { get; set; }
     public bool IsBlocked { get; set; } = false;
     public DateTime CreatedAt { get; set; }
+    [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
     public DateTime? UpdatedAt { get; set; }
 }

@@ -54,6 +54,11 @@ public sealed class DishConfiguration : IEntityTypeConfiguration<Dish>
             .HasDefaultValueSql("CURRENT_TIMESTAMP")
             .ValueGeneratedOnAdd()
             .IsRequired();
+        
+        builder.HasOne(d => d.Supplier)
+            .WithMany(s => s.Dishes)
+            .HasForeignKey(d => d.SupplierId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.HasOne(d => d.MenuCategory)
             .WithMany(ms => ms.Dishes)
@@ -77,7 +82,8 @@ public sealed class DishConfiguration : IEntityTypeConfiguration<Dish>
                 Allergens = "None",
                 PortionSize = "Large",
                 CreatedAt = new DateTime(2025, 04, 20, 10, 0, 0),
-                MenuCategoryId = Ulid.Parse("01H5QJ3DHBM8J6AW04FKPJP5VV")
+                MenuCategoryId = Ulid.Parse("01H5QJ3DHBM8J6AW04FKPJP5VV"),
+                SupplierId = Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B")
             },
             new Dish
             {
@@ -92,7 +98,8 @@ public sealed class DishConfiguration : IEntityTypeConfiguration<Dish>
                 Allergens = "None",
                 PortionSize = "Medium",
                 CreatedAt = new DateTime(2025, 04, 20, 12, 0, 0),
-                MenuCategoryId = Ulid.Parse("01H5QJ3DJ22VXVG28Q0RYMNQEY")
+                MenuCategoryId = Ulid.Parse("01H5QJ3DJ22VXVG28Q0RYMNQEY"),
+                SupplierId = Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B")
             },
             new Dish
             {
@@ -107,7 +114,8 @@ public sealed class DishConfiguration : IEntityTypeConfiguration<Dish>
                 Allergens = "Eggs, Milk",
                 PortionSize = "Small",
                 CreatedAt = new DateTime(2025, 04, 20, 14, 0, 0),
-                MenuCategoryId = Ulid.Parse("01H5QJ3DR6R35WTKTPGFPJ89JC")
+                MenuCategoryId = Ulid.Parse("01H5QJ3DR6R35WTKTPGFPJ89JC"),
+                SupplierId = Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B")
             }
         );
     }

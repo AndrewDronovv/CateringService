@@ -8,6 +8,7 @@ using CateringService.Domain.Exceptions;
 using CateringService.Domain.Interfaces;
 using CateringService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.Design;
 
 namespace CateringService.Application.Services;
 
@@ -91,5 +92,26 @@ public class CompanyService : ICompanyService
         _logger.LogInformation("Компания {CompanyId} успешно получена.", companyId);
 
         return _mapper.Map<CompanyViewModel?>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
+    }
+
+    public async Task<CompanyViewModel?> GetCompanyByTaxNumberAsync(string taxNumber, Ulid userId)
+    {
+        if (string.IsNullOrWhiteSpace(taxNumber))
+        {
+            _logger.LogWarning("TaxNumber не должен быть пустым.");
+            throw new ArgumentException(nameof(taxNumber), "TaxNumber is empty.");
+        }
+
+        string normalizedTaxNumber = taxNumber.Trim();
+
+        var company = await _companyRepository.GetByTaxNumberAsync(normalizedTaxNumber);
+
+        if (company is null)
+        {
+            _logger.LogWarning("Компания {TaxNumber} не найдена.", normalizedTaxNumber);
+            throw new NotFoundException(nameof(Company), normalizedTaxNumber);
+        }
+
+        return _mapper.Map<CompanyViewModel>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed");
     }
 }
