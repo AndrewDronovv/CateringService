@@ -39,7 +39,7 @@ public class CompaniesController : ControllerBase
         return Ok(company);
     }
 
-    //TODO: Доделать параметр userId
+    //TODO: Доделать параметр userId.
     [HttpGet("api/companies/by-tax-number")]
     [ProducesResponseType(typeof(CompanyViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -49,5 +49,15 @@ public class CompaniesController : ControllerBase
         var company = await _companyService.GetCompanyByTaxNumberAsync(taxNumber, Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B"));
 
         return Ok(company);
+    }
+    //TODO: Доделать параметр userId.
+    [HttpGet("api/companies/search-by-name")]
+    [ProducesResponseType(typeof(IEnumerable<CompanyViewModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<CompanyViewModel>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<CompanyViewModel>> SearchCompaniesByNameAsync(Ulid? tenantId, string query)
+    {
+        var companies = await _companyService.SearchCompaniesByNameAsync(tenantId, query);
+
+        return Ok(companies);
     }
 }

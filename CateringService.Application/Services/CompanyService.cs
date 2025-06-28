@@ -102,6 +102,8 @@ public class CompanyService : ICompanyService
             throw new ArgumentException(nameof(taxNumber), "TaxNumber is empty.");
         }
 
+        _logger.LogInformation("Получен запрос на компанию с налоговым номером {TaxNumber}.", taxNumber);
+
         string normalizedTaxNumber = taxNumber.Trim();
 
         var company = await _companyRepository.GetByTaxNumberAsync(normalizedTaxNumber);
@@ -112,6 +114,36 @@ public class CompanyService : ICompanyService
             throw new NotFoundException(nameof(Company), normalizedTaxNumber);
         }
 
-        return _mapper.Map<CompanyViewModel>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed");
+        return _mapper.Map<CompanyViewModel>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
+    }
+
+    public async Task<IEnumerable<CompanyViewModel>> SearchCompaniesByNameAsync(Ulid? tenantId, string query)
+    {
+        if (tenantId.HasValue)
+        {
+            if (!await _tenantRepository.CheckActiveTenantExistsAsync(tenantId.Value))
+            {
+                _logger.LogWarning("Арендатор {TenantId} не найден или деактивирован.", tenantId);
+                throw new NotFoundException(nameof(Tenant), tenantId.ToString());
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            _logger.LogWarning("Название компаний не должно быть пустым.");
+            throw new ArgumentException(nameof(query), "Query is empty.");
+        }
+
+        _logger.LogInformation("Получен запрос на компании с названием {Query}.", query);
+
+        var company = await _companyRepository.SearchByNameAsync(tenantId, query);
+
+        if (company is null)
+        {
+            _logger.LogWarning("Компании с названием {Query} не найдена.", query);
+            throw new NotFoundException(nameof(IEnumerable<Company>), string.Empty);
+        }
+
+        return _mapper.Map<IEnumerable<CompanyViewModel>>(company) ?? throw new InvalidOperationException("CompanyViewMode mapping failed.");
     }
 }
