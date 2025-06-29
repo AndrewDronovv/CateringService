@@ -29,4 +29,22 @@ public class CompanyRepository : GenericRepository<Company, Ulid>, ICompanyRepos
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.TaxNumber == taxNumber);
     }
+
+    public async Task<IEnumerable<Company>> SearchByNameAsync(Ulid? tenantId, string query)
+    {
+        string normalizedQuery = query.Trim().ToUpper();
+
+        IQueryable<Company> companies = _context.Companies.AsNoTracking();
+
+        if (tenantId.HasValue)
+        {
+            companies = companies.Where(c => c.TenantId == tenantId.Value);
+        }
+
+        companies = companies
+            .Where(c => c.Name.ToUpper().Contains(normalizedQuery))
+            .OrderBy(c => c.Name);
+
+        return await companies.ToListAsync();
+    }
 }

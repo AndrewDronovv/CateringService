@@ -8,4 +8,5 @@ public interface ICompanyService
     Task<CompanyViewModel> CreateCompanyAsync(AddCompanyRequest request, Ulid userId);
     Task<CompanyViewModel?> GetCompanyByIdAsync(Ulid companyId, Ulid userId);
     Task<CompanyViewModel?> GetCompanyByTaxNumberAsync(string taxNumber, Ulid userId);
+    Task<IEnumerable<CompanyViewModel>> SearchCompaniesByNameAsync(Ulid? tenantId, string query);
 }
