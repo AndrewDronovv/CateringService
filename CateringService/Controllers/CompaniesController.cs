@@ -71,4 +71,13 @@ public class CompaniesController : ControllerBase
 
         return Ok(companies);
     }
+
+    [HttpPut("api/companies")]
+    [ProducesResponseType(typeof(CompanyViewModel), StatusCodes.Status200OK)]
+    public async Task<IActionResult> UpdateCompanyAsync(UpdateCompanyRequest request, Ulid userId)
+    {
+        var viewModel = await _companyService.UpdateCompanyAsync(request, userId);
+
+        return Ok(viewModel);
+    }
 }

@@ -5,6 +5,7 @@ using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace CateringService.Application.Services;
@@ -43,7 +44,6 @@ public class UserService : IUserService
             "broker" => _mapper.Map<Broker>(request) ?? throw new InvalidOperationException("Broker mapping failed."),
             _ => throw new ArgumentOutOfRangeException(nameof(request.UserType), $"Unknown user's type {request.UserType}")
         };
-
 
         var userId = await _userRepository.AddAsync(user);
         await _unitOfWorkRepository.SaveChangesAsync();

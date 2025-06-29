@@ -160,7 +160,7 @@ public class AddressService : IAddressService
             throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
-        Address addressCurrent = await _addressRepository.GetByIdAsync(addressId);
+        var addressCurrent = await _addressRepository.GetByIdAsync(addressId);
         if (addressCurrent is null)
         {
             _logger.LogWarning("Адрес {AddressId} не найден.", addressId);

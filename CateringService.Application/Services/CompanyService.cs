@@ -175,6 +175,19 @@ public class CompanyService : ICompanyService
             throw new NotFoundException(nameof(IEnumerable<Company>), string.Empty);
         }
 
-        return _mapper.Map<IEnumerable<CompanyViewModel>>(company) ?? throw new InvalidOperationException("CompanyViewMode mapping failed.");
+        return _mapper.Map<IEnumerable<CompanyViewModel>>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
+    }
+
+    public async Task<CompanyViewModel> UpdateCompanyAsync(UpdateCompanyRequest request, Ulid userId)
+    {
+        var companyCurrent = await _companyRepository.GetByIdAsync(request.Id);
+
+        _mapper.Map(request, companyCurrent);
+
+        _companyRepository.Update(companyCurrent, false);
+
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        return _mapper.Map<CompanyViewModel>(companyCurrent);
     }
 }
