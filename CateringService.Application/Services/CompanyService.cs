@@ -8,7 +8,6 @@ using CateringService.Domain.Exceptions;
 using CateringService.Domain.Interfaces;
 using CateringService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.Design;
 
 namespace CateringService.Application.Services;
 
@@ -55,7 +54,7 @@ public class CompanyService : ICompanyService
 
         _logger.LogInformation("Получен запрос на создание компании.");
 
-        var company = _mapper.Map<Company>(request) ?? throw new InvalidOperationException("Company mapping failed");
+        var company = _mapper.Map<Company>(request) ?? throw new InvalidOperationException("Company mapping failed.");
 
         var companyId = _companyRepository.Add(company);
         await _unitOfWorkRepository.SaveChangesAsync();
@@ -69,8 +68,43 @@ public class CompanyService : ICompanyService
 
         _logger.LogInformation("Компания c Id {CompanyId} для арендатора с Id {TenantId}, налоговым номером {TaxNumber} успешно создана в {CreatedAt}.", companyId, request.TenantId, request.TaxNumber, createdCompany.CreatedAt);
 
-        return _mapper.Map<CompanyViewModel>(createdCompany);
+        return _mapper.Map<CompanyViewModel>(createdCompany) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
     }
+
+    public async Task<PagedCompanyViewModel> GetCompaniesAsync(GetCompaniesRequest request, Ulid userId)
+    {
+        if (request is null)
+        {
+            _logger.LogWarning("Входные данные не указаны.");
+            throw new ArgumentNullException(nameof(request), "Companies request is null.");
+        }
+
+        if (request.TenantId.HasValue && !await _tenantRepository.CheckActiveTenantExistsAsync(request.TenantId.Value))
+        {
+            _logger.LogWarning("Арендатор {TenantId} не найден или деактивирован.", request.TenantId.Value);
+            throw new NotFoundException(nameof(Tenant), request.TenantId.Value.ToString());
+        }
+
+        var (companies, totalCount) = await _companyRepository.GetListAsync(request.TenantId, request.Page, request.PageSize);
+
+        var companyViewModels = _mapper.Map<IEnumerable<CompanyViewModel>>(companies) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
+
+        int totalPages = (int)Math.Ceiling((double)totalCount / request.PageSize);
+
+        var response = new PagedCompanyViewModel
+        {
+            Companies = companyViewModels.ToList(),
+            TotalCount = totalCount,
+            TotalPages = totalPages,
+            Page = request.Page,
+            PageSize = request.PageSize
+        };
+
+        _logger.LogInformation("Получено {TotalCount} записей, страница {Page} с {PageSize} записями.", response.TotalCount, response.Page, response.PageSize);
+
+        return response;
+    }
+
     //TODO: Добавить логику с userId.
     public async Task<CompanyViewModel?> GetCompanyByIdAsync(Ulid companyId, Ulid userId)
     {
@@ -119,13 +153,10 @@ public class CompanyService : ICompanyService
 
     public async Task<IEnumerable<CompanyViewModel>> SearchCompaniesByNameAsync(Ulid? tenantId, string query)
     {
-        if (tenantId.HasValue)
+        if (tenantId.HasValue && !await _tenantRepository.CheckActiveTenantExistsAsync(tenantId.Value))
         {
-            if (!await _tenantRepository.CheckActiveTenantExistsAsync(tenantId.Value))
-            {
-                _logger.LogWarning("Арендатор {TenantId} не найден или деактивирован.", tenantId);
-                throw new NotFoundException(nameof(Tenant), tenantId.ToString());
-            }
+            _logger.LogWarning("Арендатор {TenantId} не найден или деактивирован.", tenantId);
+            throw new NotFoundException(nameof(Tenant), tenantId.ToString());
         }
 
         if (string.IsNullOrWhiteSpace(query))

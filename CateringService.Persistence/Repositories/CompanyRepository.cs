@@ -30,6 +30,25 @@ public class CompanyRepository : GenericRepository<Company, Ulid>, ICompanyRepos
             .FirstOrDefaultAsync(c => c.TaxNumber == taxNumber);
     }
 
+    public async Task<(IEnumerable<Company>, int totalCount)> GetListAsync(Ulid? tenantId, int page, int pageSize)
+    {
+        var query = _context.Companies
+            .AsNoTracking();
+
+        if (tenantId.HasValue)
+            query = query.Where(c => c.TenantId == tenantId.Value);
+
+        var totalCount = await query.CountAsync();
+
+        var companies = await query
+            .OrderByDescending(c => c.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (companies, totalCount);
+    }
+
     public async Task<IEnumerable<Company>> SearchByNameAsync(Ulid? tenantId, string query)
     {
         string normalizedQuery = query.Trim().ToUpper();
@@ -37,9 +56,7 @@ public class CompanyRepository : GenericRepository<Company, Ulid>, ICompanyRepos
         IQueryable<Company> companies = _context.Companies.AsNoTracking();
 
         if (tenantId.HasValue)
-        {
             companies = companies.Where(c => c.TenantId == tenantId.Value);
-        }
 
         companies = companies
             .Where(c => c.Name.ToUpper().Contains(normalizedQuery))
