@@ -35,5 +35,6 @@ public sealed class MappingProfile : Profile
 
         CreateMap<Company, CompanyViewModel>().ReverseMap();
         CreateMap<Company, AddCompanyRequest>().ReverseMap();
+        CreateMap<Company, UpdateCompanyRequest>().ReverseMap();
     }
 }

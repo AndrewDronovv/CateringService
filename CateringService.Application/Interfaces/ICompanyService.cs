@@ -10,4 +10,5 @@ public interface ICompanyService
     Task<CompanyViewModel?> GetCompanyByTaxNumberAsync(string taxNumber, Ulid userId);
     Task<IEnumerable<CompanyViewModel>> SearchCompaniesByNameAsync(Ulid? tenantId, string query);
     Task<PagedCompanyViewModel> GetCompaniesAsync(GetCompaniesRequest request, Ulid userId);
+    Task<CompanyViewModel> UpdateCompanyAsync(UpdateCompanyRequest request, Ulid userId);
 }

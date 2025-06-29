@@ -19,7 +19,6 @@ public class CompanyRepository : GenericRepository<Company, Ulid>, ICompanyRepos
     public async Task<Company?> GetByIdAsync(Ulid companyId)
     {
         return await _context.Companies
-            .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Id == companyId);
     }
 
