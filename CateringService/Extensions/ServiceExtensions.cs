@@ -1,4 +1,6 @@
-﻿using CateringService.Application.Abstractions;
+﻿using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using CateringService.Application.Abstractions;
 using CateringService.Application.Interfaces;
 using CateringService.Application.Mapping;
 using CateringService.Application.Services;
@@ -16,7 +18,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -108,7 +112,27 @@ public static class ServiceExtensions
                 options.JsonSerializerOptions.Converters
                     .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
             });
-        services.AddSwaggerGen();
+
+        //services.AddSwaggerGen(options =>
+        //{
+        //    var apiVersionDescriptionProvider = services.BuildServiceProvider()
+        //        .GetRequiredService<IApiVersionDescriptionProvider>();
+
+        //    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+        //    {
+        //        options.SwaggerDoc(
+        //            description.GroupName,
+        //            new OpenApiInfo
+        //            {
+        //                Version = description.ApiVersion.ToString(),
+        //                Title = $"Sample API {description.ApiVersion}",
+        //                Description = $"A sample ASP.NET Core Web API with versioning (Version {description.ApiVersion})"
+        //            });
+        //    }
+
+        //    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+        //    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+        //});
     }
 
     public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
@@ -135,5 +159,22 @@ public static class ServiceExtensions
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key!))
                 };
             });
+    }
+
+    public static void AddApiVesioning(this IServiceCollection services)
+    {
+        services.AddApiVersioning(options =>
+        {
+            options.ReportApiVersions = true;
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.ApiVersionReader = new UrlSegmentApiVersionReader();
+        })
+        .AddMvc()
+        .AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'V";
+            options.SubstituteApiVersionInUrl = true;
+        });
     }
 }
