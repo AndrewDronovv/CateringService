@@ -1,8 +1,5 @@
 ﻿namespace CateringService.Domain.Exceptions;
 
-/// <summary>
-/// Exception that is thrown when an entity with the specified type and identifier is not found.
-/// </summary>
 public class NotFoundException : Exception
 {
     public string Type { get; }

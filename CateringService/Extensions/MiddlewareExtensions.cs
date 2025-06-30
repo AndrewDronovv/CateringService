@@ -1,4 +1,5 @@
-﻿using CateringService.Middlewares;
+﻿using Asp.Versioning.ApiExplorer;
+using CateringService.Middlewares;
 
 namespace CateringService.Extensions;
 
@@ -11,7 +12,18 @@ public static class MiddlewareExtensions
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                IReadOnlyList<ApiVersionDescription> descriptions = app.DescribeApiVersions();
+
+                foreach (ApiVersionDescription description in descriptions)
+                {
+                    string url = $"/swagger/{description.GroupName}/swagger.json";
+                    string name = description.GroupName.ToUpper();
+
+                    options.SwaggerEndpoint(url, name);
+                }
+            });
         }
         app.UseHttpsRedirection();
         app.UseStaticFiles();

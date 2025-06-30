@@ -1,4 +1,5 @@
-﻿using CateringService.Application.DataTransferObjects.Requests;
+﻿using Asp.Versioning;
+using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Domain.Abstractions;
 using CateringService.Filters;
@@ -8,6 +9,9 @@ namespace CateringService.Controllers;
 
 [ApiController]
 [TypeFilter<LoggingActionFilter>]
+[ApiVersion(1)]
+[ApiVersion(2)]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class DishesController : ControllerBase
 {
     private readonly IDishService _dishService;
@@ -16,48 +20,60 @@ public class DishesController : ControllerBase
         _dishService = dishAppService ?? throw new ArgumentNullException(nameof(dishAppService));
     }
 
-    //[HttpGet(ApiEndPoints.Dishes.Get, Name = "GetDishById")]
-    [HttpGet("api/dishes/by-id/{dishId}", Name = "GetDishById")]
+    [HttpGet("by-id/{dishId}", Name = "GetDishByIdV1")]
+    [MapToApiVersion(1)]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DishViewModel>> GetDishByIdAsync(Ulid dishId)
+    public async Task<ActionResult<DishViewModel>> GetDishByIdAsyncV1([FromRoute] Ulid dishId)
     {
         var dish = await _dishService.GetByIdAsync(dishId);
 
         return Ok(dish);
     }
 
-    [HttpGet("api/dishes/by-slug/{slug}")]
+    [HttpGet("by-id/{dishId}", Name = "GetDishByIdV2")]
+    [MapToApiVersion(2)]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DishViewModel>> GetDishBySlugAsync(string slug)
+    public async Task<ActionResult<DishViewModel>> GetDishByIdAsyncV2(Ulid dishId)
     {
-        var dish = await _dishService.GetBySlugAsync(slug);
+        var dish = await _dishService.GetByIdAsync(dishId);
 
         return Ok(dish);
     }
 
-    [HttpPost(ApiEndPoints.Dishes.Create)]
-    [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, Ulid supplierId)
-    {
-        var createdDish = await _dishService.CreateDishAsync(supplierId, request);
+    //[HttpGet("api/dishes/by-slug/{slug}")]
+    //[ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    //public async Task<ActionResult<DishViewModel>> GetDishBySlugAsync(string slug)
+    //{
+    //    var dish = await _dishService.GetBySlugAsync(slug);
 
-        return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
-    }
+    //    return Ok(dish);
+    //}
 
-    [HttpGet("api/dishes")]
-    [ProducesResponseType(typeof(List<DishViewModel>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<DishViewModel>>> GetDishesAsync()
-    {
-        var dishes = await _dishService.GetDishesAsync();
+    //[HttpPost(ApiEndPoints.Dishes.Create)]
+    //[ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    //public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, Ulid supplierId)
+    //{
+    //    var createdDish = await _dishService.CreateDishAsync(supplierId, request);
 
-        return dishes;
-    }
+    //    return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
+    //}
+
+    //[HttpGet("api/dishes")]
+    //[ProducesResponseType(typeof(List<DishViewModel>), StatusCodes.Status200OK)]
+    //public async Task<ActionResult<List<DishViewModel>>> GetDishesAsync()
+    //{
+    //    var dishes = await _dishService.GetDishesAsync();
+
+    //    return dishes;
+    //}
 
     //[HttpGet(ApiEndPoints.Dishes.GetDishes)]
     //[ProducesResponseType(typeof(IEnumerable<DishViewModel>), StatusCodes.Status200OK)]

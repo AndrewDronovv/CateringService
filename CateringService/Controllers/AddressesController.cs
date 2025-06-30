@@ -14,6 +14,7 @@ public class AddressesController : ControllerBase
         _addressService = addressService;
     }
 
+    
     [HttpPost(ApiEndPoints.Addresses.Create)]
     [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
