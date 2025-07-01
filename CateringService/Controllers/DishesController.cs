@@ -44,27 +44,39 @@ public class DishesController : ControllerBase
         return Ok(dish);
     }
 
-    //[HttpGet("api/dishes/by-slug/{slug}")]
-    //[ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
-    //[ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    //public async Task<ActionResult<DishViewModel>> GetDishBySlugAsync(string slug)
-    //{
-    //    var dish = await _dishService.GetBySlugAsync(slug);
+    [HttpGet("by-slug/{slug}")]
+    [MapToApiVersion(1)]
+    [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<DishViewModel>> GetDishBySlugAsync(string slug)
+    {
+        var dish = await _dishService.GetBySlugAsync(slug);
 
-    //    return Ok(dish);
-    //}
+        return Ok(dish);
+    }
 
-    //[HttpPost(ApiEndPoints.Dishes.Create)]
-    //[ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
-    //[ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    //public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, Ulid supplierId)
-    //{
-    //    var createdDish = await _dishService.CreateDishAsync(supplierId, request);
+    [HttpPatch("{dishId}/toggle")]
+    [MapToApiVersion(1)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> ToggleDishStateAsync(Ulid dishId)
+    {
+        await _dishService.ToggleDishStateAsync(dishId);
 
-    //    return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
-    //}
+        return NoContent();
+    }
+
+    [HttpPost(""]
+    [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, Ulid supplierId)
+    {
+        var createdDish = await _dishService.CreateDishAsync(supplierId, request);
+
+        return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
+    }
 
     //[HttpGet("api/dishes")]
     //[ProducesResponseType(typeof(List<DishViewModel>), StatusCodes.Status200OK)]
@@ -136,23 +148,6 @@ public class DishesController : ControllerBase
     //    await _dishService.UpdateAsync(dishId, updateRequest);
 
     //    _logger.LogInformation($"Блюдо с Id = {dishId} успешно обновлено.");
-    //    return NoContent();
-    //}
-
-    //[HttpPatch(ApiEndPoints.Dishes.Toggle)]
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //[ProducesResponseType(StatusCodes.Status404NotFound)]
-    //public async Task<IActionResult> ToggleDishState(Ulid dishId)
-    //{
-    //    var dish = await _dishService.GetByIdAsync(dishId);
-    //    if (dish is null)
-    //    {
-    //        _logger.LogWarning($"Блюдо с Id = {dishId} не найдено.");
-    //        return NotFound();
-    //    }
-
-    //    var result = await _dishService.ToggleDishStateAsync(dishId);
-
     //    return NoContent();
     //}
 }

@@ -83,10 +83,17 @@ public class DishService : IDishService
 
     public async Task<bool> ToggleDishStateAsync(Ulid dishId)
     {
-        var dish = await _dishRepository.GetByIdAsync(dishId);
-        if (dish == null)
+        if (dishId == Ulid.Empty)
         {
-            throw new KeyNotFoundException($"Блюдо с Id {dishId} не найдено.");
+            _logger.LogWarning("DishId не должен быть пустым.");
+            throw new ArgumentException(nameof(dishId), "DishId is empty.");
+        }
+
+        var dish = await _dishRepository.GetByIdAsync(dishId);
+        if (dish is null)
+        {
+            _logger.LogWarning("Блюдо {DishId} не найдено.", dishId);
+            throw new NotFoundException(nameof(Dish), dishId.ToString());
         }
 
         dish.IsAvailable = !dish.IsAvailable;
