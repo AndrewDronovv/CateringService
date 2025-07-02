@@ -11,7 +11,7 @@ namespace CateringService.Controllers;
 [TypeFilter<LoggingActionFilter>]
 [ApiVersion(1)]
 [ApiVersion(2)]
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/v{version:apiVersion}")]
 public class DishesController : ControllerBase
 {
     private readonly IDishService _dishService;
@@ -20,7 +20,7 @@ public class DishesController : ControllerBase
         _dishService = dishAppService ?? throw new ArgumentNullException(nameof(dishAppService));
     }
 
-    [HttpGet("by-id/{dishId}", Name = "GetDishByIdV1")]
+    [HttpGet("[controller]/by-id/{dishId}", Name = "GetDishByIdV1")]
     [MapToApiVersion(1)]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -32,7 +32,7 @@ public class DishesController : ControllerBase
         return Ok(dish);
     }
 
-    [HttpGet("by-id/{dishId}", Name = "GetDishByIdV2")]
+    [HttpGet("[controller]by-id/{dishId}", Name = "GetDishByIdV2")]
     [MapToApiVersion(2)]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -44,7 +44,7 @@ public class DishesController : ControllerBase
         return Ok(dish);
     }
 
-    [HttpGet("by-slug/{slug}")]
+    [HttpGet("[controller]/by-slug/{slug}")]
     [MapToApiVersion(1)]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -56,7 +56,7 @@ public class DishesController : ControllerBase
         return Ok(dish);
     }
 
-    [HttpPatch("{dishId}/toggle")]
+    [HttpPatch("[controller]/{dishId}/toggle")]
     [MapToApiVersion(1)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -67,87 +67,25 @@ public class DishesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost(""]
+    [HttpPost("suppliers/{supplierId}/[controller]")]
+    [MapToApiVersion(1)]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, Ulid supplierId)
+    public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, [FromRoute] Ulid supplierId)
     {
         var createdDish = await _dishService.CreateDishAsync(supplierId, request);
 
-        return CreatedAtRoute("GetDishById", new { dishId = createdDish.Id }, createdDish);
+        return CreatedAtRoute("GetDishByIdV1", new { dishId = createdDish.Id }, createdDish);
     }
 
-    //[HttpGet("api/dishes")]
-    //[ProducesResponseType(typeof(List<DishViewModel>), StatusCodes.Status200OK)]
-    //public async Task<ActionResult<List<DishViewModel>>> GetDishesAsync()
-    //{
-    //    var dishes = await _dishService.GetDishesAsync();
+    [HttpGet("suppliers/{supplierId}/[controller]")]
+    [MapToApiVersion(1)]
+    [ProducesResponseType(typeof(IEnumerable<DishViewModel>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<IEnumerable<DishViewModel>>> GetDishesBySupplierIdAsync(Ulid supplierId)
+    {
+        var dishes = await _dishService.GetDishesBySupplierIdAsync(supplierId);
 
-    //    return dishes;
-    //}
-
-    //[HttpGet(ApiEndPoints.Dishes.GetDishes)]
-    //[ProducesResponseType(typeof(IEnumerable<DishViewModel>), StatusCodes.Status200OK)]
-    //public async Task<ActionResult<IEnumerable<DishViewModel>>> GetDishesBySupplierIdAsync(Ulid supplierId)
-    //{
-    //    var dishes = await _dishService.GetAllByIdAsync(supplierId);
-    //    if (dishes is null || !dishes.Any())
-    //    {
-    //        _logger.LogInformation("Список блюд пуст.");
-    //        return Ok(Enumerable.Empty<DishViewModel>());
-    //    }
-
-    //    var dishesDto = _mapper.Map<IEnumerable<DishViewModel>>(dishes);
-    //    _logger.LogInformation($"Запрос списка блюд выполнен успешно. Найдено {dishesDto.Count()} блюд.");
-    //    return Ok(dishesDto);
-    //}
-
-    //[HttpDelete(ApiEndPoints.Dishes.Delete)]
-    //[ProducesResponseType(StatusCodes.Status200OK)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public async Task<IActionResult> DeleteDishAsync(Ulid dishId)
-    //{
-    //    if (dishId == Ulid.Empty)
-    //    {
-    //        _logger.LogWarning($"Id не должен быть пустым.");
-    //        return BadRequest(new { Error = "Id не должен быть пустым." });
-    //    }
-
-    //    var deletedDish = await _dishService.GetByIdAsync(dishId);
-
-    //    await _dishService.DeleteAsync(dishId);
-    //    _logger.LogInformation($"Блюдо {deletedDish} с Id = {dishId} успешно удалено.");
-    //    return Ok(new
-    //    {
-    //        Success = true,
-    //        Message = $"Выбранное блюдо {deletedDish?.Name} удалено",
-    //        Timestamp = DateTime.Now
-    //    });
-    //}
-
-    //[HttpPut(ApiEndPoints.Dishes.Update)]
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-    //public async Task<IActionResult> UpdateDishAsync(Ulid dishId, UpdateDishRequest input)
-    //{
-    //    if (dishId == Ulid.Empty)
-    //    {
-    //        _logger.LogWarning($"Id не должен быть пустым.");
-    //        return BadRequest(new { Error = "Id не должен быть пустым." });
-    //    }
-
-    //    if (input is null)
-    //    {
-    //        _logger.LogWarning("Входные данные не указаны. Операция обновления блюда не может быть выполнена.");
-    //        return BadRequest(new { Error = "Входные параметры отсутствуют. Пожалуйста, предоставьте данные для создания блюда." });
-    //    }
-
-    //    var updateRequest = _mapper.Map<Dish>(input);
-
-    //    await _dishService.UpdateAsync(dishId, updateRequest);
-
-    //    _logger.LogInformation($"Блюдо с Id = {dishId} успешно обновлено.");
-    //    return NoContent();
-    //}
+        return Ok(dishes);
+    }
 }

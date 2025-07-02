@@ -26,4 +26,9 @@ public class DishRepository : GenericRepository<Dish, Ulid>, IDishRepository
         _context.Entry(dish).Property(p => p.IsAvailable).IsModified = true;
         return dish.IsAvailable;
     }
+
+    public async Task<IEnumerable<Dish>> GetDishesBySupplierIdAsync(Ulid supplierId)
+    {
+        return await _context.Dishes.Where(d => d.SupplierId == supplierId).ToListAsync();
+    }
 }

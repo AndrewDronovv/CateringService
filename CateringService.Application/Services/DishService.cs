@@ -147,17 +147,24 @@ public class DishService : IDishService
         return _mapper.Map<DishViewModel>(dish) ?? throw new InvalidOperationException("DishViewModel mapping failed.");
     }
 
-    public async Task<List<DishViewModel>> GetDishesAsync()
+    public async Task<IEnumerable<DishViewModel>> GetDishesBySupplierIdAsync(Ulid supplierId)
     {
-        var dishes = await _dishRepository.GetAllAsync();
+        if (supplierId == Ulid.Empty)
+        {
+            _logger.LogWarning("SupplierId не должен быть пустым.");
+            throw new ArgumentException(nameof(supplierId), "SupplierId is empty.");
+        }
 
+        _logger.LogInformation("Получен запрос на список блюд у поставщика {SupplierId}.", supplierId);
+
+        var dishes = await _dishRepository.GetDishesBySupplierIdAsync(supplierId);
         if (!dishes.Any())
         {
-            _logger.LogWarning("Список блюд пуст.");
+            _logger.LogWarning("Список блюд у поставщика {SupplierId} пуст.", supplierId);
             return new List<DishViewModel>();
         }
 
-        _logger.LogInformation("Получено {Count} блюд.", dishes.ToList().Count);
+        _logger.LogInformation("Получено {Count} блюд у поставщика {SupplierId}.", dishes.ToList().Count, supplierId);
 
         return _mapper.Map<List<DishViewModel>>(dishes);
     }
