@@ -4,6 +4,7 @@ using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Application.Services;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
+using CateringService.Domain.Exceptions;
 using CateringService.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -79,14 +80,51 @@ public class MenuCategoryServiceTests
     public async Task CreateMenuCategoryAsync_NewMenuCategory_ReturnMenuCategory()
     {
         //Arrange
+        Ulid menuCategoryId = Ulid.NewUlid();
         AddMenuCategoryRequest request = new AddMenuCategoryRequest
         {
-            Name = "Test Menu",
+            Name = "Test MenuCategory",
             SupplierId = Ulid.NewUlid(),
             Description = "Test Description"
         };
-        MenuCategoryViewModel menuCategoryViewModel = new MenuCategoryViewModel();
-        MenuCategory menuCategory = new MenuCategory();
+        MenuCategoryViewModel menuCategoryViewModel = new MenuCategoryViewModel { Id = menuCategoryId, Name = request.Name, Description = request.Description };
+        MenuCategory menuCategory = new MenuCategory { Id = menuCategoryId, Name = request.Name, Description = request.Description };
+
+        _supplierRepositoryMock.CheckSupplierExists(request.SupplierId).Returns(true);
+        _mapper.Map<MenuCategory>(request).Returns(menuCategory);
+        _menuCategoryRepositoryMock.Add(menuCategory).Returns(menuCategory.Id);
+        _menuCategoryRepositoryMock.GetByIdAsync(menuCategory.Id).Returns(Task.FromResult<MenuCategory?>(menuCategory));
+        _mapper.Map<MenuCategoryViewModel>(menuCategory).Returns(menuCategoryViewModel);
+
+        //Act
+        var result = await _menuCategoryService.CreateMenuCategoryAsync(request);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.NotEqual(Ulid.Empty, result.Id);
+        Assert.Equal(menuCategoryId, result.Id);
+        Assert.Equal("Test MenuCategory", result.Name);
+        _menuCategoryRepositoryMock.Received(1).Add(Arg.Any<MenuCategory>());
+        await _unitOfWorkRepositoryMock.Received(1).SaveChangesAsync();
+        _mapper.Received(1).Map<MenuCategoryViewModel>(menuCategory);
+    }
+
+    [Fact]
+    public async Task CreateMenuCategoryAsync_SupplierDoesNotExist_ShouldThrowNotFoundException()
+    {
+        var request = new AddMenuCategoryRequest
+        {
+            Name = "Test MenuCategory",
+            SupplierId = Ulid.NewUlid()
+        };
+
+        _supplierRepositoryMock.CheckSupplierExists(request.SupplierId).Returns(false);
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _menuCategoryService.CreateMenuCategoryAsync(request));
+
+        Assert.Contains(nameof(Supplier), exception.Message);
+        Assert.Contains(request.SupplierId.ToString(), exception.Message);
     }
     #endregion
 }
