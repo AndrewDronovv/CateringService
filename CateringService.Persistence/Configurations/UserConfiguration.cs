@@ -1,4 +1,4 @@
-﻿using CateringService.Domain.Entities.Approved;
+﻿using CateringService.Domain.Entities;
 using CateringService.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

@@ -1,6 +1,6 @@
 ﻿using CateringService.Domain.Common;
 
-namespace CateringService.Domain.Entities.Approved;
+namespace CateringService.Domain.Entities;
 
 public sealed class Dish : UlidEntity
 {

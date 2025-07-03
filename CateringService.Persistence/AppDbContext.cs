@@ -1,5 +1,5 @@
 ﻿using CateringService.Domain.Entities;
-using CateringService.Domain.Entities.Approved;
+using CateringService.Domain.Entities;
 using CateringService.Domain.Enums;
 using CateringService.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;

@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
-using CateringService.Application.Abstractions;
+using CateringService.Application.DataTransferObjects.Requests;
+using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Application.Services;
 using CateringService.Domain.Abstractions;
+using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
-using CateringService.Persistence.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 
-namespace CateringService.Tests.MenuCategory;
+namespace CateringService.Tests.MenuCategories;
 
 public class MenuCategoryServiceTests
 {
@@ -71,6 +71,22 @@ public class MenuCategoryServiceTests
     {
         var menuCategoryService = new MenuCategoryService(_menuCategoryRepositoryMock, _supplierRepositoryMock, _unitOfWorkRepositoryMock, _mapper, _logger);
         Assert.NotNull(menuCategoryService);
+    }
+    #endregion
+
+    #region Тесты добавления
+    [Fact]
+    public async Task CreateMenuCategoryAsync_NewMenuCategory_ReturnMenuCategory()
+    {
+        //Arrange
+        AddMenuCategoryRequest request = new AddMenuCategoryRequest
+        {
+            Name = "Test Menu",
+            SupplierId = Ulid.NewUlid(),
+            Description = "Test Description"
+        };
+        MenuCategoryViewModel menuCategoryViewModel = new MenuCategoryViewModel();
+        MenuCategory menuCategory = new MenuCategory();
     }
     #endregion
 }

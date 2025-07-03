@@ -1,7 +1,7 @@
 ﻿using CateringService.Domain.Common;
 using Newtonsoft.Json;
 
-namespace CateringService.Domain.Entities.Approved;
+namespace CateringService.Domain.Entities;
 
 public sealed class Company : UlidEntity
 {

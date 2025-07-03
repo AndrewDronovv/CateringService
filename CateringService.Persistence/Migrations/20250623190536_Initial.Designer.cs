@@ -25,7 +25,7 @@ namespace CateringService.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Address", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Address", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(26)
@@ -134,7 +134,7 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Company", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Company", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(26)
@@ -166,7 +166,7 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Dish", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Dish", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(26)
@@ -275,7 +275,7 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.MenuCategory", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.MenuCategory", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(26)
@@ -333,7 +333,7 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.User", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasMaxLength(26)
@@ -466,9 +466,9 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Broker", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Broker", b =>
                 {
-                    b.HasBaseType("CateringService.Domain.Entities.Approved.User");
+                    b.HasBaseType("CateringService.Domain.Entities.User");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -494,9 +494,9 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Customer", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Customer", b =>
                 {
-                    b.HasBaseType("CateringService.Domain.Entities.Approved.User");
+                    b.HasBaseType("CateringService.Domain.Entities.User");
 
                     b.Property<string>("AddressId")
                         .HasColumnType("text");
@@ -533,9 +533,9 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Supplier", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Supplier", b =>
                 {
-                    b.HasBaseType("CateringService.Domain.Entities.Approved.User");
+                    b.HasBaseType("CateringService.Domain.Entities.User");
 
                     b.Property<string>("CompanyId")
                         .IsRequired()
@@ -582,7 +582,7 @@ namespace CateringService.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Address", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Address", b =>
                 {
                     b.HasOne("CateringService.Domain.Entities.Tenant", "Tenant")
                         .WithMany("Addresses")
@@ -593,9 +593,9 @@ namespace CateringService.Persistence.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.Dish", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.Dish", b =>
                 {
-                    b.HasOne("CateringService.Domain.Entities.Approved.MenuCategory", "MenuCategory")
+                    b.HasOne("CateringService.Domain.Entities.MenuCategory", "MenuCategory")
                         .WithMany("Dishes")
                         .HasForeignKey("MenuCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -604,9 +604,9 @@ namespace CateringService.Persistence.Migrations
                     b.Navigation("MenuCategory");
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.MenuCategory", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.MenuCategory", b =>
                 {
-                    b.HasOne("CateringService.Domain.Entities.Approved.Supplier", "Supplier")
+                    b.HasOne("CateringService.Domain.Entities.Supplier", "Supplier")
                         .WithMany()
                         .HasForeignKey("SupplierId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -615,7 +615,7 @@ namespace CateringService.Persistence.Migrations
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.User", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.User", b =>
                 {
                     b.HasOne("CateringService.Domain.Entities.Tenant", "Tenant")
                         .WithMany("Users")
@@ -626,7 +626,7 @@ namespace CateringService.Persistence.Migrations
                     b.Navigation("Tenant");
                 });
 
-            modelBuilder.Entity("CateringService.Domain.Entities.Approved.MenuCategory", b =>
+            modelBuilder.Entity("CateringService.Domain.Entities.MenuCategory", b =>
                 {
                     b.Navigation("Dishes");
                 });

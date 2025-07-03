@@ -1,4 +1,4 @@
-﻿namespace CateringService.Domain.Entities.Approved;
+﻿namespace CateringService.Domain.Entities;
 
 public sealed class Customer : User
 {

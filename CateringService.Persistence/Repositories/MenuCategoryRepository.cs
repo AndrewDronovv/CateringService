@@ -1,4 +1,4 @@
-﻿using CateringService.Domain.Entities.Approved;
+﻿using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 

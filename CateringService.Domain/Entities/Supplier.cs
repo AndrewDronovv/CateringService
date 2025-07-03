@@ -1,4 +1,4 @@
-﻿namespace CateringService.Domain.Entities.Approved;
+﻿namespace CateringService.Domain.Entities;
 
 //Компания которая занимается приготовлением блюда
 public sealed class Supplier : User

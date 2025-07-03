@@ -3,7 +3,6 @@ using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Application.Interfaces;
 using CateringService.Domain.Entities;
-using CateringService.Domain.Entities.Approved;
 using CateringService.Domain.Exceptions;
 using CateringService.Domain.Interfaces;
 using CateringService.Domain.Repositories;

@@ -1,6 +1,6 @@
 ﻿using CateringService.Domain.Common;
 
-namespace CateringService.Domain.Entities.Approved;
+namespace CateringService.Domain.Entities;
 
 public class User : UlidEntity
 {
