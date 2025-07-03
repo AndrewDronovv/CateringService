@@ -1,5 +1,4 @@
 ﻿using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
 using CateringService.Application.Abstractions;
 using CateringService.Application.Interfaces;
 using CateringService.Application.Mapping;
@@ -10,6 +9,7 @@ using CateringService.Domain.Interfaces;
 using CateringService.Domain.Repositories;
 using CateringService.ModelBinders.MenuCategories;
 using CateringService.ModelBinders.Tenants;
+using CateringService.OpenApi;
 using CateringService.Persistence;
 using CateringService.Persistence.Repositories;
 using FluentValidation;
@@ -18,9 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -70,9 +68,6 @@ public static class ServiceExtensions
         services.AddScoped<IMenuCategoryRepository, MenuCategoryRepository>();
         services.AddScoped<IMenuCategoryService, MenuCategoryService>();
 
-        services.AddScoped<ISupplierRepository, SupplierRepository>();
-        services.AddScoped<ISupplierService, SupplierService>();
-
         services.AddScoped<ITenantRepository, TenantRepository>();
         services.AddScoped<ITenantService, TenantService>();
 
@@ -90,49 +85,25 @@ public static class ServiceExtensions
         services.AddScoped<ISlugService, SlugService>();
     }
 
-    public static void AddCustomModelBinders(this MvcOptions options)
-    {
-        options.ModelBinderProviders.Insert(0, new AddMenuCategoryRequestModelBinderProvider());
-        options.ModelBinderProviders.Insert(0, new BlockTenantRequestModelBinderProvider());
-    }
-
     public static void ApplicationServiceExtensions(this IServiceCollection services)
     {
         services.AddAutoMapper(typeof(MappingProfile));
-
         services.AddValidatorsFromAssembly(typeof(DishCreateRequestValidator).Assembly);
         services.AddFluentValidationAutoValidation();
     }
 
     public static void AddPresentationServices(this IServiceCollection services)
     {
-        services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.Converters
-                    .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
-            });
-
-        //services.AddSwaggerGen(options =>
-        //{
-        //    var apiVersionDescriptionProvider = services.BuildServiceProvider()
-        //        .GetRequiredService<IApiVersionDescriptionProvider>();
-
-        //    foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
-        //    {
-        //        options.SwaggerDoc(
-        //            description.GroupName,
-        //            new OpenApiInfo
-        //            {
-        //                Version = description.ApiVersion.ToString(),
-        //                Title = $"Sample API {description.ApiVersion}",
-        //                Description = $"A sample ASP.NET Core Web API with versioning (Version {description.ApiVersion})"
-        //            });
-        //    }
-
-        //    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-        //    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-        //});
+        services.AddControllers(options =>
+        {
+            options.ModelBinderProviders.Insert(0, new AddMenuCategoryRequestModelBinderProvider());
+            options.ModelBinderProviders.Insert(0, new BlockTenantRequestModelBinderProvider());
+        })
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters
+                .Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
+        });
     }
 
     public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
@@ -170,11 +141,17 @@ public static class ServiceExtensions
             options.DefaultApiVersion = new ApiVersion(1);
             options.ApiVersionReader = new UrlSegmentApiVersionReader();
         })
-        .AddMvc()
         .AddApiExplorer(options =>
         {
             options.GroupNameFormat = "'v'V";
             options.SubstituteApiVersionInUrl = true;
         });
+    }
+
+    public static void AddSwaggerDocumentation(this IServiceCollection services)
+    {
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
+        services.ConfigureOptions<ConfigureSwaggerGenOptions>();
     }
 }

@@ -1,11 +1,13 @@
 ﻿using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CateringService.Controllers;
 
 [ApiController]
+[TypeFilter<LoggingActionFilter>]
 public class AddressesController : ControllerBase
 {
     private readonly IAddressService _addressService;
