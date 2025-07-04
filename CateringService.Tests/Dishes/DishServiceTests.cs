@@ -233,6 +233,17 @@ public class DishServiceTests
         Assert.Contains(nameof(Dish), exception.Message);
         Assert.Contains(dish.Id.ToString(), exception.Message);
     }
+
+    [Fact]
+    public async Task GetByIdAsync_WhenDishIdIsEmpty_ShouldThrowNotFoundException()
+    {
+        //Arrange
+        var dishId = Ulid.Empty;
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _dishService.GetByIdAsync(dishId));
+        Assert.Contains(nameof(dishId), exception.Message);
+    }
     #endregion
 
     #region Тесты получения всех блюд по поставщику
@@ -324,6 +335,17 @@ public class DishServiceTests
         //Act & Assert
         var exception = await Assert.ThrowsAsync<NotFoundException>(() => _dishService.ToggleDishStateAsync(dish.Id));
         Assert.Contains(nameof(dish.Id), exception.Message);
+    }
+
+    [Fact]
+    public async Task ToggleDishStateAsync_WhenDishIdIsEmpty_ShouldThrowArgumentException()
+    {
+        //Arrange
+        var dishId = Ulid.Empty;
+
+        //Act & Assert
+        var result = await Assert.ThrowsAsync<ArgumentException>(() => _dishService.ToggleDishStateAsync(dishId));
+        Assert.Contains(nameof(dishId), result.Message);
     }
     #endregion
 
