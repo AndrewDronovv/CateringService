@@ -93,7 +93,7 @@ public class DishService : IDishService
         if (dish is null)
         {
             _logger.LogWarning("Блюдо {DishId} не найдено.", dishId);
-            throw new NotFoundException(nameof(Dish), dishId.ToString());
+            throw new NotFoundException(nameof(dishId), dishId.ToString());
         }
 
         dish.IsAvailable = !dish.IsAvailable;

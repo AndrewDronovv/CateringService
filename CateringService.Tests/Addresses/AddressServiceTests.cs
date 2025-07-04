@@ -88,7 +88,7 @@ public class AddressServiceTests
     }
 
     [Fact]
-    public async Task CreateAddressAsync_NewAddress_ReturnsAddress()
+    public async Task CreateAddressAsync_WhenNewAddress_ShouldReturnAddress()
     {
         //Arrange
         var tenantId = Ulid.NewUlid();
@@ -152,7 +152,7 @@ public class AddressServiceTests
     }
 
     [Fact]
-    public async Task GetAddressAsync_ExistingAddress_ReturnsAddress()
+    public async Task GetAddressAsync_WhenExistingAddress_ShouldReturnAddress()
     {
         //Arrange
         var addressId = Ulid.NewUlid();

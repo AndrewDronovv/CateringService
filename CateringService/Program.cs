@@ -1,5 +1,6 @@
 using CateringService.Extensions;
 using CateringService.Filters;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,3 +24,5 @@ var app = builder.Build();
 
 app.ConfigurePipeline();
 app.Run();
+
+Log.CloseAndFlush();

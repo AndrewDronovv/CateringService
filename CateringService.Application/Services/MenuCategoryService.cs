@@ -28,16 +28,16 @@ public class MenuCategoryService : IMenuCategoryService
 
     public async Task<MenuCategoryViewModel?> CreateMenuCategoryAsync(AddMenuCategoryRequest request)
     {
-        if (request.SupplierId == Ulid.Empty)
-        {
-            _logger.LogWarning("SupplierId не должен быть пустым.");
-            throw new ArgumentException(nameof(request.SupplierId), "SupplierId is empty.");
-        }
-
         if (request is null)
         {
             _logger.LogWarning("Входные данные не указаны.");
             throw new ArgumentNullException(nameof(request), "MenuCategory request is null.");
+        }
+
+        if (request.SupplierId == Ulid.Empty)
+        {
+            _logger.LogWarning("SupplierId не должен быть пустым.");
+            throw new ArgumentException(nameof(request.SupplierId), "SupplierId is empty.");
         }
 
         _logger.LogInformation("Создание категории меню. Поставщик {SupplierId}, Название {Name}.", request.SupplierId, request?.Name);

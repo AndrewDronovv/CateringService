@@ -33,42 +33,42 @@ public class MenuCategoryServiceTests
 
     #region Тесты конструктора
     [Fact]
-    public void Ctor_MenuCategoryNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenMenuCategoryNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new MenuCategoryService(null, _supplierRepositoryMock, _unitOfWorkRepositoryMock, _mapper, _logger));
         Assert.Contains("menuCategoryRepository", exception.Message);
     }
 
     [Fact]
-    public void Ctor_SupplierRepositoryNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenSupplierRepositoryNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new MenuCategoryService(_menuCategoryRepositoryMock, null, _unitOfWorkRepositoryMock, _mapper, _logger));
         Assert.Contains("supplierRepository", exception.Message);
     }
 
     [Fact]
-    public void Ctor_UnitOfWorkNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenUnitOfWorkNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new MenuCategoryService(_menuCategoryRepositoryMock, _supplierRepositoryMock, null, _mapper, _logger));
         Assert.Contains("unitOfWorkRepository", exception.Message);
     }
 
     [Fact]
-    public void Ctor_MapperNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenMapperNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new MenuCategoryService(_menuCategoryRepositoryMock, _supplierRepositoryMock, _unitOfWorkRepositoryMock, null, _logger));
         Assert.Contains("mapper", exception.Message);
     }
 
     [Fact]
-    public void Ctor_LoggerNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenLoggerNull_ShouldThrowArgumentNullException()
     {
         var exception = Assert.Throws<ArgumentNullException>(() => new MenuCategoryService(_menuCategoryRepositoryMock, _supplierRepositoryMock, _unitOfWorkRepositoryMock, _mapper, null));
         Assert.Contains("logger", exception.Message);
     }
 
     [Fact]
-    public void Ctor_AllParameters_CreateNewInstance()
+    public void Ctor_WhenAllParameters_ShouldCreateNewInstance()
     {
         var menuCategoryService = new MenuCategoryService(_menuCategoryRepositoryMock, _supplierRepositoryMock, _unitOfWorkRepositoryMock, _mapper, _logger);
         Assert.NotNull(menuCategoryService);
@@ -77,7 +77,7 @@ public class MenuCategoryServiceTests
 
     #region Тесты добавления
     [Fact]
-    public async Task CreateMenuCategoryAsync_NewMenuCategory_ReturnMenuCategory()
+    public async Task CreateMenuCategoryAsync_WhenNewMenuCategory_ShouldReturnMenuCategory()
     {
         //Arrange
         Ulid menuCategoryId = Ulid.NewUlid();
@@ -110,7 +110,7 @@ public class MenuCategoryServiceTests
     }
 
     [Fact]
-    public async Task CreateMenuCategoryAsync_SupplierDoesNotExist_ShouldThrowNotFoundException()
+    public async Task CreateMenuCategoryAsync_WhenSupplierDoesNotExist_ShouldThrowNotFoundException()
     {
         var request = new AddMenuCategoryRequest
         {
@@ -125,6 +125,17 @@ public class MenuCategoryServiceTests
 
         Assert.Contains(nameof(Supplier), exception.Message);
         Assert.Contains(request.SupplierId.ToString(), exception.Message);
+    }
+
+    [Fact]
+    public async Task CreateMenuCategoryAsync_WhenAddMenuCategoryRequestIsNull_ShouldThrowArgumentNullException()
+    {
+        //Arrange
+        AddMenuCategoryRequest? request = null;
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _menuCategoryService.CreateMenuCategoryAsync(request));
+        Assert.Contains(nameof(request), exception.Message);
     }
     #endregion
 }

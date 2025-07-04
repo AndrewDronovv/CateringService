@@ -61,7 +61,7 @@ public class AddressService : IAddressService
             throw new NotFoundException(nameof(Address), addressId.ToString());
         }
 
-        _logger.LogInformation("Адрес успешно создан, страна = {Country}, город = {City}, Zip код = {Zip}.", createdAddress.Country, createdAddress.City, createdAddress.Zip);
+        _logger.LogInformation("Адрес успешно создан. {@CreatedAddress}", createdAddress);
 
         return _mapper.Map<AddressViewModel>(createdAddress);
     }
