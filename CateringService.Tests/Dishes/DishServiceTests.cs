@@ -12,7 +12,7 @@ using NSubstitute;
 
 namespace CateringService.Tests.Dishes;
 
-public class DishServiceTests
+public sealed class DishServiceTests
 {
     private readonly IDishRepository _dishRepositoryMock;
     private readonly ISupplierRepository _supplierRepositoryMock;
@@ -40,42 +40,42 @@ public class DishServiceTests
     [Fact]
     public void Ctor_WhenDishRepositoryNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(null, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(null!, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("dishRepository", exception.Message);
     }
 
     [Fact]
     public void Ctor_WhenSupplierRepositoryNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, null, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, null!, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("supplierRepository", exception.Message);
     }
 
     [Fact]
     public void Ctor_WhenUnitOfWorkNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, null, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, null!, _mapper, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("unitOfWorkRepository", exception.Message);
     }
 
     [Fact]
     public void Ctor_WhenMapperNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, null, _logger, _menuCategoryRepositoryMock, _slugService));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, null!, _logger, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("mapper", exception.Message);
     }
 
     [Fact]
     public void Ctor_WhenLoggerNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, null, _menuCategoryRepositoryMock, _slugService));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, null!, _menuCategoryRepositoryMock, _slugService));
         Assert.Contains("logger", exception.Message);
     }
 
     [Fact]
     public void Ctor_WhenMenuCategoryRepositoryNull_ShouldThrowArgumentNullException()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, null, _slugService));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, null!, _slugService));
         Assert.Contains("menuCategoryRepository", exception.Message);
     }
 
@@ -201,13 +201,8 @@ public class DishServiceTests
         Dish dish = new Dish { Id = dishId, Name = "Pizza" };
         DishViewModel dishViewModel = new DishViewModel { Id = dishId, Name = "Pizza" };
 
-        _dishRepositoryMock
-            .GetByIdAsync(dishId)
-            .Returns(Task.FromResult<Dish?>(dish));
-
-        _mapper
-            .Map<DishViewModel>(dish)
-            .Returns(dishViewModel);
+        _dishRepositoryMock.GetByIdAsync(dishId).Returns(Task.FromResult<Dish?>(dish));
+        _mapper.Map<DishViewModel>(dish).Returns(dishViewModel);
 
         //Act
         var result = await _dishService.GetByIdAsync(dishId);
@@ -346,6 +341,61 @@ public class DishServiceTests
         //Act & Assert
         var result = await Assert.ThrowsAsync<ArgumentException>(() => _dishService.ToggleDishStateAsync(dishId));
         Assert.Contains(nameof(dishId), result.Message);
+    }
+    #endregion
+
+    #region Получение получения блюда по Slug
+    [Fact]
+    public async Task GetBySlugAsync_WhenSlugIsNullOrWhiteSpace_ShouldReturnArgumentException()
+    {
+        //Arrange
+        var slug = string.Empty;
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _dishService.GetBySlugAsync(slug));
+        Assert.Contains(nameof(slug), exception.Message);
+    }
+
+    [Fact]
+    public async Task GetBySlugAsync_WhenDishExists_ShouldReturnDish()
+    {
+        //Arrange
+        var inputSlug = "Test";
+        var normalizedSlug = "test";
+        var dish = new Dish { Id = Ulid.NewUlid(), Name = "TestDish" };
+        var expected = new DishViewModel { Id = dish.Id, Name = dish.Name };
+
+        _slugService.GenerateSlug(inputSlug).Returns(normalizedSlug);
+        _dishRepositoryMock.GetBySlugAsync(normalizedSlug).Returns(dish);
+        _mapper.Map<DishViewModel>(dish).Returns(expected);
+
+        //Act
+        var result = await _dishService.GetBySlugAsync(inputSlug);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.Equal(expected.Id, result.Id);
+        Assert.Equal(expected.Name, result.Name);
+        _slugService.Received(1).GenerateSlug(inputSlug);
+        await _dishRepositoryMock.Received(1).GetBySlugAsync(normalizedSlug);
+        _mapper.Received(1).Map<DishViewModel>(dish);
+    }
+
+    [Fact]
+    public async Task GetBySlugAsync_WhenDishDoesNotExist_ShouldReturnNotFoundException()
+    {
+        //Arrange
+        var inputSlug = "Test";
+        var normalizedSlug = "test";
+        var dish = new Dish { Id = Ulid.NewUlid(), Name = "TestDish" };
+
+        _slugService.GenerateSlug(inputSlug).Returns(normalizedSlug);
+        _dishRepositoryMock.GetBySlugAsync(normalizedSlug).Returns(Task.FromResult<Dish?>(null));
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _dishService.GetBySlugAsync(inputSlug));
+        Assert.Contains(nameof(Dish), exception.Message);
+        Assert.Contains(normalizedSlug, exception.Message);
     }
     #endregion
 

@@ -11,7 +11,7 @@ using NSubstitute;
 
 namespace CateringService.Tests.MenuCategories;
 
-public class MenuCategoryServiceTests
+public sealed class MenuCategoryServiceTests
 {
     private readonly IMenuCategoryRepository _menuCategoryRepositoryMock;
     private readonly ISupplierRepository _supplierRepositoryMock;

@@ -55,7 +55,7 @@ public class DishService : IDishService
             throw new NotFoundException(nameof(Supplier), supplierId.ToString());
         }
 
-        var menuCategoryExists = await _menuCategoryRepository.ChechMenuCategoryExists(request.MenuCategoryId);
+        var menuCategoryExists = await _menuCategoryRepository.ChechMenuCategoryExists(request!.MenuCategoryId);
         if (!menuCategoryExists)
         {
             _logger.LogWarning("Категория меню {MenuCategoryId} не найдена.", request.MenuCategoryId);

@@ -42,7 +42,7 @@ public class MenuCategoryService : IMenuCategoryService
 
         _logger.LogInformation("Создание категории меню. Поставщик {SupplierId}, Название {Name}.", request.SupplierId, request?.Name);
 
-        var supplierExists = await _supplierRepository.CheckSupplierExists(request.SupplierId);
+        var supplierExists = await _supplierRepository.CheckSupplierExists(request!.SupplierId);
         if (!supplierExists)
         {
             _logger.LogWarning("Поставщик {SupplierId} не найден.", request.SupplierId);

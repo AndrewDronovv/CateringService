@@ -15,9 +15,9 @@ namespace CateringService.Controllers;
 public class DishesController : ControllerBase
 {
     private readonly IDishService _dishService;
-    public DishesController(IDishService dishAppService)
+    public DishesController(IDishService dishService)
     {
-        _dishService = dishAppService ?? throw new ArgumentNullException(nameof(dishAppService));
+        _dishService = dishService ?? throw new ArgumentNullException(nameof(dishService));
     }
 
     [HttpGet("[controller]/by-id/{dishId}", Name = "GetDishByIdV1")]

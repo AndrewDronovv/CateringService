@@ -11,7 +11,7 @@ using NSubstitute;
 
 namespace CateringService.Tests.Addresses;
 
-public class AddressServiceTests
+public sealed class AddressServiceTests
 {
     private readonly IAddressRepository _addressRepositoryMock;
     private readonly IUnitOfWorkRepository _unitOfWorkMock;
