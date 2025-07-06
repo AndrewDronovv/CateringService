@@ -36,7 +36,7 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
     //TODO: Доделать метод, необходимо добавить параметр tenantId.
     public async Task<IEnumerable<Address>> SearchByTextAsync(string query)
     {
-        query = query.ToLower();
+        //query = query.ToLower();
 
         return await _context.Addresses
             .AsNoTracking()

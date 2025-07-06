@@ -120,9 +120,24 @@ public class AddressService : IAddressService
 
     public async Task<IEnumerable<AddressViewModel>> SearchAddressesByTextAsync(string query)
     {
-        var addresses = await _addressRepository.SearchByTextAsync(query);
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            _logger.LogWarning("City & StreetBuilding не должны быть пустыми.");
+            throw new ArgumentException(nameof(query), "Query is empty.");
+        }
 
-        return _mapper.Map<IEnumerable<AddressViewModel>>(addresses);
+        var normalizedQuery = query.ToLower().Trim();
+
+        _logger.LogInformation("Получен запрос на адрес {NormalizedQuery}.", normalizedQuery);
+
+        var addresses = await _addressRepository.SearchByTextAsync(query);
+        if (!addresses.Any())
+        {
+            _logger.LogWarning("Список адресов пуст.");
+            return new List<AddressViewModel>();
+        }
+
+        return _mapper.Map<IEnumerable<AddressViewModel>>(addresses) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
     }
 
     public async Task<IEnumerable<AddressViewModel>> SearchAddressesByZipAsync(SearchByZipViewModel request)
@@ -134,8 +149,13 @@ public class AddressService : IAddressService
         }
 
         var zipCodes = await _addressRepository.SearchByZipAsync(request.TenantId, request.Zip);
+        if (!zipCodes.Any())
+        {
+            _logger.LogWarning("Список адресов пуст.");
+            return new List<AddressViewModel>();
+        }
 
-        return _mapper.Map<IEnumerable<AddressViewModel>>(zipCodes);
+        return _mapper.Map<IEnumerable<AddressViewModel>>(zipCodes) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
     }
 
     public async Task<AddressViewModel> UpdateAddressAsync(Ulid addressId, Ulid tenantId, UpdateAddressRequest request)
