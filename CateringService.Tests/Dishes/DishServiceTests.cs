@@ -82,7 +82,6 @@ public sealed class DishServiceTests
     [Fact]
     public void Ctor_WhenAllParameters_ShouldCreateNewInstance()
     {
-        var dishService = new DishService(_dishRepositoryMock, _supplierRepositoryMock, _unitOfWorkMock, _mapper, _logger, _menuCategoryRepositoryMock, _slugService);
         Assert.NotNull(_dishService);
     }
     #endregion
@@ -230,7 +229,7 @@ public sealed class DishServiceTests
     }
 
     [Fact]
-    public async Task GetByIdAsync_WhenDishIdIsEmpty_ShouldThrowNotFoundException()
+    public async Task GetByIdAsync_WhenDishIdIsEmpty_ShouldThrowArgumentException()
     {
         //Arrange
         var dishId = Ulid.Empty;

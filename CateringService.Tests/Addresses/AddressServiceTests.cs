@@ -32,6 +32,47 @@ public sealed class AddressServiceTests
     }
 
     [Fact]
+    public async Task Ctor_WhenAddressRepositoryNull_ShouldThrowArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => new AddressService(null!, _unitOfWorkMock, _tenantRepositoryMock, _mapper, _logger));
+        Assert.Contains("addressRepository", exception.Message);
+    }
+
+    [Fact]
+    public async Task Ctor_WhenUnitOfWorkNull_ShouldThrowArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => new AddressService(_addressRepositoryMock, null!, _tenantRepositoryMock, _mapper, _logger));
+        Assert.Contains("unitOfWork", exception.Message);
+    }
+
+    [Fact]
+    public async Task Ctor_WhenTenantRepositoryNull_ShouldThrowArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => new AddressService(_addressRepositoryMock, _unitOfWorkMock, null!, _mapper, _logger));
+        Assert.Contains("tenantRepository", exception.Message);
+    }
+
+    [Fact]
+    public async Task Ctor_WhenMapperNull_ShouldThrowArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => new AddressService(_addressRepositoryMock, _unitOfWorkMock, _tenantRepositoryMock, null!, _logger));
+        Assert.Contains("mapper", exception.Message);
+    }
+
+    [Fact]
+    public async Task Ctor_WhenLoggerNull_ShouldThrowArgumentNullException()
+    {
+        var exception = Assert.Throws<ArgumentNullException>(() => new AddressService(_addressRepositoryMock, _unitOfWorkMock, _tenantRepositoryMock, _mapper, null!));
+        Assert.Contains("logger", exception.Message);
+    }
+
+    [Fact]
+    public async Task Ctor_WhenAllParameters_ShouldCreateNewInstance()
+    {
+        Assert.NotNull(_addressService);
+    }
+
+    [Fact]
     public async Task CreateAddressAsync_WhenAddAddressRequestIsNull_ShouldThrowArgumentNullException()
     {
         //Arrange
@@ -152,7 +193,7 @@ public sealed class AddressServiceTests
     }
 
     [Fact]
-    public async Task GetAddressAsync_WhenExistingAddress_ShouldReturnAddress()
+    public async Task GetByIdAsync_WhenDishExists_ShouldReturnAddress()
     {
         //Arrange
         var addressId = Ulid.NewUlid();
@@ -187,5 +228,29 @@ public sealed class AddressServiceTests
 
         await _addressRepositoryMock.Received(1).GetByIdAsync(addressId);
         _mapper.Received(1).Map<AddressViewModel>(address);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WhenDishDoesNotExist_ShouldThrowNotFoundException()
+    {
+        //Arrange
+        Address address = new Address { Id = Ulid.NewUlid() };
+        _addressRepositoryMock.GetByIdAsync(address.Id).Returns(Task.FromResult<Address?>(null));
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _addressService.GetByIdAsync(address.Id));
+        Assert.Contains(nameof(Address), exception.Message);
+        Assert.Contains(address.Id.ToString(), exception.Message);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_WhenAddressIdIsEmpty_ShouldThrowArgumentException()
+    {
+        //Arrange
+        var addressId = Ulid.NewUlid();
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => _addressService.GetByIdAsync(addressId));
+        Assert.Contains(nameof(addressId), exception.Message);
     }
 }
