@@ -118,7 +118,7 @@ public class AddressService : IAddressService
         return _mapper.Map<AddressViewModel>(address) ?? throw new InvalidOperationException("AddressViewModel mapping failed.");
     }
 
-    public async Task<IEnumerable<AddressViewModel>> SearchAddressesByTextAsync(string query)
+    public async Task<IEnumerable<AddressViewModel>> SearchAddressesByTextAsync(string query, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
@@ -126,11 +126,13 @@ public class AddressService : IAddressService
             throw new ArgumentException(nameof(query), "Query is empty.");
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
+
         var normalizedQuery = query.ToLower().Trim();
 
         _logger.LogInformation("Получен запрос на адрес {NormalizedQuery}.", normalizedQuery);
 
-        var addresses = await _addressRepository.SearchByTextAsync(query);
+        var addresses = await _addressRepository.SearchByTextAsync(query, cancellationToken);
         if (!addresses.Any())
         {
             _logger.LogWarning("Список адресов пуст.");

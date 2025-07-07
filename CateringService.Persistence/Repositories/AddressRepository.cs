@@ -34,10 +34,8 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
     }
 
     //TODO: Доделать метод, необходимо добавить параметр tenantId.
-    public async Task<IEnumerable<Address>> SearchByTextAsync(string query)
+    public async Task<IEnumerable<Address>> SearchByTextAsync(string query, CancellationToken cancellationToken)
     {
-        //query = query.ToLower();
-
         return await _context.Addresses
             .AsNoTracking()
             .Where(a =>
@@ -45,7 +43,7 @@ public class AddressRepository : GenericRepository<Address, Ulid>, IAddressRepos
                     .Matches(EF.Functions.PhraseToTsQuery("english", query)))
             .OrderByDescending(a => EF.Functions.ToTsVector("english", a.City + " " + a.StreetAndBuilding)
                 .Rank(EF.Functions.PhraseToTsQuery("english", query)))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Address>> SearchByZipAsync(Ulid? tenantId, string zip)

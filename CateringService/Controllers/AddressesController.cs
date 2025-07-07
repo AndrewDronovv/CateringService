@@ -16,7 +16,7 @@ public class AddressesController : ControllerBase
         _addressService = addressService;
     }
 
-    
+
     [HttpPost(ApiEndPoints.Addresses.Create)]
     [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
@@ -68,9 +68,10 @@ public class AddressesController : ControllerBase
 
     [HttpGet("api/addresses/search")]
     [ProducesResponseType(typeof(IEnumerable<AddressViewModel>), StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<AddressViewModel>>> SearchAddressesByTextAsync([FromQuery] string query)
+    public async Task<ActionResult<IEnumerable<AddressViewModel>>> SearchAddressesByTextAsync(
+        [FromQuery] string query, CancellationToken cancellationToken)
     {
-        var addresses = await _addressService.SearchAddressesByTextAsync(query);
+        var addresses = await _addressService.SearchAddressesByTextAsync(query, cancellationToken);
 
         return Ok(addresses);
     }

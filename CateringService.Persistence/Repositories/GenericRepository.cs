@@ -23,12 +23,12 @@ public class GenericRepository<TEntity, TPrimaryKey> : IGenericRepository<TEntit
         _context.Set<TEntity>().Remove(entity);
     }
 
-    public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TEntity>> GetAllAsync()
     {
         return await _context.Set<TEntity>().ToListAsync();
     }
 
-    public async Task<TEntity?> GetByIdAsync(TPrimaryKey id, bool asNoTracking = false, CancellationToken cancellationToken = default)
+    public async Task<TEntity?> GetByIdAsync(TPrimaryKey id, bool asNoTracking = false)
     {
         var dbSet = _context.Set<TEntity>();
         if (asNoTracking)
@@ -36,7 +36,7 @@ public class GenericRepository<TEntity, TPrimaryKey> : IGenericRepository<TEntit
             dbSet.AsNoTracking();
         }
 
-        return await dbSet.FindAsync(id, cancellationToken);
+        return await dbSet.FindAsync(id);
     }
 
     public TPrimaryKey Update(TEntity entity, bool isNotTracked = false)

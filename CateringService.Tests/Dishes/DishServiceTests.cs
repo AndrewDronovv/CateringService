@@ -307,7 +307,7 @@ public sealed class DishServiceTests
     {
         //Arrange
         Dish dish = new Dish { Id = Ulid.NewUlid(), IsAvailable = true };
-        _dishRepositoryMock.GetByIdAsync(dish.Id, Arg.Any<bool>(), Arg.Any<CancellationToken>()).Returns(dish);
+        _dishRepositoryMock.GetByIdAsync(dish.Id, Arg.Any<bool>()).Returns(dish);
         _dishRepositoryMock.ToggleState(dish).Returns(true);
 
         //Act

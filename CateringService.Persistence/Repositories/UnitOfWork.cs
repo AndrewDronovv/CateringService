@@ -20,11 +20,11 @@ public sealed class UnitOfWork : IUnitOfWorkRepository
         return 0;
     }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public async Task<int> SaveChangesAsync()
     {
         if (_context.ChangeTracker.HasChanges())
         {
-            return await _context.SaveChangesAsync(cancellationToken);
+            return await _context.SaveChangesAsync();
         }
         return 0;
     }

@@ -247,7 +247,7 @@ public sealed class AddressServiceTests
     public async Task GetByIdAsync_WhenAddressIdIsEmpty_ShouldThrowArgumentException()
     {
         //Arrange
-        var addressId = Ulid.NewUlid();
+        var addressId = Ulid.Empty;
 
         //Act & Assert
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _addressService.GetByIdAsync(addressId));

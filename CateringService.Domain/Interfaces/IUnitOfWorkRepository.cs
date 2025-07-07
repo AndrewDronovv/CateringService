@@ -3,5 +3,5 @@
 public interface IUnitOfWorkRepository
 {
     int SaveChanges();
-    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync();
 }
