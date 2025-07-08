@@ -253,4 +253,15 @@ public sealed class AddressServiceTests
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _addressService.GetByIdAsync(addressId));
         Assert.Contains(nameof(addressId), exception.Message);
     }
+
+    [Fact]
+    public async Task SearchAddressesByZipAsync_WhenSearchByZipViewModelIsNull_ShouldThrowArgumentNullException()
+    {
+        //Arrange
+        SearchByZipViewModel request = null;
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _addressService.SearchAddressesByZipAsync(request));
+        Assert.Contains(nameof(request), exception.Message);
+    }
 }
