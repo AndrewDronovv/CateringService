@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CateringService.Application.Abstractions;
+using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
 using CateringService.Application.Services;
 using CateringService.Domain.Entities;
@@ -28,6 +29,7 @@ public sealed class TenantServiceTests
         _tenantService = new TenantService(_tenantRepositoryMock, _unitOfWorkRepositoryMock, _mapper, _logger);
     }
 
+    #region Тесты конструктора
     [Fact]
     public async Task Ctor_WhenTenantRepositoryNull_ShouldThrowArgumentNullException()
     {
@@ -62,7 +64,9 @@ public sealed class TenantServiceTests
         Assert.NotNull(_tenantService);
         Assert.IsType<TenantService>(_tenantService);
     }
+    #endregion
 
+    #region Тесты получения tenant по Id
     [Fact]
     public async Task GetTenantByIdAsync_WhenTenantIsEmpty_ShouldThrowArgumentException()
     {
@@ -110,4 +114,125 @@ public sealed class TenantServiceTests
         await _tenantRepositoryMock.Received(1).GetByIdAsync(tenantId);
         _mapper.Received(1).Map<TenantViewModel>(tenant);
     }
+    #endregion
+
+    #region Тесты получения всех tenants
+    [Fact]
+    public async Task GetTenantsAsync_WhenTenantListIsEmpty_ShouldReturnEmptyList()
+    {
+        //Arrange
+        _tenantRepositoryMock.GetAllAsync().Returns(Task.FromResult(Enumerable.Empty<Tenant>()));
+
+        //Act
+        var result = await _tenantService.GetTenantsAsync();
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public async Task GetTenantsAsync_WhenTenantListExists_ShouldReturnTenantList()
+    {
+        //Arrange
+        var tenants = new List<Tenant>
+        {
+            new Tenant{Id = Ulid.NewUlid(), Name = "Test tenant one"},
+            new Tenant{Id = Ulid.NewUlid(), Name = "Test tenant two"}
+        };
+        var viewModels = tenants
+            .Select(t => new TenantViewModel { Id = t.Id, Name = t.Name })
+            .ToList();
+
+        _tenantRepositoryMock.GetAllAsync().Returns(tenants);
+        _mapper.Map<List<TenantViewModel>>(tenants).Returns(viewModels);
+
+        //Act
+        var result = await _tenantService.GetTenantsAsync();
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.Equal(viewModels.Count, result.Count);
+        Assert.Equal(viewModels.Select(v => v.Name), result.Select(tv => tv.Name));
+        Assert.All(result, tenant => Assert.False(string.IsNullOrWhiteSpace(tenant.Name)));
+        Assert.IsAssignableFrom<IEnumerable<TenantViewModel>>(result);
+        _mapper.Received(1).Map<List<TenantViewModel>>(Arg.Is<IEnumerable<Tenant>>(x => x.Count() > 0));
+
+        await _tenantRepositoryMock.Received(1).GetAllAsync();
+    }
+    #endregion
+
+    #region Тесты создания tenant
+    [Fact]
+    public async Task CreateTenantAsync_WhenAddTenantRequestIsNull_ShouldThrowArgumentNullException()
+    {
+        //Arrange
+        AddTenantRequest? request = null;
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _tenantService.CreateTenantAsync(request));
+        Assert.Contains(nameof(request), exception.Message);
+    }
+
+    [Fact]
+    public async Task CreateTenantAsync_WhenCreatedTenantIsNull_ShouldThrowNotFoundException()
+    {
+        //Arrange
+        Ulid tenantId = Ulid.NewUlid();
+        AddTenantRequest request = new AddTenantRequest { Name = "Test Tenant" };
+        Tenant tenant = new Tenant { Id = tenantId, Name = request.Name };
+        TenantViewModel viewModel = new TenantViewModel { Id = tenantId, Name = request.Name };
+
+        _mapper.Map<Tenant>(request).Returns(tenant);
+        _tenantRepositoryMock.Add(tenant).Returns(tenant.Id);
+        _tenantRepositoryMock.GetByIdAsync(tenant.Id).Returns(Task.FromResult<Tenant?>(null));
+
+        //Act
+        var exception = await Assert.ThrowsAsync<NotFoundException>(() => _tenantService.CreateTenantAsync(request));
+
+        //Assert
+        Assert.Contains(nameof(Tenant), exception.Message);
+        Assert.Contains(tenantId.ToString(), exception.Message);
+    }
+
+    [Fact]
+    public async Task CreateTenantAsync_WhenNewTenant_ShouldReturnTenant()
+    {
+        //Arrange
+        Ulid tenantId = Ulid.NewUlid();
+        AddTenantRequest request = new AddTenantRequest { Name = "Test Tenant" };
+        Tenant tenant = new Tenant { Id = tenantId, Name = request.Name };
+        TenantViewModel viewModel = new TenantViewModel { Id = tenantId, Name = request.Name };
+
+        _mapper.Map<Tenant>(request).Returns(tenant);
+        _tenantRepositoryMock.Add(tenant).Returns(tenant.Id);
+        _tenantRepositoryMock.GetByIdAsync(tenant.Id).Returns(Task.FromResult<Tenant?>(tenant));
+        _mapper.Map<TenantViewModel>(tenant).Returns(viewModel);
+
+        //Act
+        var result = await _tenantService.CreateTenantAsync(request);
+
+        //Assert
+        Assert.NotNull(result);
+        Assert.NotEqual(Ulid.Empty, result.Id);
+        Assert.Equal(tenantId, result.Id);
+        Assert.Equal("Test Tenant", result.Name);
+        _tenantRepositoryMock.Received(1).Add(Arg.Any<Tenant>());
+        await _unitOfWorkRepositoryMock.Received(1).SaveChangesAsync();
+        _mapper.Received(1).Map<Tenant>(request);
+        _mapper.Received(1).Map<TenantViewModel>(tenant);
+    }
+
+    [Fact]
+    public async Task CreateTenantAsync_WhenMappingFails_ShouldThrowInvalidOperationException()
+    {
+        //Arrange
+        var request = new AddTenantRequest { Name = "Test Tenant" };
+        _mapper.Map<Tenant>(request).Returns((Tenant?)null);
+
+        //Act & Assert
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(() => _tenantService.CreateTenantAsync(request));
+        Assert.Contains("Tenant mapping failed.", exception.Message);
+    }
+    #endregion
 }

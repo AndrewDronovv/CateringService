@@ -100,7 +100,7 @@ public sealed class DishServiceTests
             SupplierId = supplierId
         };
         Dish dish = new Dish { Id = dishId, Name = request.Name, SupplierId = supplierId };
-        var viewModel = new DishViewModel { Id = dishId, Name = request.Name };
+        DishViewModel viewModel = new DishViewModel { Id = dishId, Name = request.Name };
 
         _supplierRepositoryMock.CheckSupplierExists(supplierId).Returns(true);
         _menuCategoryRepositoryMock.ChechMenuCategoryExists(request.MenuCategoryId).Returns(true);
@@ -251,22 +251,21 @@ public sealed class DishServiceTests
             new Dish { Id = Ulid.NewUlid(), Name = "Pizza" },
             new Dish { Id = Ulid.NewUlid(), Name = "Pasta" }
         };
-        var expectedResult = new List<DishViewModel>
-        {
-            new DishViewModel { Name = "Pizza" },
-            new DishViewModel { Name = "Pasta" }
-        };
+
+        var viewModels = dishes
+            .Select(d => new DishViewModel { Id = d.Id, Name = d.Name })
+            .ToList();
 
         _dishRepositoryMock.GetDishesBySupplierIdAsync(supplierId).Returns(dishes);
-        _mapper.Map<List<DishViewModel>>(dishes).Returns(expectedResult);
+        _mapper.Map<List<DishViewModel>>(dishes).Returns(viewModels);
 
         //Act
         var result = await _dishService.GetDishesBySupplierIdAsync(supplierId);
 
         //Assert
         Assert.NotNull(result);
-        Assert.Equal(expectedResult.Count, result.Count());
-        Assert.Equal(expectedResult.Select(d => d.Name), result.Select(r => r.Name));
+        Assert.Equal(viewModels.Count, result.Count());
+        Assert.Equal(viewModels.Select(d => d.Name), result.Select(r => r.Name));
         Assert.All(result, dish => Assert.False(string.IsNullOrWhiteSpace(dish.Name)));
         Assert.IsAssignableFrom<IEnumerable<DishViewModel>>(result);
         _mapper.Received(1).Map<List<DishViewModel>>(Arg.Is<IEnumerable<Dish>>(x => x.Count() > 0));
@@ -398,7 +397,7 @@ public sealed class DishServiceTests
     }
     #endregion
 
-    //#region Тесты удаления
+    #region Тесты удаления
     //[Fact]
     //public async Task DeleteAsync_ExistingDish_DeletesDish()
     //{
@@ -459,5 +458,5 @@ public sealed class DishServiceTests
     //    var exception = await Assert.ThrowsAsync<KeyNotFoundException>(async () => await _dishService.UpdateAsync(oldDish.Id, newDish));
     //    Assert.Contains($"Сущность с ключом {oldDish.Id} не найдена", exception.Message);
     //}
-    //#endregion
+    #endregion
 }
