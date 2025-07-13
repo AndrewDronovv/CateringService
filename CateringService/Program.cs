@@ -22,7 +22,7 @@ builder.Services.AddScoped<LoggingActionFilter>();
 var app = builder.Build();
 
 
-app.ConfigurePipeline();
+app.ConfigurePipeline(builder);
 app.Run();
 
 Log.CloseAndFlush();

@@ -15,7 +15,6 @@ using CateringService.Persistence.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -83,6 +82,8 @@ public static class ServiceExtensions
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
 
         services.AddScoped<ISlugService, SlugService>();
+
+        services.AddScoped<IImageStorageService, LocalFileStorageService>();
     }
 
     public static void ApplicationServiceExtensions(this IServiceCollection services)

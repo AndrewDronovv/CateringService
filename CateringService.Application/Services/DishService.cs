@@ -2,6 +2,7 @@
 using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Application.Interfaces;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Entities;
 using CateringService.Domain.Exceptions;
@@ -19,9 +20,10 @@ public class DishService : IDishService
     private readonly IMapper _mapper;
     private readonly ILogger<DishService> _logger;
     private readonly ISlugService _slugService;
+    private readonly IImageStorageService _storage;
 
     public DishService(IDishRepository dishRepository, ISupplierRepository supplierRepository, IUnitOfWorkRepository unitOfWorkRepository,
-        IMapper mapper, ILogger<DishService> logger, IMenuCategoryRepository menuCategoryRepository, ISlugService slugService)
+        IMapper mapper, ILogger<DishService> logger, IMenuCategoryRepository menuCategoryRepository, ISlugService slugService, IImageStorageService storage)
     {
         _dishRepository = dishRepository ?? throw new ArgumentNullException(nameof(dishRepository));
         _supplierRepository = supplierRepository ?? throw new ArgumentNullException(nameof(supplierRepository));
@@ -30,6 +32,7 @@ public class DishService : IDishService
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _slugService = slugService ?? throw new ArgumentNullException(nameof(slugService));
+        _storage = storage ?? throw new ArgumentNullException(nameof(storage));
     }
 
     public async Task<DishViewModel?> CreateDishAsync(Ulid supplierId, AddDishRequest request)
@@ -62,10 +65,14 @@ public class DishService : IDishService
             throw new NotFoundException(nameof(MenuCategory), request.MenuCategoryId.ToString());
         }
 
+        string[] allowedFileExtensions = [".jpg", ".jpeg", ".png"];
+        string createdImageName = await _storage.SaveFileAsync(request.Image, allowedFileExtensions);
+
+        request.SupplierId = supplierId;
         request.Slug = _slugService.GenerateSlug(request.Name);
+        request.ImageUrl = $"/Resources/{createdImageName}";
 
         var dish = _mapper.Map<Dish>(request) ?? throw new InvalidOperationException("Ошибка маппинга блюда.");
-
         var dishId = _dishRepository.Add(dish);
         await _unitOfWorkRepository.SaveChangesAsync();
 

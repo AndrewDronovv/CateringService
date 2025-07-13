@@ -1,11 +1,12 @@
 ﻿using Asp.Versioning.ApiExplorer;
 using CateringService.Middlewares;
+using Microsoft.Extensions.FileProviders;
 
 namespace CateringService.Extensions;
 
 public static class MiddlewareExtensions
 {
-    public static void ConfigurePipeline(this WebApplication app)
+    public static void ConfigurePipeline(this WebApplication app, WebApplicationBuilder builder)
     {
         app.UseErrorHandling();
 
@@ -26,7 +27,12 @@ public static class MiddlewareExtensions
             });
         }
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(
+                Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
+            RequestPath = "/Resources"
+        });
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
