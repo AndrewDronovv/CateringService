@@ -22,12 +22,12 @@ public class CompanyService : ICompanyService
     public CompanyService(ICompanyRepository companyRepository, IUnitOfWorkRepository unitOfWorkRepository,
         IMapper mapper, ILogger<CompanyService> logger, ITenantRepository tenantRepository, IAddressRepository addressRepository)
     {
-        _companyRepository = companyRepository;
-        _unitOfWorkRepository = unitOfWorkRepository;
-        _mapper = mapper;
-        _logger = logger;
-        _tenantRepository = tenantRepository;
-        _addressRepository = addressRepository;
+        _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
+        _unitOfWorkRepository = unitOfWorkRepository ?? throw new ArgumentNullException(nameof(unitOfWorkRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _tenantRepository = tenantRepository ?? throw new ArgumentNullException(nameof(tenantRepository));
+        _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
     }
 
     //TODO: Проверки уникальности TaxNumber.
