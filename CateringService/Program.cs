@@ -1,5 +1,4 @@
 using CateringService.Extensions;
-using CateringService.Filters;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +15,7 @@ builder.Services.AddApiVesioning();
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddPresentationServices();
 
-builder.Services.AddScoped<LoggingActionFilter>();
+builder.Services.AddLoggingActionFilter();
 
 
 var app = builder.Build();

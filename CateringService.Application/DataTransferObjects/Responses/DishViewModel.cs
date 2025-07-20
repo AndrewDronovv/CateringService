@@ -16,4 +16,5 @@ public sealed class DishViewModel
     public Ulid SupplierId { get; set; }
     public Ulid MenuCategoryId { get; set; }
     public string? Slug { get; set; }
+    public string CreatedAtString => CreatedAt.ToString("f");
 }

@@ -26,6 +26,7 @@ public static class MiddlewareExtensions
             });
         }
         app.UseHttpsRedirection();
+        app.UseRequestCulture();
         app.UseStaticFiles();
         app.UseRouting();
         app.UseAuthentication();

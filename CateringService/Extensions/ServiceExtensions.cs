@@ -7,6 +7,7 @@ using CateringService.Application.Validators.Dish;
 using CateringService.Domain.Abstractions;
 using CateringService.Domain.Interfaces;
 using CateringService.Domain.Repositories;
+using CateringService.Filters;
 using CateringService.ModelBinders.MenuCategories;
 using CateringService.ModelBinders.Tenants;
 using CateringService.OpenApi;
@@ -83,6 +84,16 @@ public static class ServiceExtensions
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
 
         services.AddScoped<ISlugService, SlugService>();
+    }
+
+    public static void AddLoggingActionFilter(this IServiceCollection services)
+    {
+        services.AddScoped<LoggingActionFilter>();
+
+        services.Configure<MvcOptions>(options =>
+        {
+            options.Filters.AddService<LoggingActionFilter>();
+        });
     }
 
     public static void ApplicationServiceExtensions(this IServiceCollection services)
