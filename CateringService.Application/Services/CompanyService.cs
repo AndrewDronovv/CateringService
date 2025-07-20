@@ -30,6 +30,40 @@ public class CompanyService : ICompanyService
         _addressRepository = addressRepository ?? throw new ArgumentNullException(nameof(addressRepository));
     }
 
+    public async Task<CompanyViewModel> BlockCompanyAsync(Ulid companyId, Ulid userId)
+    {
+        if (companyId == Ulid.Empty)
+        {
+            _logger.LogWarning("CompanyId не должен быть пустым.");
+            throw new ArgumentException(nameof(companyId), "CompanyId is empty.");
+        }
+
+        _logger.LogInformation("Получен запрос на блокировку компании {CompanyId}.", companyId);
+
+        var company = await _companyRepository.GetByIdAsync(companyId);
+        if (company is null)
+        {
+            _logger.LogWarning("Компания {CompanyId} не найдена.", companyId);
+            throw new NotFoundException(nameof(Company), companyId.ToString());
+        }
+
+        if (company.IsBlocked)
+        {
+            _logger.LogWarning("Компания {CompanyId} уже заблокирована.", companyId);
+            throw new ArgumentException(nameof(company), $"Компания {company.Name} уже заблокирована.");
+        }
+
+        company.UpdatedAt = DateTime.Now;
+        company.IsBlocked = true;
+
+        _companyRepository.Update(company);
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Компания {CompanyId} успешно заблокирована в {UpdatedAt}.", companyId, company.UpdatedAt);
+
+        return _mapper.Map<CompanyViewModel>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
+    }
+
     //TODO: Проверки уникальности TaxNumber.
     public async Task<CompanyViewModel> CreateCompanyAsync(AddCompanyRequest request, Ulid userId)
     {

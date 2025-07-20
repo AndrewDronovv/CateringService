@@ -80,4 +80,15 @@ public class CompaniesController : ControllerBase
 
         return Ok(viewModel);
     }
+
+    [HttpPatch("api/companies/{companyId}/block")]
+    [ProducesResponseType(typeof(CompanyViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CompanyViewModel>> BlockCompanyAsync(Ulid companyId)
+    {
+        var blockedCompany = await _companyService.BlockCompanyAsync(companyId, Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B"));
+
+        return Ok(blockedCompany);
+    }
 }
