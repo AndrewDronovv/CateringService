@@ -55,9 +55,7 @@ public sealed class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .ValueGeneratedOnAdd()
             .IsRequired();
 
-        builder.Property(c => c.UpdatedAt)
-            .HasDefaultValueSql("NULL")
-            .ValueGeneratedOnUpdate();
+        builder.Property(c => c.UpdatedAt);
 
         builder.HasOne(c => c.Tenant)
             .WithMany(t => t.Companies)

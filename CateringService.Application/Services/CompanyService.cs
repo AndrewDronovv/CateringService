@@ -53,7 +53,7 @@ public class CompanyService : ICompanyService
             throw new ArgumentException(nameof(company), $"Компания {company.Name} уже заблокирована.");
         }
 
-        company.UpdatedAt = DateTime.Now;
+        company.UpdatedAt = DateTime.UtcNow;
         company.IsBlocked = true;
 
         _companyRepository.Update(company);
