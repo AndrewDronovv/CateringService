@@ -12,4 +12,5 @@ public interface ICompanyService
     Task<PagedCompanyViewModel> GetCompaniesAsync(GetCompaniesRequest request, Ulid userId);
     Task<CompanyViewModel> UpdateCompanyAsync(UpdateCompanyRequest request, Ulid userId);
     Task<CompanyViewModel> BlockCompanyAsync(Ulid companyId, Ulid userId);
+    Task<CompanyViewModel> UnblockCompanyAsync(Ulid companyId, Ulid userId);
 }

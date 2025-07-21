@@ -64,6 +64,40 @@ public class CompanyService : ICompanyService
         return _mapper.Map<CompanyViewModel>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
     }
 
+    public async Task<CompanyViewModel> UnblockCompanyAsync(Ulid companyId, Ulid userId)
+    {
+        if (companyId == Ulid.Empty)
+        {
+            _logger.LogWarning("CompanyId не должен быть пустым.");
+            throw new ArgumentException(nameof(companyId), "CompanyId is empty.");
+        }
+
+        _logger.LogInformation("Получен запрос на разблокировку компании {CompanyId}.", companyId);
+
+        var company = await _companyRepository.GetByIdAsync(companyId);
+        if (company is null)
+        {
+            _logger.LogWarning("Компания {CompanyId} не найдена.", companyId);
+            throw new NotFoundException(nameof(Company), companyId.ToString());
+        }
+
+        if (!company.IsBlocked)
+        {
+            _logger.LogWarning("Компания {CompanyId} не заблокирована.", companyId);
+            throw new ArgumentException(nameof(company), $"Компания {company.Name} не заблокирована.");
+        }
+
+        company.UpdatedAt = DateTime.UtcNow;
+        company.IsBlocked = false;
+
+        _companyRepository.Update(company);
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Компания {CompanyId} успешно разблокирована в {UpdatedAt}.", companyId, company.UpdatedAt);
+
+        return _mapper.Map<CompanyViewModel>(company) ?? throw new InvalidOperationException("CompanyViewModel mapping failed.");
+    }
+
     //TODO: Проверки уникальности TaxNumber.
     public async Task<CompanyViewModel> CreateCompanyAsync(AddCompanyRequest request, Ulid userId)
     {

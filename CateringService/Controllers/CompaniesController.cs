@@ -91,4 +91,15 @@ public class CompaniesController : ControllerBase
 
         return Ok(blockedCompany);
     }
+
+    [HttpPatch("api/companies/{companyId}/unblock")]
+    [ProducesResponseType(typeof(CompanyViewModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CompanyViewModel>> UnblockCompanyAsync(Ulid companyId)
+    {
+        var unblockedCompany = await _companyService.UnblockCompanyAsync(companyId, Ulid.Parse("01HY5Q0RPNMXCA2W6JXDMVVZ7B"));
+
+        return Ok(unblockedCompany);
+    }
 }
