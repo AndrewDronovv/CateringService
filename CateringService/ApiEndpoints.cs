@@ -4,19 +4,6 @@ public static class ApiEndPoints
 {
     private const string ApiBase = "api";
 
-    public static class Dishes
-    {
-        private const string Base = $"{ApiBase}/suppliers/{{supplierId}}";
-
-        public const string GetAll = Base;
-        public const string Get = $"api/dishes/{{dishId}}";
-        public const string GetBySlug = $"api/dishes/{{slug}}";
-        public const string Create = $"{Base}/dishes";
-        public const string Update = $"{Base}/{{dishId}}";
-        public const string Delete = $"{Base}/{{dishId}}";
-        public const string Toggle = $"{Base}/{{dishId}}/toggle";
-    }
-
     public static class MenuCategories
     {
         private const string Base = $"{ApiBase}/suppliers/{{supplierId}}/categories";
