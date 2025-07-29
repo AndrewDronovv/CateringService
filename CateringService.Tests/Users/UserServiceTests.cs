@@ -28,6 +28,7 @@ public sealed class UserServiceTests
         _userService = new UserService(_userRepositoryMock, _unitOfWorkRepositoryMock, _mapper, _logger);
     }
 
+    #region Тесты конструктора
     [Fact]
     public async Task Ctor_WhenUserRepositoryNull_ShoulThrowArgumentNullException()
     {
@@ -66,28 +67,28 @@ public sealed class UserServiceTests
         var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _userService.CreateUserAsync(request));
         Assert.Equal(nameof(request), exception.ParamName);
     }
+    #endregion
 
+    #region Тесты создания User
     [Fact]
     public async Task CreateUserAsync_WhenCreatedUserIsNull_ShouldThrowNotFoundException()
     {
         //Arrange
         Ulid userId = Ulid.NewUlid();
         AddUserRequest request = new AddUserRequest { FirstName = "Test", UserType = "customer" };
-        User user = new User { Id = userId, FirstName = request.FirstName };
         Customer customer = new Customer { Id = userId, FirstName = request.FirstName };
 
         _mapper.Map<Customer>(request).Returns(customer);
-        _userRepositoryMock.AddAsync(user).Returns(userId);
-        //_unitOfWorkRepositoryMock.SaveChangesAsync().Returns(Task.CompletedTask);
-        _userRepositoryMock.GetByIdAsync(user.Id).Returns(Task.FromResult<User?>(null));
+        _userRepositoryMock.AddAsync(customer).Returns(userId);
+        _userRepositoryMock.GetByIdAsync(userId).Returns(Task.FromResult<User?>(null));
 
         //Act
         var exception = await Assert.ThrowsAsync<NotFoundException>(() => _userService.CreateUserAsync(request));
-        Console.WriteLine("Exception message" + exception.Message);
 
         //Assert
         Assert.Contains(nameof(User), exception.Message);
-        Assert.Contains(user.Id.ToString(), exception.Message);
+        Assert.Contains(userId.ToString(), exception.Message);
         Assert.IsType<NotFoundException>(exception);
     }
+    #endregion
 }

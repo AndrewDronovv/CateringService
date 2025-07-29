@@ -31,6 +31,7 @@ public sealed class AddressServiceTests
         _addressService = new AddressService(_addressRepositoryMock, _unitOfWorkMock, _tenantRepositoryMock, _mapper, _logger);
     }
 
+    #region Тесты конструктора
     [Fact]
     public async Task Ctor_WhenAddressRepositoryNull_ShouldThrowArgumentNullException()
     {
@@ -71,7 +72,9 @@ public sealed class AddressServiceTests
     {
         Assert.NotNull(_addressService);
     }
+    #endregion
 
+    #region Тесты создания Address
     [Fact]
     public async Task CreateAddressAsync_WhenAddAddressRequestIsNull_ShouldThrowArgumentNullException()
     {
@@ -191,7 +194,9 @@ public sealed class AddressServiceTests
         _addressRepositoryMock.Received(1).GetByIdAsync(addressId);
         await _unitOfWorkMock.Received(1).SaveChangesAsync();
     }
+    #endregion
 
+    #region Тесты получения Address по Id
     [Fact]
     public async Task GetByIdAsync_WhenDishExists_ShouldReturnAddress()
     {
@@ -253,7 +258,9 @@ public sealed class AddressServiceTests
         var exception = await Assert.ThrowsAsync<ArgumentException>(() => _addressService.GetByIdAsync(addressId));
         Assert.Contains(nameof(addressId), exception.Message);
     }
+    #endregion
 
+    #region Тесты поиска Address по Zip code
     [Fact]
     public async Task SearchAddressesByZipAsync_WhenSearchByZipViewModelIsNull_ShouldThrowArgumentNullException()
     {
@@ -264,4 +271,5 @@ public sealed class AddressServiceTests
         var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => _addressService.SearchAddressesByZipAsync(request));
         Assert.Contains(nameof(request), exception.Message);
     }
+    #endregion
 }

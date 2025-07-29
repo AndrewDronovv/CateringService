@@ -86,7 +86,7 @@ public sealed class DishServiceTests
     }
     #endregion
 
-    #region Тесты добавления блюда
+    #region Тесты создания Dish
     [Fact]
     public async Task CreateDishAsync_WhenNewDish_ShouldReturnDish()
     {

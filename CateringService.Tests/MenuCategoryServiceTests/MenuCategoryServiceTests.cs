@@ -75,7 +75,7 @@ public sealed class MenuCategoryServiceTests
     }
     #endregion
 
-    #region Тесты добавления
+    #region Тесты создания MenuCategory
     [Fact]
     public async Task CreateMenuCategoryAsync_WhenNewMenuCategory_ShouldReturnMenuCategory()
     {

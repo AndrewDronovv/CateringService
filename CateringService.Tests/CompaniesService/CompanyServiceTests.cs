@@ -30,6 +30,7 @@ public sealed class CompanyServiceTests
         _companyService = new CompanyService(_companyRepositoryMock, _unitOfWorkMock, _mapper, _logger, _tenantRepositoryMock, _addressRepositoryMock);
     }
 
+    #region Тесты конструктора
     [Fact]
     public async Task Ctor_WhenCompanyRepositoryNull_ShouldThrowArgumentNullException()
     {
@@ -71,4 +72,5 @@ public sealed class CompanyServiceTests
         var exception = Assert.Throws<ArgumentNullException>(() => new CompanyService(_companyRepositoryMock, _unitOfWorkMock, _mapper, _logger, _tenantRepositoryMock, null!));
         Assert.Equal("addressRepository", exception.ParamName);
     }
+    #endregion
 }

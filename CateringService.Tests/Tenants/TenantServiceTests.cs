@@ -162,7 +162,7 @@ public sealed class TenantServiceTests
     }
     #endregion
 
-    #region Тесты создания tenant
+    #region Тесты создания Tenant
     [Fact]
     public async Task CreateTenantAsync_WhenAddTenantRequestIsNull_ShouldThrowArgumentNullException()
     {
