@@ -1,5 +1,6 @@
 ﻿using CateringService.Domain.Entities;
 using CateringService.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace CateringService.Persistence.Repositories;
 
@@ -9,9 +10,11 @@ public class UserRepository : GenericRepository<User, Ulid>, IUserRepository
     {
     }
 
-    public async Task<Ulid> AddAsync(User user)
+    public async Task DeleteAsync(Ulid userId)
     {
-        await _context.Users.AddAsync(user);
-        return user.Id;
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        _context.Users.Remove(user);
     }
 }

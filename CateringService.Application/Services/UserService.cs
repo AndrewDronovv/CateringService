@@ -44,7 +44,7 @@ public class UserService : IUserService
             _ => throw new ArgumentOutOfRangeException(nameof(request.UserType), $"Unknown user's type {request.UserType}")
         };
 
-        var userId = await _userRepository.AddAsync(user);
+        var userId = _userRepository.Add(user);
         await _unitOfWorkRepository.SaveChangesAsync();
 
         var createdUser = await _userRepository.GetByIdAsync(userId);
@@ -57,5 +57,21 @@ public class UserService : IUserService
         _logger.LogInformation("Пользователь {CreatedUser.Name} с Id {UserId} успешно создан.", createdUser.LastName, userId);
 
         return _mapper.Map<UserViewModel>(createdUser);
+    }
+
+    public async Task DeleteUserAsync(Ulid userId)
+    {
+        if (userId == Ulid.Empty)
+        {
+            _logger.LogWarning("UserId не должен быть пустым.");
+            throw new ArgumentException(nameof(userId), "UserId is empty.");
+        }
+
+        _logger.LogInformation("Получен запрос на удаление пользователя {UserId}.", userId);
+
+        await _userRepository.DeleteAsync(userId);
+        await _unitOfWorkRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Пользователь {UserId} успешно удален.", userId);
     }
 }

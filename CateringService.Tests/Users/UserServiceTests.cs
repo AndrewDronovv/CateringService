@@ -79,7 +79,7 @@ public sealed class UserServiceTests
         Customer customer = new Customer { Id = userId, FirstName = request.FirstName };
 
         _mapper.Map<Customer>(request).Returns(customer);
-        _userRepositoryMock.AddAsync(customer).Returns(userId);
+        _userRepositoryMock.Add(customer).Returns(userId);
         _userRepositoryMock.GetByIdAsync(userId).Returns(Task.FromResult<User?>(null));
 
         //Act

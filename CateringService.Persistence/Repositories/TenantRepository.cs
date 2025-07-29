@@ -63,9 +63,9 @@ public class TenantRepository : GenericRepository<Tenant, Ulid>, ITenantReposito
 
     public async Task DeleteAsync(Ulid tenantId)
     {
-        var entity = await _context.Tenants
+        var tenant = await _context.Tenants
             .FirstOrDefaultAsync(t => t.Id == tenantId);
 
-        _context.Tenants.Remove(entity);
+        _context.Tenants.Remove(tenant);
     }
 }

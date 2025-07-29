@@ -6,4 +6,5 @@ namespace CateringService.Application.Abstractions;
 public interface IUserService
 {
     Task<UserViewModel?> CreateUserAsync(AddUserRequest request);
+    Task DeleteUserAsync(Ulid userId);
 }

@@ -1,6 +1,7 @@
 ﻿using CateringService.Application.Abstractions;
 using CateringService.Application.DataTransferObjects.Requests;
 using CateringService.Application.DataTransferObjects.Responses;
+using CateringService.Application.Services;
 using CateringService.Filters;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,5 +24,16 @@ public class UsersController : ControllerBase
         var createdUser = await _userSerivce.CreateUserAsync(request);
 
         return Ok(createdUser);
+    }
+
+    [HttpDelete("api/users/{userId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteUserAsync(Ulid userId)
+    {
+        await _userSerivce.DeleteUserAsync(userId);
+
+        return NoContent();
     }
 }
