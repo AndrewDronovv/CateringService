@@ -16,6 +16,35 @@ public class AddressesController : ControllerBase
         _addressService = addressService;
     }
 
+    /// <summary>
+    /// Creates a new address for the specified tenant.
+    /// </summary>
+    /// <remarks>
+    /// This endpoint allows an authenticated client to create a new address record associated with a tenant.
+    /// 
+    /// <b>Request Requirements:</b>
+    /// - Valid <c>tenantId</c> in the payload that maps to an existing active tenant
+    /// - Complete and properly formatted <see cref="AddAddressRequest"/> object in the request body
+    /// 
+    /// <b>Response Codes:</b>
+    /// - <c>201 Created</c>: Address successfully created; returns <see cref="AddressViewModel"/>
+    /// - <c>400 Bad Request</c>: Invalid input data or missing request body
+    /// - <c>404 Not Found</c>: Tenant not found or inactive; address creation failed
+    /// 
+    /// <b>Example:</b>
+    /// <code>
+    /// POST /api/addresses
+    /// Content-Type: application/json
+    /// {
+    ///   "street": "123 Main Street",
+    ///   "city": "Springfield",
+    ///   "postalCode": "12345",
+    ///   "tenantId": "01HXYDZ4W1BGT3XYAZ2RG5CTJZ"
+    /// }
+    /// </code>
+    /// </remarks>
+    /// <param name="request">Data required to create a new address</param>
+    /// <returns>Returns the created <see cref="AddressViewModel"/> with its assigned ID</returns>
 
     [HttpPost(ApiEndPoints.Addresses.Create)]
     [ProducesResponseType(typeof(AddressViewModel), StatusCodes.Status201Created)]

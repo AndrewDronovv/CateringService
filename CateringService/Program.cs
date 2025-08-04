@@ -20,7 +20,6 @@ builder.Services.AddLoggingActionFilter();
 
 var app = builder.Build();
 
-
 app.ConfigurePipeline();
 app.Run();
 
