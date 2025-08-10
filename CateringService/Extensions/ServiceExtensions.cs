@@ -18,8 +18,8 @@ using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Reflection;
 using System.Text;
@@ -122,9 +122,12 @@ public static class ServiceExtensions
     public static void AddJwt(this IServiceCollection services, IConfiguration configuration)
     {
         var jwtSettings = configuration.GetSection("Jwt:AccessToken");
-        var key = jwtSettings["Key"];
-        var issuer = jwtSettings["Issuer"];
-        var audience = jwtSettings["Audience"];
+        var key = jwtSettings["Key"] ??
+            throw new InvalidOperationException("JWT Key is not configured");
+        var issuer = jwtSettings["Issuer"] ??
+            throw new InvalidOperationException("JWT Issuer is not configured");
+        var audience = jwtSettings["Audience"] ??
+            throw new InvalidOperationException("JWT Audience is not configured");
 
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
@@ -173,5 +176,21 @@ public static class ServiceExtensions
             options.IncludeXmlComments(xmlFilePath);
         });
         services.ConfigureOptions<ConfigureSwaggerGenOptions>();
+    }
+
+    public static void AddHealthCheckService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection") ??
+            throw new InvalidOperationException("Connection string: DefaultConnection was not found.");
+
+        services.AddHealthChecks()
+            .AddCheck("self", () => HealthCheckResult.Healthy("Service is running."), tags: ["live"])
+            .AddNpgSql(
+                connectionString: connectionString,
+                name: "database",
+                failureStatus: HealthStatus.Unhealthy,
+                timeout: TimeSpan.FromSeconds(5),
+                tags: ["ready", "db"]
+            );
     }
 }
