@@ -1,4 +1,6 @@
-﻿namespace CateringService.Application.DataTransferObjects.Requests;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace CateringService.Application.DataTransferObjects.Requests;
 
 public sealed class AddDishRequest
 {
@@ -8,6 +10,7 @@ public sealed class AddDishRequest
     public string? Ingredients { get; set; } = string.Empty;
     public double Weight { get; set; }
     public string? ImageUrl { get; set; } = string.Empty;
+    public IFormFile? Image { get; set; } = default;
     public bool IsAvailable { get; set; } = true;
     public string? Allergens { get; set; }
     public string? PortionSize { get; set; }

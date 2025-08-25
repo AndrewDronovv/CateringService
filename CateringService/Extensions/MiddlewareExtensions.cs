@@ -2,12 +2,13 @@
 using CateringService.HealthChecks;
 using CateringService.Middlewares;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.FileProviders;
 
 namespace CateringService.Extensions;
 
 public static class MiddlewareExtensions
 {
-    public static void ConfigurePipeline(this WebApplication app)
+    public static void ConfigurePipeline(this WebApplication app, WebApplicationBuilder builder)
     {
         app.UseErrorHandling();
 
@@ -50,7 +51,11 @@ public static class MiddlewareExtensions
 
         app.UseHttpsRedirection();
         app.UseRequestCulture();
-        app.UseStaticFiles();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Uploads")),
+            RequestPath = "/Resources"
+        });
         app.UseRouting();
 
         app.UseCors("CorsPolicy");

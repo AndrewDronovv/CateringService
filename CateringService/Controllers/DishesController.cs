@@ -12,6 +12,7 @@ namespace CateringService.Controllers;
 [ApiVersion(1)]
 [ApiVersion(2)]
 [Route("api/v{version:apiVersion}")]
+[Produces("application/json")]
 public class DishesController : ControllerBase
 {
     private readonly IDishService _dishService;
@@ -69,10 +70,11 @@ public class DishesController : ControllerBase
 
     [HttpPost("suppliers/{supplierId}/[controller]")]
     [MapToApiVersion(1)]
+    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(DishViewModel), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(object), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(object), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromBody] AddDishRequest request, [FromRoute] Ulid supplierId)
+    public async Task<ActionResult<DishViewModel>> CreateDishAsync([FromForm] AddDishRequest request, [FromRoute] Ulid supplierId)
     {
         var createdDish = await _dishService.CreateDishAsync(supplierId, request);
 

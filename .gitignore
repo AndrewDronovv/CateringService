@@ -365,3 +365,4 @@ FodyWeavers.xsd
 # Docker volumes and database files
 docker/db/
 .env
+*.jpg

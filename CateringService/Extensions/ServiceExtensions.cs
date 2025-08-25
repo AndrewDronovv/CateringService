@@ -86,6 +86,8 @@ public static class ServiceExtensions
         services.AddScoped<IUnitOfWorkRepository, UnitOfWork>();
 
         services.AddScoped<ISlugService, SlugService>();
+
+        services.AddScoped<IImageStorageService, LocalFileStorageService>();
     }
 
     public static void AddLoggingActionFilter(this IServiceCollection services)

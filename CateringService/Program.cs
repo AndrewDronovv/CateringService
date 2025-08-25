@@ -16,10 +16,11 @@ builder.Services.AddApiVesioning();
 builder.Services.AddSwaggerDocumentation();
 builder.Services.AddPresentationServices();
 builder.Services.AddLoggingActionFilter();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-app.ConfigurePipeline();
+app.ConfigurePipeline(builder);
 
 app.Logger.LogInformation("Application started successfully.");
 
